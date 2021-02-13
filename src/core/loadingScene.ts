@@ -1,0 +1,126 @@
+import  { AbstractMesh, Animation, AnimationGroup, ArcRotateCamera, Color4, IAnimationKey, Mesh, MeshBuilder, MorphTarget, NodeMaterial, NodeMaterialSystemValues, Scene, SceneLoader, TextureBlock, TransformNode, Vector3 } from "@babylonjs/core";
+import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
+export class LoadingScene{
+
+    private scene:Scene
+
+    constructor(scene:Scene){
+        this.scene=scene
+        this.startLoadingAnimation()
+       
+
+
+    }
+
+    
+    async startLoadingAnimation() { //开启加载动画
+        let camera = new ArcRotateCamera('camera',Math.PI/2,1.186,10,Vector3.Zero(),this.scene)
+        this.scene.clearColor = Color4.FromInts(72, 128, 215, 255)
+
+        //结点编辑器材质
+        let cubeLoaderMat = new NodeMaterial('cubeLoaderMat',this.scene,{ emitComments:false})
+
+        let guiNode = new TransformNode('guiNode') //GUI的结点
+        guiNode.position.y=-1
+        
+
+        this.setLoadingLabel(guiNode)//设置加载文本
+
+        //加载 立方体 以及 结点材质
+
+        
+        await SceneLoader.AppendAsync("src/assets/model/cubeLoading.glb")
+        
+        await cubeLoaderMat.loadAsync("src/assets/nodeMaterial/nodeMaterial.json")
+        
+        
+        cubeLoaderMat.build(false)
+        
+       let meshes = [this.scene.getMeshByName("spinnerLeft"), this.scene.getMeshByName("spinnerCenter"), this.scene.getMeshByName("spinnerRight")];
+       let meshInfluence : MorphTarget[] = []
+
+        
+        meshes.forEach((mesh,index) => { //设置材质 以及获取morph target
+
+            if(mesh && mesh instanceof Mesh){ //nullable 转换成Mesh class
+               mesh.material = cubeLoaderMat //设置结点材质
+               
+                if(mesh.morphTargetManager !== null){
+                    meshInfluence.push(mesh.morphTargetManager.getTarget(0)) //获取变换的目标（tartget）
+                }
+            }
+        })
+
+        let loadingSpin = this.scene.getAnimationGroupByName('loadingSpin')!  //获取立方体的旋转动画
+        
+        this.animateInfluence( meshInfluence[0],LoadingScene.morphAnimations.leftMorph,loadingSpin,false)
+        this.animateInfluence( meshInfluence[1],LoadingScene.morphAnimations.centerMorph,loadingSpin,false)
+        this.animateInfluence( meshInfluence[2],LoadingScene.morphAnimations.rightMorph,loadingSpin,true)
+        
+    }
+
+    private progressText?: TextBlock
+
+
+    setLoadingLabel(guiNode:TransformNode) { //设置加载文本
+         let advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('loadingGUI')
+
+         this.progressText = new TextBlock();
+         this.progressText.text = "加载中... \n 0/100 ";
+         this.progressText.fontSize = 25;
+         this.progressText.top = -100;
+         this.progressText.color = "white";
+
+         advancedTexture.addControl( this.progressText)
+         this.progressText.linkWithMesh(guiNode)
+
+    }
+
+    updateProgress(progress:number,hintText?:string){
+        if(this.progressText){
+            if(hintText){
+                this.progressText.text=`加载中... \n ${hintText} \n ${progress}/100`
+            }
+            else{
+                this.progressText.text=`加载中... \n ${progress}/100`
+            }
+        }
+    }
+
+
+    animateInfluence(target:MorphTarget,keys:IAnimationKey[],group:AnimationGroup,start:boolean){ 
+        let animation = new Animation('influenceAnimation','influence',60,Animation.ANIMATIONTYPE_FLOAT,Animation.ANIMATIONLOOPMODE_CYCLE)
+        animation.setKeys(keys)
+        group.addTargetedAnimation(animation, target)
+        if(start){
+            group.play(true)
+        }
+    }
+
+    static morphAnimations={
+        "leftMorph": [
+            {frame: 0, value: 0},
+            {frame: 20, value: 0},
+            {frame: 35, value: 1},
+            {frame: 115, value: 1},
+            {frame: 130, value: 0},
+            {frame: 400, value: 0}
+        ],
+        "centerMorph": [
+            {frame: 0, value: 0},
+            {frame: 135, value: 0},
+            {frame: 150, value: 1},
+            {frame: 220, value: 1},
+            {frame: 235, value: 0},
+            {frame: 400, value: 0}
+        ],
+        "rightMorph": [
+            {frame: 0, value: 0},
+            {frame: 250, value: 0},
+            {frame: 265, value: 1},
+            {frame: 335, value: 1},
+            {frame: 350, value: 0},
+            {frame: 400, value: 0}
+        ]
+    }
+}
