@@ -1,3 +1,4 @@
+import { Vector3 } from "@babylonjs/core";
 
 
 export enum CollegePosition {  //学院的位置
@@ -12,4 +13,6 @@ export interface College {
     name: string
     modelUrl: string
     position: CollegePosition
+    scale:Vector3
+    rotation:Vector3
 }

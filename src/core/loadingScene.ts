@@ -68,7 +68,6 @@ export class LoadingScene{
          this.progressText = new TextBlock();
          this.progressText.text = "加载中... \n 0/100 ";
          this.progressText.fontSize = 25;
-         this.progressText.top = -100;
          this.progressText.color = "white";
 
          advancedTexture.addControl( this.progressText)

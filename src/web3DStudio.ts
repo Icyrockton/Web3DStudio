@@ -1,4 +1,4 @@
-import { ArcRotateCamera, Engine, Scene, SceneLoader, Vector3 } from "@babylonjs/core";
+import { ArcRotateCamera, Engine, Scene, SceneLoader, Vector2, Vector3 } from "@babylonjs/core";
 import { LoadingScene } from "./core/loadingScene";
 import { ResourceManager } from "./utils/resourceManager";
 import { __DEBUG__ } from './global'
@@ -73,20 +73,18 @@ export class Web3DStudio {
 
         let mapScene = new Scene(this._engine)
 
-        let manager = new CollegeManager(mapScene)
+        let manager = new CollegeManager(mapScene,this._canvas)
+        await manager.load()
 
-
-        await manager.loadMap() //加载学院地图
         this._scene.dispose()
         this._scene = mapScene
 
 
         this._scene.debugLayer.show()
 
+        let name = new Vector2(0,0)
+        console.log(name.length());
         
-        let camera = new ArcRotateCamera('camera',0,0,100,Vector3.Zero(),this._scene)
-        camera.attachControl(this._canvas)
-        this._scene.createDefaultLight()
     }
 
     loadResource() {
