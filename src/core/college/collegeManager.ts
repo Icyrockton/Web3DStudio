@@ -1,4 +1,4 @@
-import { ArcRotateCamera, HemisphericLight, PickingInfo, Quaternion, Scene, SceneLoader, ShadowGenerator, TransformNode, Vector3 } from "@babylonjs/core";
+import { ActionManager, ArcRotateCamera, ExecuteCodeAction, HemisphericLight, MeshBuilder, NodeMaterial, PickingInfo, PointLight, Quaternion, Scene, SceneLoader, ShadowGenerator, SpotLight, Tools, TransformNode, Vector3 } from "@babylonjs/core";
 import { __DEBUG__ } from "../../global";
 import { College, CollegePosition } from "./college";
 import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
@@ -12,7 +12,7 @@ export class CollegeManager { //加载学院相关的资源
         {
             name: '北京三维学院', modelUrl: 'src/assets/model/building/building_1.glb',
             position: CollegePosition.A,
-            scale: new Vector3(0.7, 0.7, 0.7),
+            scale: Vector3.One(),
             rotation: new Vector3(0, Math.PI, 0)
         },
         {
@@ -29,6 +29,7 @@ export class CollegeManager { //加载学院相关的资源
 
     private _scene: Scene
     private _canvas: HTMLCanvasElement
+    private _collegeNode: TransformNode[] = [] //保存所有的建筑物根节点
 
     constructor(scene: Scene, canvas: HTMLCanvasElement) { //学院场景
         this._scene = scene
@@ -39,21 +40,53 @@ export class CollegeManager { //加载学院相关的资源
         this.setLight()
         await this.loadMap()
         this.setCamera()
-        this.setClick()
-        
-    }
-    setLight() {
-        let light = new HemisphericLight('chooseCollegeLight',new Vector3(0,1,0),this._scene)
-        light.intensity=1.2 //设置强度
+        await this.setClick()
 
     }
-    setClick() { //点击事件
-        this._scene.onPointerDown=(event,pickInfo)=>{
-            if(pickInfo.pickedMesh){
-                console.log(pickInfo.pickedMesh.parent);
-                
-            }
-        }
+    setLight() {
+        //let light = new HemisphericLight('chooseCollegeLight', new Vector3(0, 1, 0), this._scene)
+        //light.intensity = 1.2 //设置强度
+
+        let light = new PointLight('light',new Vector3(0,20,0),this._scene)
+        light.intensity=1000
+    }
+    async setClick() { //点击事件
+
+        let selectionLight = new SpotLight('selectionCollege', new Vector3(0,4,0), new Vector3(0, -1, 0), Tools.ToRadians(45), 1, this._scene)
+        //设置投射灯光的参数
+        let nodeMat = new NodeMaterial('lightTexture',this._scene)
+         await nodeMat.loadAsync("src/assets/nodeMaterial/selectionLight.json")
+         nodeMat.build(false)
+        let proceduralTexture=nodeMat.createProceduralTexture(256, this._scene)
+         selectionLight.intensity=2
+         selectionLight.projectionTexture=proceduralTexture //设置投影纹理
+        let ground=this._scene.getMeshByName("ground")! //找到地面
+         selectionLight.includedOnlyMeshes.push(ground)
+
+
+        let box = MeshBuilder.CreateBox('test', {size:2})
+        this._collegeNode.forEach((node) => {
+            let nodeActionManager = new ActionManager(this._scene)
+            let childMesh = node.getChildMeshes(false)
+            childMesh.forEach((mesh) => {
+                mesh.actionManager = nodeActionManager
+                mesh.actionManager.registerAction(new ExecuteCodeAction(
+                    ActionManager.OnPointerOverTrigger, //鼠标悬浮到建筑物上(移入建筑物)
+                    (event) => {
+                        //设置投射灯光的位置在建筑物的上方
+                        selectionLight.position.x=node.position.x
+                        selectionLight.position.y=mesh.getBoundingInfo().boundingBox.maximum.y +5
+                        selectionLight.position.z=node.position.z
+                        selectionLight.setDirectionToTarget(node.position)
+                    }))
+                mesh.actionManager.registerAction(new ExecuteCodeAction(
+                    ActionManager.OnPointerOutTrigger, //鼠标移出建筑物
+                    (event) => {
+
+                    }
+                ))
+            })
+        })
     }
 
     setCamera() { //设置摄像机
@@ -67,22 +100,22 @@ export class CollegeManager { //加载学院相关的资源
         camera.autoRotationBehavior!.idleRotationSpeed = 0.12
         camera.autoRotationBehavior!.idleRotationWaitTime = 1000
         //设置固定的半径大小
-        camera.lowerRadiusLimit=40
-        camera.upperRadiusLimit=40
+        camera.lowerRadiusLimit = 40
+        camera.upperRadiusLimit = 40
         //设置固定的Beta角度
-        camera.lowerBetaLimit=Math.PI / 3.5
-        camera.upperBetaLimit=Math.PI / 3.5
-    
-        
+        camera.lowerBetaLimit = Math.PI / 3.5
+        camera.upperBetaLimit = Math.PI / 3.5
+
+
     }
 
     async loadMap() {
 
         //加载地图
-        let map=await SceneLoader.ImportMeshAsync("", CollegeManager.map.modelUrl, undefined, this._scene)
-        map.meshes.forEach((mesh)=>{
-            mesh.isPickable=false //将地图的所有mesh设置为不可选取的
-         })
+        let map = await SceneLoader.ImportMeshAsync("", CollegeManager.map.modelUrl, undefined, this._scene)
+        map.meshes.forEach((mesh) => {
+            mesh.isPickable = false //将地图的所有mesh设置为不可选取的
+        })
 
         //找到建筑物的坐标位置
         let positionMap = new Map<College, Vector3>()
@@ -114,6 +147,8 @@ export class CollegeManager { //加载学院相关的资源
         for (let i = 0; i < CollegeManager.collegeMap.length; i++) {
             const college = CollegeManager.collegeMap[i];
             let node = new TransformNode(college.name, this._scene)
+            this._collegeNode.push(node)
+
             let loadMesh = await SceneLoader.ImportMeshAsync("", college.modelUrl, undefined, this._scene)
 
             let root = loadMesh.meshes[0] //模型的root结点

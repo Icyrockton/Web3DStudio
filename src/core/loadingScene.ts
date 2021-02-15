@@ -31,7 +31,7 @@ export class LoadingScene{
         
         await SceneLoader.AppendAsync("src/assets/model/cubeLoading.glb")
         
-        await cubeLoaderMat.loadAsync("src/assets/nodeMaterial/nodeMaterial.json")
+        await cubeLoaderMat.loadAsync("src/assets/nodeMaterial/loading.json")
         
         
         cubeLoaderMat.build(false)

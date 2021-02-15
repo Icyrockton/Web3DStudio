@@ -82,9 +82,7 @@ export class Web3DStudio {
 
         this._scene.debugLayer.show()
 
-        let name = new Vector2(0,0)
-        console.log(name.length());
-        
+       
     }
 
     loadResource() {
