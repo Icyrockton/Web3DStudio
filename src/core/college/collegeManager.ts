@@ -2,6 +2,7 @@ import { AbstractMesh, ActionManager, ArcRotateCamera, CascadedShadowGenerator, 
 import { __DEBUG__ } from "../../global";
 import { College, CollegePosition } from "./college";
 import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
+import { CollegeFence } from "./collegeFence";
 
 
 
@@ -38,11 +39,13 @@ export class CollegeManager { //加载学院相关的资源
     }
 
     async load() {
-        await this.loadMap()
         this.setCamera()
+        await this.loadMap()
         this.setLight()
-        await this.setClick()
+        this.setClick()
 
+        
+        
     }
     setLight() {
         //半球光
@@ -74,45 +77,30 @@ export class CollegeManager { //加载学院相关的资源
         groundMesh.receiveShadows=true //设置地面为接受阴影的对象
 
     }
-    async setClick() { //点击事件
 
-        let selectionLight = new SpotLight('selectionCollege', new Vector3(0, 4, 0), new Vector3(0, -1, 0), Tools.ToRadians(45), 1, this._scene)
-        //设置投射灯光的参数
-        let nodeMat = new NodeMaterial('lightTexture', this._scene)
-        await nodeMat.loadAsync("src/assets/nodeMaterial/selectionLight.json")
-        nodeMat.build(false)
-        let proceduralTexture = nodeMat.createProceduralTexture(1024, this._scene)
-        selectionLight.intensity = 2
-        selectionLight.projectionTexture = proceduralTexture //设置投影纹理
-        let ground = this._scene.getMeshByName("ground")! //找到地面
-        // selectionLight.includedOnlyMeshes.push(ground)
-        console.log(selectionLight.includedOnlyMeshes);
-        
+    //学院名字 -- 栅栏
+    private _collegeToFence:Map<string,CollegeFence>= new Map()
+     setClick() { //点击事件
 
-        
-        // this._collegeNode.forEach((node) => {
-        //     let nodeActionManager = new ActionManager(this._scene)
-        //     let childMesh = node.getChildMeshes(false)
-        //     childMesh.forEach((mesh) => {
-                
-        //         mesh.actionManager = nodeActionManager
-        //         mesh.actionManager.registerAction(new ExecuteCodeAction(
-        //             ActionManager.OnPointerOverTrigger, //鼠标悬浮到建筑物上(移入建筑物)
-        //             (event) => {
-        //                 //设置投射灯光的位置在建筑物的上方
-        //                 selectionLight.position.x = node.position.x
-        //                 selectionLight.position.y = mesh.getBoundingInfo().boundingBox.maximum.y + 5
-        //                 selectionLight.position.z = node.position.z
-        //                 selectionLight.setDirectionToTarget(node.position)
-        //             }))
-        //         mesh.actionManager.registerAction(new ExecuteCodeAction(
-        //             ActionManager.OnPointerOutTrigger, //鼠标移出建筑物
-        //             (event) => {
-
-        //             }
-        //         ))
-        //     })
-        // })
+        this._collegeNode.forEach((node) => {
+            let nodeActionManager = new ActionManager(this._scene)
+            let childMesh = node.getChildMeshes(false)
+            childMesh.forEach((mesh) => {
+                let fence=this._collegeToFence.get(node.name)! //获取栅栏
+                mesh.actionManager = nodeActionManager
+                mesh.actionManager.registerAction(new ExecuteCodeAction(
+                    ActionManager.OnPointerOverTrigger, //鼠标悬浮到建筑物上(移入建筑物)
+                    (event) => {
+                       fence.up() //上升
+                    }))
+                mesh.actionManager.registerAction(new ExecuteCodeAction(
+                    ActionManager.OnPointerOutTrigger, //鼠标移出建筑物
+                    (event) => {
+                        fence.down() //下降
+                    }
+                ))
+            })
+        })
     }
 
     setCamera() { //设置摄像机
@@ -200,6 +188,22 @@ export class CollegeManager { //加载学院相关的资源
             textBlock.linkWithMesh(root)
             //向上偏移
             textBlock.linkOffsetY = -100
+
+            //设置建筑物的栅栏
+            let buildingMesh=root.getChildMeshes()[0]! //建筑物Mesh
+            let boundingBox = buildingMesh.getBoundingInfo().boundingBox
+            //maximum减去minimum得到边界盒子的大小
+            let boundingBoxSize=boundingBox.maximum.subtract(boundingBox.minimum)
+            //width:size.x,height:size.y,depth:size.z 
+            
+            //栅栏
+            let collegeFence=new CollegeFence(boundingBoxSize.x+0.5,boundingBoxSize.z+0.5,0.6,this._scene)
+            
+            //设置栅栏的位置
+            collegeFence.position=new Vector3(node.position.x, node.position.y - 1, node.position.z)
+            
+            this._collegeToFence.set(node.name, collegeFence) //保存 学院名称 -- 栅栏名称
+            
         }
 
 
