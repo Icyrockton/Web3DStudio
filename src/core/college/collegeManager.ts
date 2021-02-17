@@ -1,4 +1,4 @@
-import { AbstractMesh, ActionManager, ArcRotateCamera, CascadedShadowGenerator, DirectionalLight, ExecuteCodeAction, HemisphericLight, MeshBuilder, NodeMaterial, PickingInfo, PointLight, Quaternion, RenderTargetTexture, Scene, SceneLoader, ShadowGenerator, SpotLight, StandardMaterial, Tools, TransformNode, Vector3 } from "@babylonjs/core";
+import { AbstractMesh, ActionManager, ArcRotateCamera, CascadedShadowGenerator, DirectionalLight, ExecuteCodeAction, HemisphericLight, MeshBuilder, NodeMaterial, PickingInfo, PointLight, Quaternion, RenderTargetTexture, Scene, SceneLoader, ShadowGenerator, Sound, SpotLight, StandardMaterial, Tools, TransformNode, Vector3 } from "@babylonjs/core";
 import { __DEBUG__ } from "../../global";
 import { College, CollegePosition } from "./college";
 import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
@@ -32,10 +32,12 @@ export class CollegeManager { //加载学院相关的资源
     private _canvas: HTMLCanvasElement
     private _collegeNode: TransformNode[] = [] //保存所有的建筑物根节点
     private _buildingMeshUniqueID : number[] = []
+    private _clickSound:Sound
 
     constructor(scene: Scene, canvas: HTMLCanvasElement) { //学院场景
         this._scene = scene
         this._canvas = canvas
+        this._clickSound=new Sound('clickSound',"src/assets/sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
     }
 
     async load() {
@@ -43,9 +45,6 @@ export class CollegeManager { //加载学院相关的资源
         await this.loadMap()
         this.setLight()
         this.setClick()
-
-        
-        
     }
     setLight() {
         //半球光
@@ -92,6 +91,7 @@ export class CollegeManager { //加载学院相关的资源
                     ActionManager.OnPointerOverTrigger, //鼠标悬浮到建筑物上(移入建筑物)
                     (event) => {
                        fence.up() //上升
+                       this._clickSound.play()
                     }))
                 mesh.actionManager.registerAction(new ExecuteCodeAction(
                     ActionManager.OnPointerOutTrigger, //鼠标移出建筑物
