@@ -7,6 +7,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "mobx": "^6.1.7",
     "mobx-react-lite": "^3.2.0",
     "react": "^17.0.0",

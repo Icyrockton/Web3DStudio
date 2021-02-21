@@ -1,28 +1,41 @@
-import { AbstractMesh, ActionManager, ArcRotateCamera, CascadedShadowGenerator, Color4, DirectionalLight, ExecuteCodeAction, HemisphericLight, MeshBuilder, NodeMaterial, PickingInfo, PointLight, Quaternion, RenderTargetTexture, Scene, SceneLoader, ShadowGenerator, Sound, SpotLight, StandardMaterial, Tools, TransformNode, Vector3, Vector4 } from "@babylonjs/core";
+import {
+    AbstractMesh,
+    ActionManager,
+    ArcRotateCamera,
+    CascadedShadowGenerator,
+    Color4,
+    DirectionalLight,
+    ExecuteCodeAction,
+    FreeCamera,
+    HemisphericLight,
+    MeshBuilder,
+    NodeMaterial,
+    PickingInfo,
+    PointLight,
+    Quaternion,
+    RenderTargetTexture,
+    Scene,
+    SceneLoader,
+    ShadowGenerator,
+    Sound,
+    SpotLight,
+    StandardMaterial,
+    Tools,
+    TransformNode,
+    Vector3,
+    Vector4
+} from "@babylonjs/core";
 import { __DEBUG__ } from "../../global";
 import { College, CollegePosition } from "./college";
 import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
 import { CollegeFence } from "./collegeFence";
-
-
+import useCollegeUiState from '../../components/GUI/collegeUiState'
+import  {collegeMap} from "./collegeApi";
 
 
 export class CollegeManager { //加载学院相关的资源
 
-    static collegeMap: College[] = [
-        {
-            name: '北京三维学院', modelUrl: 'src/assets/model/building/building_1.glb',
-            position: CollegePosition.A,
-            scale: Vector3.One(),
-            rotation: new Vector3(0, Math.PI, 0)
-        },
-        {
-            name: '成都精通学院', modelUrl: 'src/assets/model/building/building_2.glb',
-            position: CollegePosition.B,
-            scale: Vector3.One(),
-            rotation: new Vector3(0, Math.PI, 0)
-        }
-    ]
+
     static map = {
         name: 'map',
         modelUrl: 'src/assets/model/map.glb'
@@ -79,9 +92,12 @@ export class CollegeManager { //加载学院相关的资源
 
     }
 
+
     //学院名字 -- 栅栏
     private _collegeToFence:Map<string,CollegeFence>= new Map()
      setClick() { //点击事件
+
+        const collegeUiState = useCollegeUiState;
 
         this._collegeNode.forEach((node) => {
             let nodeActionManager = new ActionManager(this._scene)
@@ -94,11 +110,16 @@ export class CollegeManager { //加载学院相关的资源
                     (event) => {
                        fence.up() //上升
                        this._clickSound.play()
+                        //获取学院数据
+                        collegeUiState.fetchCollegeDescriptionByName(node.name)
+                       collegeUiState.setShowing(true) //显示UI
+
                     }))
                 mesh.actionManager.registerAction(new ExecuteCodeAction(
                     ActionManager.OnPointerOutTrigger, //鼠标移出建筑物
                     (event) => {
                         fence.down() //下降
+                        collegeUiState.setShowing(false)
                     }
                 ))
             })
@@ -110,6 +131,8 @@ export class CollegeManager { //加载学院相关的资源
         let camera = new ArcRotateCamera('chooseCollegeCamera', 0, Math.PI / 3.5, 40, Vector3.Zero(), this._scene)
         camera.attachControl()
 
+        // let testCamera = new FreeCamera("testCamera",Vector3.Zero(),this._scene);
+        // testCamera.attachControl()
 
         //停止时自动旋转
         camera.useAutoRotationBehavior = true
@@ -136,8 +159,8 @@ export class CollegeManager { //加载学院相关的资源
         //找到建筑物的坐标位置
         let positionMap = new Map<College, Vector3>()
         this._scene.transformNodes.forEach((node) => {
-            for (let i = 0; i < CollegeManager.collegeMap.length; i++) {
-                const college = CollegeManager.collegeMap[i];
+            for (let i = 0; i < collegeMap.length; i++) {
+                const college = collegeMap[i];
 
                 if (college.position == node.name) {
                     positionMap.set(college, node.position)
@@ -146,7 +169,7 @@ export class CollegeManager { //加载学院相关的资源
         })
 
         //检查地图数据是否出错
-        if (positionMap.size != CollegeManager.collegeMap.length) {
+        if (positionMap.size != collegeMap.length) {
             if (__DEBUG__) {
                 console.log('地图数据错误');
                 console.log(positionMap);
@@ -160,8 +183,8 @@ export class CollegeManager { //加载学院相关的资源
 
 
         //加载学院建筑
-        for (let i = 0; i < CollegeManager.collegeMap.length; i++) {
-            const college = CollegeManager.collegeMap[i];
+        for (let i = 0; i < collegeMap.length; i++) {
+            const college = collegeMap[i];
             let node = new TransformNode(college.name, this._scene)
             this._collegeNode.push(node)
 

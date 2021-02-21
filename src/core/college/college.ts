@@ -20,6 +20,7 @@ export interface College {
 export interface CollegeDescription{ //学院描述信息
     name:string //学院名称 
     position:string  //学院位置
-    description:'' //学院描述
-    studios:'' //学院含有的工作室
+    description:string //学院描述
+    studios:string[] //学院含有的工作室
+    imgUrl:string //学院的照片
 }
