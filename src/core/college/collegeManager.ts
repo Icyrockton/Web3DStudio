@@ -1,4 +1,4 @@
-import { AbstractMesh, ActionManager, ArcRotateCamera, CascadedShadowGenerator, DirectionalLight, ExecuteCodeAction, HemisphericLight, MeshBuilder, NodeMaterial, PickingInfo, PointLight, Quaternion, RenderTargetTexture, Scene, SceneLoader, ShadowGenerator, Sound, SpotLight, StandardMaterial, Tools, TransformNode, Vector3 } from "@babylonjs/core";
+import { AbstractMesh, ActionManager, ArcRotateCamera, CascadedShadowGenerator, Color4, DirectionalLight, ExecuteCodeAction, HemisphericLight, MeshBuilder, NodeMaterial, PickingInfo, PointLight, Quaternion, RenderTargetTexture, Scene, SceneLoader, ShadowGenerator, Sound, SpotLight, StandardMaterial, Tools, TransformNode, Vector3, Vector4 } from "@babylonjs/core";
 import { __DEBUG__ } from "../../global";
 import { College, CollegePosition } from "./college";
 import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
@@ -36,6 +36,8 @@ export class CollegeManager { //加载学院相关的资源
 
     constructor(scene: Scene, canvas: HTMLCanvasElement) { //学院场景
         this._scene = scene
+        //#5FA2E2
+        this._scene.clearColor=new Color4(96 / 256,162 /256,226/256,1)
         this._canvas = canvas
         this._clickSound=new Sound('clickSound',"src/assets/sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
     }
