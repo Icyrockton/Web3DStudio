@@ -7,12 +7,12 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/lab": "^4.0.0-alpha.57",
+    "antd": "^4.12.3",
     "mobx": "^6.1.7",
     "mobx-react-lite": "^3.2.0",
     "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react-dom": "^17.0.0",
+    "styled-jsx": "^3.4.4"
   },
   "devDependencies": {
     "@babylonjs/core": "^4.2.0",

@@ -2,55 +2,110 @@ import React from "react";
 import {observer} from "mobx-react-lite";
 import {CollegeUiState} from "./collegeUiState";
 import './ui.css'
-import {Card, CardContent, CardMedia, makeStyles, Typography} from "@material-ui/core";
-import {Skeleton} from "@material-ui/lab";
+import {Card, Divider, Typography,List} from "antd/es";
+import 'antd/dist/antd.css';
+import {Studio} from "../../core/college/college";
 
 type CollegeUiProps = {
     uiState: CollegeUiState
 }
 
-const useStyles = makeStyles({
-    media:{
-
-        height:140
-    },
-})
 
 const CollegeUi = observer<CollegeUiProps>(props => {
-    const classes = useStyles()
     const college = props.uiState.college;
 
     let content
     if (college) {
         content = (<>
                 <img src={college.imgUrl} className={"cardImg"}/>
-                <CardContent>
-                    <Typography gutterBottom  variant="h5" component="h2">
+                <Typography>
+                    <Typography.Title level={3}>
                         {college.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        {college.description}
-                 </Typography>
 
-                </CardContent>
+                    </Typography.Title>
+
+                    <Typography.Text>
+                        <Typography.Text strong={true}>
+                            {"学院介绍:  "}
+                        </Typography.Text>
+                        {college.description}
+                    </Typography.Text>
+                    <Divider type={"horizontal"}/>
+                    <Typography.Title level={3}>
+                        工作室
+                    </Typography.Title>
+
+                    <List dataSource={college.studios}
+                          renderItem={
+                              (item: Studio) => (
+                                  <List.Item>
+                                      <img src={item.logoUrl} className={"logo"}/>
+                                      {item.name}
+                                  </List.Item>
+                              )
+                          }/>
+                </Typography>
+                <style jsx>{
+                    `
+                      .logo {
+                        width: 40px;
+                        height: 40px;
+                        margin-right: 10px;
+                      }
+                    `
+                }
+                </style>
             </>
         )
     } else {
         content = (<>
                 <h1>无内容</h1>
+
             </>
         )
     }
 
 
     return (
+        <>
+            <Card className={`collegeUI ${props.uiState.isShowing ? "" : "none"}`}>
+                {content}
+            </Card>
+            <style jsx>
+                {
+                    `
+                      .none {
+                        display: none;
+                      }
 
-        <Card variant={"outlined"} className={`collegeUI ${props.uiState.isShowing ? "" : "none"}`}>
-            {
-                content
-            }
-        </Card>
+                      .collegeUI {
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        animation-name: slideFromRight;
+                        animation-duration: 0.5s;
+                        animation-timing-function: ease-out;
+                        width: 300px;
+                        height: 100%;
+                      }
 
+                      @keyframes slideFromRight {
+                        0% {
+                          right: -300px;
+                        }
+                        100% {
+                          right: 0px;
+                        }
+                      }
+
+
+                      .cardImg {
+                        width: 100%;
+                      }
+                    `
+                }
+            </style>
+        </>
     )
 })
 
