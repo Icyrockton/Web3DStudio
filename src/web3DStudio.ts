@@ -3,13 +3,16 @@ import { LoadingScene } from "./core/loadingScene";
 import { ResourceManager } from "./utils/resourceManager";
 import { __DEBUG__ } from './global'
 import "@babylonjs/inspector";
-import { CollegeManager } from "./core/college/collegeManager";
+import { CollegeMapManager } from "./core/collegeMap/collegeMapManager";
+import {IState} from "./core/IState";
+import {College, Studio} from "./core/collegeMap/college";
+import {CollegeManager} from "./core/college/collegeManager";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
 
 
-export class Web3DStudio {
+export class Web3DStudio implements IState{
 
     private _canvas: HTMLCanvasElement;
     private _engine: Engine;
@@ -23,9 +26,8 @@ export class Web3DStudio {
 
         this._engine = new Engine(this._canvas, true)  //开启抗锯齿
         this._scene = new Scene(this._engine);//初始化场景
-        SceneLoader.ShowLoadingScreen = false
-        this._scene.debugLayer.show()
-        
+        SceneLoader.ShowLoadingScreen = false //关闭默认的loading UI
+
         this.setDebugUI()
         this.run()//运行渲染函数
 
@@ -46,7 +48,6 @@ export class Web3DStudio {
                         this._scene.debugLayer.show()
                     }
                 }
-
             })
         }
     }
@@ -70,24 +71,37 @@ export class Web3DStudio {
 
         this.loadingScene = new LoadingScene(this._scene)
 
+        await this.goToCollegeMap() //切换到地图场景
 
+    }
+
+
+    async goToCollegeMap() {
         let mapScene = new Scene(this._engine)
 
-        let manager = new CollegeManager(mapScene,this._canvas)
+        let manager = new CollegeMapManager(mapScene,this._canvas,this)
         await manager.load()
 
         this._scene.dispose()
         this._scene = mapScene
 
 
+        //this._scene.debugLayer.show()
+    }
+
+
+    async goToCollege(collegeName:string){
+        let collegeScene=new Scene(this._engine)
+        let manager=new CollegeManager(collegeScene)
+        await manager.load()
+
+        this._scene.dispose()
+        this._scene=collegeScene
         this._scene.debugLayer.show()
-
-       
     }
 
-    loadResource() {
 
-
-
+    async goToStudio(studio: Studio){
     }
+
 }

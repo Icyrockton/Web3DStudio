@@ -4,7 +4,7 @@ import {CollegeUiState} from "./collegeUiState";
 import './ui.css'
 import {Card, Divider, Typography,List} from "antd/es";
 import 'antd/dist/antd.css';
-import {Studio} from "../../core/college/college";
+import {Studio} from "../../core/collegeMap/college";
 
 type CollegeUiProps = {
     uiState: CollegeUiState

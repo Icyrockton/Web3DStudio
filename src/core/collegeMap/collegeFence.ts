@@ -1,5 +1,5 @@
 import { Animatable, Animation, BackEase, EasingFunction, IAnimationKey, Mesh, MeshBuilder, NodeMaterial, Scene, Vector3, VertexData } from "@babylonjs/core";
-import { CollegeManager } from "./collegeManager";
+import { CollegeMapManager } from "./collegeMapManager";
 
 
 enum FenceState {

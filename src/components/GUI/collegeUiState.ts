@@ -1,6 +1,6 @@
-import {CollegeDescription} from "../../core/college/college";
+import {CollegeDescription} from "../../core/collegeMap/college";
 import {action, autorun, makeObservable, observable} from "mobx";
-import {fetchCollgeDescription} from "../../core/college/collegeApi";
+import {fetchCollgeDescription} from "../../core/collegeMap/collegeMapApi";
 
 
 export class CollegeUiState {

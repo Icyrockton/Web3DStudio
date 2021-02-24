@@ -7,7 +7,7 @@ export class LoadingScene{
     constructor(scene:Scene){
         this.scene=scene
         this.startLoadingAnimation()
-       
+
 
 
     }
