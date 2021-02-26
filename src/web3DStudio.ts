@@ -71,7 +71,10 @@ export class Web3DStudio implements IState{
 
         this.loadingScene = new LoadingScene(this._scene)
 
-        await this.goToCollegeMap() //切换到地图场景
+        //await this.goToCollegeMap() //切换到地图场景
+
+        //暂时直接
+        await  this.goToCollege("北京三维学院")
 
     }
 
