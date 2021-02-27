@@ -28,7 +28,6 @@ export class CollegeManager {
         ground.position.y-=0.5
         ground.checkCollisions=true
         this._scene.createDefaultLight()
-        this._scene.createDefaultEnvironment()
         const camera = new ArcRotateCamera("camera", 0, 0, 10, Vector3.Zero(), this._scene);
         camera.attachControl()
 
@@ -43,6 +42,9 @@ export class CollegeManager {
 
     async loadPlayer() {
         let playerImport = await SceneLoader.ImportMeshAsync("", CollegeManager.PlayerModelUrl, undefined, this._scene)
+        playerImport.meshes.forEach(mesh=>{
+            mesh.isPickable = false //全部设置为不可拾取
+        })
         //创建碰撞盒子
         let collisionBox = MeshBuilder.CreateBox("playerCollisionBox", {
             width: CollegeManager.CollisionBoxWidth,
@@ -84,6 +86,7 @@ export class CollegeManager {
             dynamicTexture.hasAlpha = true;
             dynamicTexture.drawText(text, 5, 40, "bold 36px Arial", color , "transparent", true);
             let plane = Mesh.CreatePlane("TextPlane", size, this._scene, true);
+            plane.isPickable=false
             let mat=new StandardMaterial("TextPlaneMaterial", this._scene);
             mat.backFaceCulling = false;
             mat.specularColor = new Color3(0, 0, 0);
@@ -95,6 +98,7 @@ export class CollegeManager {
             Vector3.Zero(), new Vector3(size, 0, 0), new Vector3(size * 0.95, 0.05 * size, 0),
             new Vector3(size, 0, 0), new Vector3(size * 0.95, -0.05 * size, 0)
         ], this._scene);
+        axisX.isPickable=false
         axisX.color = new Color3(1, 0, 0);
         let xChar = makeTextPlane("X", "red", size / 10);
         xChar.position = new Vector3(0.9 * size, -0.05 * size, 0);
@@ -103,6 +107,7 @@ export class CollegeManager {
             new Vector3(0, size, 0), new Vector3( 0.05 * size, size * 0.95, 0)
         ], this._scene);
         axisY.color = new Color3(0, 1, 0);
+        axisY.isPickable=false
         var yChar = makeTextPlane("Y", "green", size / 10);
         yChar.position = new Vector3(0, 0.9 * size, -0.05 * size);
         var axisZ = Mesh.CreateLines("axisZ", [
@@ -110,6 +115,7 @@ export class CollegeManager {
             new Vector3(0, 0, size), new Vector3( 0, 0.05 * size, size * 0.95)
         ], this._scene);
         axisZ.color = new Color3(0, 0, 1);
+        axisZ.isPickable=false
         var zChar = makeTextPlane("Z", "blue", size / 10);
         zChar.position = new Vector3(0, 0.05 * size, 0.9 * size);
     };

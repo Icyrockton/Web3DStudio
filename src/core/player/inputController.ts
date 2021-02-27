@@ -12,6 +12,11 @@ export class InputController {
     //
     inputMap: { [key: string]: boolean } = {}
 
+    public dashing: boolean = false //跑步
+    public jump: boolean = false //跳跃
+    public idle: boolean = true //空闲
+    public walk: boolean = false //走路
+
     constructor(scene: Scene) {
         scene.actionManager = new ActionManager(scene)
 
@@ -37,7 +42,7 @@ export class InputController {
             }
         ))
 
-        scene.registerBeforeRender(()=>{
+        scene.registerBeforeRender(() => {
             this._updateFromKeyBoard() //更新按键
         })
     }
@@ -49,10 +54,9 @@ export class InputController {
         } else if (this.inputMap["ArrowDown"]) {
             this.vertical = Scalar.Lerp(this.vertical, -1, 0.2)
             this.verticalAxis = -1
-        }
-        else{
-            this.vertical=0
-            this.verticalAxis=0
+        } else {
+            this.vertical = 0
+            this.verticalAxis = 0
         }
 
         if (this.inputMap["ArrowLeft"]) {
@@ -61,11 +65,32 @@ export class InputController {
         } else if (this.inputMap["ArrowRight"]) {
             this.horizontal = Scalar.Lerp(this.horizontal, 1, 0.2);
             this.horizontalAxis = 1;
-        }
-        else {
+        } else {
             this.horizontal = 0;
             this.horizontalAxis = 0;
         }
+
+
+        this.dashing = this.inputMap["Shift"] //Shift键跑步
+        this.jump = this.inputMap[" "] //空格键跳跃
+
+
+        if (!this.inputMap["ArrowUp"] &&
+            !this.inputMap["ArrowDown"] &&
+            !this.inputMap["ArrowLeft"] &&
+            !this.inputMap["ArrowRight"] && !this.dashing && this.jump) {
+            this.idle = true
+        } else
+            this.idle = false
+
+        if ((this.inputMap["ArrowUp"] ||
+            this.inputMap["ArrowDown"] ||
+            this.inputMap["ArrowLeft"] ||
+            this.inputMap["ArrowRight"]) && !this.dashing && !this.jump) {
+            this.walk = true
+        } else
+            this.walk = false
+
     }
 
 
