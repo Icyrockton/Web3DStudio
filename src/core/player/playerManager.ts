@@ -1,6 +1,7 @@
 import {Player, PlayerAssets} from "./player";
 import {AbstractMesh, Matrix, MeshBuilder, Quaternion, Scene, SceneLoader, Vector3} from "@babylonjs/core";
 import {InputController} from "./inputController";
+import {RotateCamera} from "../studio/Studio";
 
 
 export class PlayerManager {
@@ -56,5 +57,23 @@ export class PlayerManager {
 
     public setPlayerPosition(position:Vector3){
         this._collisionBox.position.set(-position.x,position.y,position.z)
+    }
+
+    setUpRotateCamera(rotateCamera: RotateCamera[]) {
+        rotateCamera.forEach(value =>{
+            let mesh = this._scene.getMeshByName(value.mesh);
+            if (mesh){
+                mesh.isVisible=false
+
+                this._scene.registerBeforeRender(()=>{
+                    if(mesh!.intersectsMesh(this._collisionBox,false,false)){
+                        this.player.rotateCameraAroundYAxis(value.rotate)
+                    }
+
+
+
+                })
+            }
+        })
     }
 }

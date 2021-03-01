@@ -1,10 +1,10 @@
 import {
-    AbstractMesh,
+    AbstractMesh, ArcRotateCamera, DirectionalLight, HemisphericLight,
     Matrix,
     MeshBuilder,
-    Quaternion,
+    Quaternion, RenderTargetTexture,
     Scene,
-    SceneLoader,
+    SceneLoader, ShadowGenerator,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -24,6 +24,7 @@ import {PlayerManager} from "../player/playerManager";
     static PlayerCollisionBoxHeight = 1.8
     static PlayerCollisionBoxDepth = 0.5
     private _playerManager!: PlayerManager;
+    private _directionalLight!:DirectionalLight
 
     constructor(scene: Scene, studio: Studio) {
         this._scene = scene;
@@ -35,13 +36,20 @@ import {PlayerManager} from "../player/playerManager";
         this.setUpLight()
         this.setUpCamera()
         await this.loadModel() //加载地图模型
+        this.setUpShadow() //设置阴影
         await this.setUpPlayer() //加载玩家模型
-
+        this.setUpRotateCamera() //设置自动旋转相机
+        // let arcRotateCamera = new ArcRotateCamera("arc",0,0,10,Vector3.Zero(),this._scene);
+        // arcRotateCamera.attachControl()
+        // this._scene.activeCamera = arcRotateCamera
 
     }
 
     private setUpLight() {
-        this._scene.createDefaultLight()
+        const hemisphericLight = new HemisphericLight("hemisphericLight",Vector3.Up(),this._scene);
+        hemisphericLight.intensity=0.5
+        this._directionalLight=new DirectionalLight("directionalLight",new Vector3(1,-2,1),this._scene)
+        this._directionalLight.position=this._studio.directionalLightPosition
     }
 
     private setUpCamera() {
@@ -89,4 +97,25 @@ import {PlayerManager} from "../player/playerManager";
         }
     }
 
-}
+     private setUpShadow() {
+        const shadowGenerator = new ShadowGenerator(1024,this._directionalLight);
+         shadowGenerator.usePercentageCloserFiltering=true //使用PCF阴影
+         shadowGenerator.filteringQuality=ShadowGenerator.QUALITY_HIGH //高质量
+         shadowGenerator.getShadowMap()!.refreshRate=RenderTargetTexture.REFRESHRATE_RENDER_ONCE //只计算一次light map
+         this._scene.meshes.forEach(mesh=>{
+             if (mesh.name == this._studio.groundName){
+                 return
+             }
+             shadowGenerator.addShadowCaster(mesh,false) //添加到shadowGenerator
+         })
+
+         let ground = this._scene.getMeshByName(this._studio.groundName); //地面
+         if(ground){
+             ground.receiveShadows=true //地面接受阴影
+         }
+     }
+
+     private setUpRotateCamera() {
+        this._playerManager.setUpRotateCamera(this._studio.rotateCamera)
+     }
+ }

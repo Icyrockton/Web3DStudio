@@ -3,7 +3,7 @@ import {
     Axis,
     Mesh,
     Quaternion,
-    Ray,
+    Ray, Scalar,
     Scene,
     TransformNode,
     UniversalCamera,
@@ -254,5 +254,12 @@ export class Player extends TransformNode {
             this._currentAnimation.play(this._currentAnimation.loopAnimation)
             this._prevAnimation=this._currentAnimation
         }
+    }
+
+
+    public rotateCameraAroundYAxis(target:number){ //目标角度
+        this._scene.registerBeforeRender(()=>{
+            this._cameraRoot.rotation.y=Scalar.Lerp(this._cameraRoot.rotation.y,target,0.01)
+        })
     }
 }

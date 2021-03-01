@@ -88,7 +88,15 @@ export class Web3DStudio implements IState{
             playerSpawn:"playerSpawn",
             receptionistSpawn:"receptionistSpawn",
             collisionBox:["collision","ground"],
-            groundName:"ground"
+            groundName:"ground",
+            directionalLightPosition:new Vector3(-10,10,-10),
+            rotateCamera:[
+                { mesh:"cameraRotate_1" , rotate:0 },
+                { mesh:"cameraRotate_2" , rotate:-Math.PI/2 },
+                { mesh:"cameraRotate_3" , rotate:Math.PI/2 },
+                { mesh:"cameraRotate_4" , rotate:0 },
+                { mesh:"cameraRotate_5" , rotate:Math.PI },
+            ]
         }as Studio
 
         await this.goToStudio(fakeStudio)
