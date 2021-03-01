@@ -17,7 +17,7 @@ export interface College {
     rotation:Vector3
 }
 
-export interface Studio{
+export interface SimpleStudio {
     name:string //工作室名称
     logoUrl:string //工作室LOGO
     description:string //工作室描述
@@ -27,6 +27,6 @@ export interface CollegeDescription{ //学院描述信息
     name:string //学院名称 
     position:string  //学院位置
     description:string //学院描述
-    studios:Studio[] //学院含有的工作室
+    studios:SimpleStudio[] //学院含有的工作室
     imgUrl:string //学院的照片
 }

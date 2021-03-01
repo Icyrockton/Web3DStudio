@@ -1,4 +1,5 @@
-import {College, Studio} from "./collegeMap/college";
+import {College, SimpleStudio} from "./collegeMap/college";
+import {Studio} from "./studio/Studio";
 
 
 export interface IState {

@@ -1,4 +1,4 @@
-import {College, CollegeDescription, CollegePosition, Studio} from "./college";
+import {College, CollegeDescription, CollegePosition, SimpleStudio} from "./college";
 import {Vector3} from "@babylonjs/core";
 
 //API 数据
@@ -17,7 +17,7 @@ export const collegeMap: College[] = [
     }
 ]
 
-export const studio:Studio[]=[
+export const studio:SimpleStudio[]=[
     {
         description: "Java介于编译型语言和解释型语言之间。编译型语言如C、C++，代码是直接编译成机器码执行，但是不同的平台（x86、ARM等）CPU的指令集不同，因此，需要编译出每一种平台的对应机器码。解释型语言如Python、Ruby没有这个问题",
         logoUrl: "src/assets/img/studioLogo/JAVALogo.png",

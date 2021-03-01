@@ -5,9 +5,10 @@ import { __DEBUG__ } from './global'
 import "@babylonjs/inspector";
 import { CollegeMapManager } from "./core/collegeMap/collegeMapManager";
 import {IState} from "./core/IState";
-import {College, Studio} from "./core/collegeMap/college";
+import {College, SimpleStudio} from "./core/collegeMap/college";
 import {CollegeManager} from "./core/college/collegeManager";
-
+import {StudioManager} from "./core/studio/StudioManager";
+import {Studio} from "./core/studio/Studio";
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
 
@@ -74,8 +75,23 @@ export class Web3DStudio implements IState{
         //await this.goToCollegeMap() //切换到地图场景
 
         //暂时直接
-        await  this.goToCollege("北京三维学院")
+        //await  this.goToCollege("北京三维学院")
 
+        //暂时直接
+
+
+        let fakeStudio={
+            name:"java工作室",
+            modelURL:"src/assets/model/studio/java_studio.glb",
+            playerModelURL:"src/assets/model/player.glb",
+            description:"java工作室 一个学习高并发的工作室",
+            playerSpawn:"playerSpawn",
+            receptionistSpawn:"receptionistSpawn",
+            collisionBox:["collision","ground"],
+            groundName:"ground"
+        }as Studio
+
+        await this.goToStudio(fakeStudio)
     }
 
 
@@ -105,6 +121,14 @@ export class Web3DStudio implements IState{
 
 
     async goToStudio(studio: Studio){
+        console.log('进入工作室')
+        let studioScene=new Scene(this._engine)
+
+        let manager=new StudioManager(studioScene,studio)
+        await manager.load()
+        this._scene.dispose()
+        this._scene=studioScene
+        this._scene.debugLayer.show()
     }
 
 }

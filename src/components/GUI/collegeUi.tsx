@@ -4,7 +4,7 @@ import {CollegeUiState} from "./collegeUiState";
 import './ui.css'
 import {Card, Divider, Typography,List} from "antd/es";
 import 'antd/dist/antd.css';
-import {Studio} from "../../core/collegeMap/college";
+import {SimpleStudio} from "../../core/collegeMap/college";
 
 type CollegeUiProps = {
     uiState: CollegeUiState
@@ -37,7 +37,7 @@ const CollegeUi = observer<CollegeUiProps>(props => {
 
                     <List dataSource={college.studios}
                           renderItem={
-                              (item: Studio) => (
+                              (item: SimpleStudio) => (
                                   <List.Item>
                                       <img src={item.logoUrl} className={"logo"}/>
                                       {item.name}
