@@ -12,6 +12,8 @@ import {Studio} from "./Studio";
 import {Player, PlayerAssets} from "../player/player";
 import {InputController} from "../player/inputController";
 import {PlayerManager} from "../player/playerManager";
+import {ReceptionistManager} from "../receptionist/receptionistManager";
+import {AdvancedDynamicTexture} from "@babylonjs/gui";
 
 
  export class StudioManager {
@@ -19,12 +21,13 @@ import {PlayerManager} from "../player/playerManager";
     private _scene: Scene;
     private _playerSpawn ?: TransformNode //玩家的出生点
     private _receptionistSpawn  ?: TransformNode //接待员的出生点
-    static PlayerModelUrl = "src/assets/model/player.glb"
+    static PlayerModelUrl = "src/assets/model/receptionist.glb"
     static PlayerCollisionBoxWidth = 0.7
     static PlayerCollisionBoxHeight = 1.8
     static PlayerCollisionBoxDepth = 0.5
     private _playerManager!: PlayerManager;
     private _directionalLight!:DirectionalLight
+    private _receptionManager!: ReceptionistManager;
 
     constructor(scene: Scene, studio: Studio) {
         this._scene = scene;
@@ -38,6 +41,7 @@ import {PlayerManager} from "../player/playerManager";
         await this.loadModel() //加载地图模型
         this.setUpShadow() //设置阴影
         await this.setUpPlayer() //加载玩家模型
+        await this.setUpReceptionist() //加载虚拟人员模型
         this.setUpRotateCamera() //设置自动旋转相机
         // let arcRotateCamera = new ArcRotateCamera("arc",0,0,10,Vector3.Zero(),this._scene);
         // arcRotateCamera.attachControl()
@@ -63,7 +67,7 @@ import {PlayerManager} from "../player/playerManager";
         //找到玩家的出生点
         this._playerSpawn = transformNodes.find(node => node.name == this._studio.playerSpawn)
         //找到接待员的出生点
-        this._receptionistSpawn = transformNodes.find(node => node.name == this._studio.receptionistSpawn)
+        this._receptionistSpawn = transformNodes.find(node => node.name == this._studio.receptionistConfig.receptionistSpawn)
 
 
         console.log('设置碰撞盒子')
@@ -91,7 +95,7 @@ import {PlayerManager} from "../player/playerManager";
         await this._playerManager.loadPlayer()
         //设置玩家的位置
         if(this._playerSpawn){
-            this._playerManager.setPlayerPosition(this._playerSpawn.position)
+            this._playerManager.playerPosition=this._playerSpawn.position
         }else{
             console.log('没有设置玩家的起始位置')
         }
@@ -118,4 +122,32 @@ import {PlayerManager} from "../player/playerManager";
      private setUpRotateCamera() {
         this._playerManager.setUpRotateCamera(this._studio.rotateCamera)
      }
+
+     private async setUpReceptionist() {
+         this._receptionManager=new ReceptionistManager(this._scene,this._studio.receptionistConfig)
+         await this._receptionManager.loadReceptionist()
+         //设置虚拟人员的位置
+         if(this._receptionistSpawn) {
+             this._receptionManager.receptionistPosition=this._receptionistSpawn.position
+         }
+         //旋转虚拟人员
+         this._receptionManager.receptionist.setUpRotateAlongYAxis(this._studio.receptionistConfig.receptionistRotateYAxis)
+
+         //设置虚拟人员的谈话UI
+         AdvancedDynamicTexture.CreateFullscreenUI("")
+
+
+
+         //设置  如果玩家在length距离以内,触发问候事件
+         this._receptionManager.triggerOnceWhenDistanceLessThan(this._studio.receptionistConfig.distanceTrigger,this._playerManager,()=>{
+             this._receptionManager.playGreetingSound() //问候语
+         })
+
+         //虚拟人员始终面向玩家
+         this._scene.registerBeforeRender(()=>{
+             this._receptionManager.receptionist.lookAt(this._playerManager.playerPosition)
+         })
+
+     }
+
  }

@@ -79,7 +79,7 @@ export class Player extends TransformNode {
         // this._yTilt.rotation.set(-Math.PI/16,Math.PI/20,0)
         this._yTilt.rotation.set(-Math.PI / 4, 0, 0)
 
-        this.camera = new UniversalCamera("playerCamera", new Vector3(0, 0, 16), this._scene)
+        this.camera = new UniversalCamera("playerCamera", new Vector3(0, 0, 12), this._scene)
 
         this.camera.lockedTarget = this._cameraRoot.position
         this.camera.parent = this._yTilt
