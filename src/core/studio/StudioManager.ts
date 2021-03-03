@@ -14,6 +14,7 @@ import {InputController} from "../player/inputController";
 import {PlayerManager} from "../player/playerManager";
 import {ReceptionistManager} from "../receptionist/receptionistManager";
 import {AdvancedDynamicTexture} from "@babylonjs/gui";
+import useReceptionistUiState, {ReceptionistDescription} from "../../components/GUI/receptionist/receptionistUiState";
 
 
  export class StudioManager {
@@ -137,11 +138,28 @@ import {AdvancedDynamicTexture} from "@babylonjs/gui";
          AdvancedDynamicTexture.CreateFullscreenUI("")
 
 
+         const receptionistUiState = useReceptionistUiState; //UI状态
+
+         let description={
+             avatarURL:"src/assets/img/avatar/javaReceptionistAvatar.png",
+             info:"Hi~，欢迎来到北京三维学院Java工作室，我是你的培训师姐，我叫李丹",
+             position:"Java架构高级工程师",
+             title:"高级工程师"
+         }as ReceptionistDescription
+         receptionistUiState.setDescription(description)
 
          //设置  如果玩家在length距离以内,触发问候事件
          this._receptionManager.triggerOnceWhenDistanceLessThan(this._studio.receptionistConfig.distanceTrigger,this._playerManager,()=>{
-             this._receptionManager.playGreetingSound() //问候语
+             this._receptionManager.playGreeting() //问候语
+             receptionistUiState.setDescriptionShow(true)
          })
+
+         this._receptionManager.triggerOnceWhenDistanceMoreThan(this._studio.receptionistConfig.distanceTrigger,this._playerManager,()=>{
+             receptionistUiState.setDescriptionShow(false)
+         })
+
+
+
 
          //虚拟人员始终面向玩家
          this._scene.registerBeforeRender(()=>{

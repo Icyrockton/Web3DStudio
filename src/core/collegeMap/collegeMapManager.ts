@@ -29,7 +29,7 @@ import { __DEBUG__ } from "../../global";
 import { College, CollegePosition } from "./college";
 import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
 import { CollegeFence } from "./collegeFence";
-import useCollegeUiState from '../../components/GUI/collegeUiState'
+import useCollegeUiState from '../../components/GUI/college/collegeUiState'
 import  {collegeMap} from "./collegeMapApi";
 import {IState} from "../IState";
 

@@ -1,10 +1,9 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {CollegeUiState} from "./collegeUiState";
-import './ui.css'
 import {Card, Divider, Typography,List} from "antd/es";
 import 'antd/dist/antd.css';
-import {SimpleStudio} from "../../core/collegeMap/college";
+import {SimpleStudio} from "../../../core/collegeMap/college";
 
 type CollegeUiProps = {
     uiState: CollegeUiState

@@ -25,6 +25,11 @@ export class Receptionist  extends TransformNode{
 
     }
 
+    public playGreetingAnimation(){
+        if (!this._greetAnimation.isPlaying){
+            this._greetAnimation.play(false) //播放手势动画
+        }
+    }
 
 
     setUpRotateAlongYAxis(receptionistRotateYAxis: number) {

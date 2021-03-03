@@ -1,8 +1,10 @@
 import React, { createRef, useEffect, useRef } from 'react'
 import './App.css'
 import { Web3DStudio } from './web3DStudio';
-import CollegeUi from "./components/GUI/collegeUi";
-import useCollegeUiState from "./components/GUI/collegeUiState";
+import CollegeUi from "./components/GUI/college/collegeUi";
+import useCollegeUiState from "./components/GUI/college/collegeUiState";
+import ReceptionistUi from "./components/GUI/receptionist/receptionistUi";
+import useReceptionistUiState from "./components/GUI/receptionist/receptionistUiState";
 function App(){
 
     const canvas=useRef<HTMLCanvasElement>(null!)
@@ -11,10 +13,12 @@ function App(){
     })
 
     const collegeUiState = useCollegeUiState;
+    const receptionistUiState = useReceptionistUiState;
     return (
         <React.Fragment>
             <canvas id="renderCanvas" ref={canvas}></canvas>
             <CollegeUi uiState={collegeUiState}/>
+            <ReceptionistUi receptionistUiState={receptionistUiState} />
         </React.Fragment>
     )
 }
