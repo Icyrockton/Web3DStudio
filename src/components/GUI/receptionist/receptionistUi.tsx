@@ -35,7 +35,6 @@ const ReceptionistUi = observer<ReceptionUiProps>(props => {
                     bottom: 80%;
                     left: -10%;
                     width: 400px;
-
                   }
 
                   .bg {
@@ -50,6 +49,7 @@ const ReceptionistUi = observer<ReceptionUiProps>(props => {
                     animation-name: slideFromBottom;
                     animation-duration: 200ms;
                     animation-timing-function: ease-out;
+                    box-shadow: 20px 20px rgba(0,0,0,.15);
                   }
 
                   .unSkew {
