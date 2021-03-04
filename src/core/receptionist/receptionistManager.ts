@@ -1,9 +1,10 @@
-import {Scene, SceneLoader, Sound, Vector3} from "@babylonjs/core";
+import {KeyboardEventTypes, KeyboardInfo, Observer, Scene, SceneLoader, Sound, Vector3} from "@babylonjs/core";
 import {Receptionist, ReceptionistAsset} from "./receptionist";
 import {Player} from "../player/player";
 import {PlayerManager} from "../player/playerManager";
 import {AdvancedDynamicTexture, TextBlock, Rectangle} from "@babylonjs/gui";
 import {ReceptionistConfig} from "../studio/Studio";
+import useTaskUiState from "../../components/GUI/task/taskUiState";
 
 
 export class ReceptionistManager {
@@ -49,6 +50,10 @@ export class ReceptionistManager {
             const distance = playerManager.playerPosition.subtract(this.receptionistPosition).length()
             if (!this._triggeredLessThan && distance < length) {
                 this._triggeredLessThan = true
+                //注册键盘的监听器
+                if(!this.keyBoardObserver){
+                    this.keyBoardObserver = this._scene.onKeyboardObservable.add(this.keyboardEventHandler)
+                }
                 func()
             }
         })
@@ -56,6 +61,9 @@ export class ReceptionistManager {
             const distance = playerManager.playerPosition.subtract(this.receptionistPosition).length()
             if (distance > length) {
                 this._triggeredLessThan = false
+                if(this.keyBoardObserver){ //如果走出了这个范围的话 清除键盘的监听器
+                    this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
+                }
             }
         })
     }
@@ -74,6 +82,7 @@ export class ReceptionistManager {
             const distance = playerManager.playerPosition.subtract(this.receptionistPosition).length()
             if (distance < length) {
                 this._triggeredMoreThan = false
+
             }
         })
     }
@@ -126,5 +135,20 @@ export class ReceptionistManager {
         }
 
         this.receptionist.playGreetingAnimation()
+    }
+
+
+    private keyBoardObserver: Observer<KeyboardInfo> | null | undefined
+    private keyboardEventHandler = (kbInfo:KeyboardInfo) => {
+
+        const taskUiState = useTaskUiState; //UI界面状态
+        switch (kbInfo.type){
+            case KeyboardEventTypes.KEYDOWN:
+                switch (kbInfo.event.key) {
+                    case 'E':
+                    case "e":
+                        taskUiState.setShowing(true) //显示UI界面
+                }
+        }
     }
 }

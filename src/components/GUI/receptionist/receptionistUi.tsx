@@ -16,7 +16,7 @@ const ReceptionistUi = observer<ReceptionUiProps>(props => {
                 <div className={`content unSkew`}>
                     <img src={uiState.description.avatarURL} alt="" className={"image"}/>
                     <h2 className={"right"}>职务：{uiState.description.position} 岗位：{uiState.description.title}</h2>
-                    <h1>{uiState.description.info}</h1>
+                    <h1 style={{textAlign:"center"}}>{uiState.description.info}</h1>
                 </div>
             </div>
             <style jsx>{
