@@ -15,10 +15,17 @@ type TaskUiProps = {
     taskUiState: TaskUiState
 }
 
+
 export enum TaskState { //任务的状态
     NotAccept, //还未接收任务
     OnProgress,//正在进行中
     Finished //已完成的任务
+}
+
+export enum SubTaskState {
+    UnFinished, //未完成
+    Finished, //完成
+    OnProgress // 正在进行
 }
 
 export interface Task {
@@ -33,9 +40,9 @@ export interface Task {
 
 export interface SubTask {
     name: string //子任务的名称
-    status: TaskState //子任务的状态
+    status: SubTaskState //子任务的状态
     description: string // 子任务的描述
-    conditions: Condition[]  //完成条件
+    type: StudyType //子任务类型
     rate?: number //子任务评分 1-5
 }
 
@@ -43,12 +50,7 @@ export enum StudyType {
     video, //视频
     exercise, //课后练习
     read //读书
-}
 
-export interface Condition { //需要完成的子任务的完成条件
-    type: StudyType //类型
-    name: string //条件名称
-    finished: boolean //是否完成?
 }
 
 type TaskProps = {
@@ -58,7 +60,7 @@ type TaskProps = {
 
 function Task(props: TaskProps) {
     const task = props.task;
-    let finished = task.subTask.filter(subTask => subTask.status == TaskState.Finished).length
+    let finished = task.subTask.filter(subTask => subTask.status == SubTaskState.Finished).length
     let progress = (finished / task.subTask.length) * 100 //求得进度
 
     const [isModalVisible, setIsModalVisible] = useState(false);

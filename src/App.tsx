@@ -7,6 +7,9 @@ import ReceptionistUi from "./components/GUI/receptionist/receptionistUi";
 import useReceptionistUiState from "./components/GUI/receptionist/receptionistUiState";
 import useTaskUiState from "./components/GUI/task/taskUiState";
 import TaskUi from "./components/GUI/task/taskUi";
+import PlayerUi from "./components/GUI/player/playerUi";
+import usePlayerState from "./components/GUI/player/playerUiState";
+import usePlayerUiState from "./components/GUI/player/playerUiState";
 function App(){
 
     const canvas=useRef<HTMLCanvasElement>(null!)
@@ -17,13 +20,14 @@ function App(){
     const collegeUiState = useCollegeUiState;
     const receptionistUiState = useReceptionistUiState;
     const taskUiState = useTaskUiState;
-
+    const playerUiState = usePlayerUiState;
     return (
         <React.Fragment>
-            <canvas id="renderCanvas" ref={canvas}></canvas>
+            <canvas id="renderCanvas" ref={canvas}/>
             <CollegeUi uiState={collegeUiState}/>
             <ReceptionistUi receptionistUiState={receptionistUiState} />
             <TaskUi taskUiState={taskUiState}/>
+            <PlayerUi uiState={playerUiState}/>
         </React.Fragment>
     )
 }

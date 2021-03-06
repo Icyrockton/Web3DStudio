@@ -9,7 +9,7 @@ type ReceptionUiProps = {
 }
 
 const ReceptionistUi = observer<ReceptionUiProps>(props => {
-    const uiState = props.receptionistUiState;
+        const uiState = props.receptionistUiState;
     return (
         <>
             <div className={`bg ${uiState.isShowingDescription ? "" : "none"}`}>
