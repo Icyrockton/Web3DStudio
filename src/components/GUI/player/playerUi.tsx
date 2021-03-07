@@ -1,10 +1,14 @@
-import {PlayerState} from "./playerUiState";
+import usePlayerUiState, {PlayerState} from "./playerUiState";
 import {observer} from "mobx-react-lite";
 import React, {useEffect, useRef} from "react";
 import {Staircase} from "../../../core/staircase/staircase";
-import {Task} from "../task/taskUi";
+import {SubTaskState, Task} from "../task/taskUi";
 import {SubTaskUi, useSubTaskUiState} from "./subTaskUi";
 import classes from './playerUi.module.css'
+import {Card, Progress, Typography} from "antd";
+import Title from "antd/es/typography/Title";
+import Paragraph from "antd/es/typography/Paragraph";
+import {MiscUi} from "./miscUi";
 
 type PlayerUiProps = {
     uiState: PlayerState
@@ -16,28 +20,34 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
     const stairCaseCanvas = useRef<HTMLCanvasElement>(null!);
     useEffect(() => {
         if (uiState.isShowing) { //显示阶梯
-            if (uiState.currentTask) {
+            if (uiState.currentTask && uiState.currentTask.uuid > 0) {
                 console.log('生成楼梯')
                 let staircase = new Staircase(stairCaseCanvas.current, uiState.currentTask);
+                const state = usePlayerUiState;
+                state.setStairCase(staircase)
+
+                return ()=>{
+                    staircase.dispose()
+                }
             }
         }
 
     })
 
-    const content = (content: boolean, currentTask: Task) => {
+    const content = (isShowing: boolean, currentTask: Task) => {
         console.log('进入content')
-        if (content) {
+        if (isShowing) {
 
             return (
                 <>
                     <div className={classes.taskState}>
-                        <TaskStateUi task={uiState.currentTask}/>
+                        <TaskStateUi task={currentTask}/>
                     </div>
 
                     <canvas className={classes.stairCase} ref={stairCaseCanvas}/>
 
                     <div className={classes.misc}>
-
+                        <MiscUi/>
                     </div>
 
                 </>
@@ -73,17 +83,62 @@ type  TaskStateUiProps = {
     task: Task
 }
 
-const TaskStateUi = (props: TaskStateUiProps) => {
+
+const TaskStateUi = observer((props: TaskStateUiProps) => {
+    const task = props.task;
+    let finishedTask = task.subTask.filter(subTask => subTask.status == SubTaskState.Finished);
+    console.log(`${finishedTask.length} - ${task.subTask.length}`)
+    let progress= (finishedTask.length / task.subTask.length) * 100
+    let score= 0 //完成的任务的评分
+    finishedTask.forEach(subTask=>{score+=subTask.rate!})
+    let totalScore= task.subTask.length * 5 //总的分数
     if (props.task.uuid > 0) {
-        return (<>
-                <div className={classes.taskTab}>
-                    <h1>当前有任务</h1>
-                </div>
-            </>
+        return (
+            <Card className={classes.taskTab} title={"正在进行中"}>
+                <Typography>
+                    <Title level={5}>
+                        任务名称
+                    </Title>
+                    <Paragraph>
+                        {task.name}
+                    </Paragraph>
+                    <Title level={5}>
+                        任务介绍
+                    </Title>
+                    <Paragraph>
+                        {task.description}
+                    </Paragraph>
+                    <Title level={5}>
+                        任务目的
+                    </Title>
+                    <Paragraph>
+                        {task.goal}
+                    </Paragraph>
+                    <Title level={5}>
+                        任务进度
+                    </Title>
+                    <Paragraph>
+                        <Progress
+                            strokeColor={{"0%": "#f7797d",
+                                "50%": "#FBD786",
+                                "100%": "#C6FFDD"}}
+                            percent={progress}
+                            status={"active"} format={(percent => `${percent?.toFixed(0)}%`)}
+                        />
+                    </Paragraph>
+                    <Title level={5}>
+                        任务总评分
+                    </Title>
+                    <Paragraph>
+                        当前获得分数: {score} 分 / 总分: {totalScore} 分
+                    </Paragraph>
+                </Typography>
+            </Card>
         )
     } else {
         return (
-            <h1>当前无任务</h1>
+            <Card className={classes.taskTab} title={"当前未接到任务"}>
+            </Card>
         )
     }
-}
+})

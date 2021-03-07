@@ -37,6 +37,7 @@ export interface Task {
     rate?: number //总评分 1~5
 }
 
+
 export interface SubTask {
     name: string //子任务的名称
     status: SubTaskState //子任务的状态

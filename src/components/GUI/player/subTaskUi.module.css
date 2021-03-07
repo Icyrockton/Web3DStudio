@@ -4,6 +4,7 @@
     right: 0;
     width: 20%;
     height: 27%;
+    margin-right: 1%;
     animation-name: slideFromRight;
     animation-duration: 0.5s;
     animation-timing-function: ease-out;

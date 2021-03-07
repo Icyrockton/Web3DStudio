@@ -1,7 +1,7 @@
 import {
     ActionManager,
     ArcRotateCamera, Camera,
-    Color3,
+    Color3, Color4,
     Engine, ExecuteCodeAction,
     HighlightLayer,
     Material,
@@ -44,21 +44,15 @@ export class Staircase {
         this._arrowNode = new TransformNode("arrow", this._scene)
         this._highLightLayer = new HighlightLayer("highLightLayer", this._scene)
         this._scene.autoClear=false
+        //this._scene.clearColor=new Color4(0,0,0,0)
         this._clickSound=new Sound('clickSound',"src/assets/sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
-
+        canvas.addEventListener('resize',()=>{
+            this._engine.resize()
+        })
         this.setUpCamera()
         this.setUpMaterial()
         this.setUpStaircase()
         this.setUpFirework()
-        setTimeout(() => {
-            this.moveToNext()
-        }, 6000)
-        setTimeout(() => {
-            this.moveToNext()
-        }, 9000)
-        setTimeout(() => {
-            this.moveToNext()
-        }, 12000)
 
         this._engine.runRenderLoop(() => {
             this._scene.render()
@@ -88,6 +82,7 @@ export class Staircase {
     }
 
     setUpMaterial() {
+        //生成楼梯的材质
         const finishMat = new GradientMaterial("finished", this._scene);
         finishMat.topColor = Color3.FromHexString("#AAFFA9")
         finishMat.bottomColor = Color3.FromHexString("#11FFBD")
@@ -124,7 +119,7 @@ export class Staircase {
         camera.orthoBottom = camera.orthoLeft * aspect;
         camera.orthoTop = camera.orthoRight * aspect;
 
-        //camera.attachControl()
+        camera.attachControl()
 
         this._scene.createDefaultLight()
 
@@ -208,6 +203,7 @@ export class Staircase {
     }
 
     moveToNext() {
+        //将剪头移动到下一层的楼梯
         this._targetPos.x += 1
         this._targetPos.y += 1
         this.updateMat() //更新材质
@@ -244,6 +240,8 @@ export class Staircase {
     }
 
     private updateMat() {
+        //更新楼梯的材质
+        //onprogress finished unfinished
         let previousStairCase = this._stairCase[this._currentIndex];
         previousStairCase.material=this._mat["finished"]
         this._currentIndex ++
@@ -251,6 +249,9 @@ export class Staircase {
             let currentStairCase=this._stairCase[this._currentIndex]
             currentStairCase.material=this._mat["onprogress"]
         }
+    }
+    public dispose(){
+        this._engine.dispose() //该class将被多次new 需要手动释放内存
     }
 }
 
