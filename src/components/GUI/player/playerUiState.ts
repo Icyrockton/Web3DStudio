@@ -10,7 +10,7 @@ export class PlayerState {
     isShowing:boolean=true
     currentTask: Task = {
         name:"空任务",
-        uuid:0,
+        uuid:-1,
         status: TaskState.NotAccept ,
         description: "",
         goal: "",

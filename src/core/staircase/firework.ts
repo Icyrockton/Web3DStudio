@@ -3,7 +3,7 @@ import {
     Mesh,
     MeshBuilder,
     ParticleSystem,
-    Scene,
+    Scene, Sound,
     Texture,
     TransformNode,
     Vector3,
@@ -20,9 +20,13 @@ export class Firework {
     private _started: boolean = false //是否启动烟花
     private _exploded: boolean = false //是否爆炸
     private readonly flareImageURL = "src/assets/img/flare.png";
+    private _rocketSound:Sound
+    private _explosionSound:Sound
 
     constructor(scene: Scene, startNode: TransformNode, height: number) {
         this._scene = scene;
+        this._rocketSound=new Sound("rocketSound","src/assets/sound/firework/rocket.wav",this._scene,()=>{});
+        this._explosionSound=new Sound("rocketSound","src/assets/sound/firework/explosion.wav",this._scene,()=>{});
         //火箭向上发射
         const rocket = MeshBuilder.CreateSphere("rocket", {segments: 4, diameter: 1});
         this._emitter = rocket
@@ -66,6 +70,7 @@ export class Firework {
 
             if (this._emitter.position.y >= this._height) {
                 if (!this._exploded) {
+                    this._explosionSound.play() //播放爆炸声音
                     this._exploded = true
                     this.explosion(this._emitter.position)
                     this._emitter.dispose() //销毁Mesh
@@ -77,6 +82,7 @@ export class Firework {
         } else {
             this._started = true
             this._particleSys.start()
+            this._rocketSound.play() //播放上升声音
         }
     }
 

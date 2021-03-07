@@ -6,7 +6,7 @@ import {
     HighlightLayer,
     Material,
     Mesh, MeshBuilder,
-    Scene, SceneLoader, SceneLoaderSuccessCallback,
+    Scene, SceneLoader, SceneLoaderSuccessCallback, Sound,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -33,6 +33,8 @@ export class Staircase {
     private _stairCase:Mesh[] = []
     private _currentIndex:number =0 //当前正在进行的楼梯的索引
     private _currentTask: Task;
+    private _clickSound:Sound
+
 
     constructor(canvas: HTMLCanvasElement, currentTask: Task) {
         this._currentTask = currentTask;
@@ -42,7 +44,7 @@ export class Staircase {
         this._arrowNode = new TransformNode("arrow", this._scene)
         this._highLightLayer = new HighlightLayer("highLightLayer", this._scene)
         this._scene.autoClear=false
-
+        this._clickSound=new Sound('clickSound',"src/assets/sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
 
         this.setUpCamera()
         this.setUpMaterial()
@@ -218,6 +220,7 @@ export class Staircase {
         staircase.actionManager = new ActionManager(this._scene)
         staircase.actionManager.registerAction(new ExecuteCodeAction(
             ActionManager.OnPointerOverTrigger, (evt) => {
+                this._clickSound.play()
                 this._highLightLayer.addMesh(staircase, Color3.White()) //添加辉光
                 subTaskUiState.setSubTaskWithShowing(true,subTask)
             }

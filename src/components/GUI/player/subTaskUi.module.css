@@ -1,0 +1,23 @@
+.subTaskUi {
+    position: absolute;
+    top: 72%;
+    right: 0;
+    width: 20%;
+    height: 27%;
+    animation-name: slideFromRight;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+}
+
+.none {
+    display: none;
+}
+
+@keyframes slideFromRight {
+    0% {
+        right: -30%;
+    }
+    100% {
+        right: 0;
+    }
+}

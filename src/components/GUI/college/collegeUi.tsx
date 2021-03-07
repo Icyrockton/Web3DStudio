@@ -1,22 +1,21 @@
 import React from "react";
 import {observer} from "mobx-react-lite";
 import {CollegeUiState} from "./collegeUiState";
-import {Card, Divider, Typography,List} from "antd/es";
+import {Card, Divider, Typography, List} from "antd/es";
 import 'antd/dist/antd.css';
 import {SimpleStudio} from "../../../core/collegeMap/college";
-
+import classes from  './collegeUi.module.css'
 type CollegeUiProps = {
     uiState: CollegeUiState
 }
 
-
-const CollegeUi = observer<CollegeUiProps>(props => {
+const CollegeUiComponent = (props: CollegeUiProps) => {
     const college = props.uiState.college;
 
     let content
     if (college) {
         content = (<>
-                <img src={college.imgUrl} className={"cardImg"}/>
+                <img src={college.imgUrl} className={classes.cardImg}/>
                 <Typography>
                     <Typography.Title level={3}>
                         {college.name}
@@ -38,22 +37,12 @@ const CollegeUi = observer<CollegeUiProps>(props => {
                           renderItem={
                               (item: SimpleStudio) => (
                                   <List.Item>
-                                      <img src={item.logoUrl} className={"logo"}/>
+                                      <img src={item.logoUrl} className={classes.logo}/>
                                       {item.name}
                                   </List.Item>
                               )
                           }/>
                 </Typography>
-                <style jsx>{
-                    `
-                      .logo {
-                        width: 40px;
-                        height: 40px;
-                        margin-right: 10px;
-                      }
-                    `
-                }
-                </style>
             </>
         )
     } else {
@@ -66,46 +55,12 @@ const CollegeUi = observer<CollegeUiProps>(props => {
 
 
     return (
-        <>
-            <Card className={`collegeUI ${props.uiState.isShowing ? "" : "none"}`}>
-                {content}
-            </Card>
-            <style jsx>
-                {
-                    `
-                      .none {
-                        display: none;
-                      }
+        <Card className={`${classes.collegeUI} ${props.uiState.isShowing ? "" : classes.none}`}>
+            {content}
+        </Card>
 
-                      .collegeUI {
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                        animation-name: slideFromRight;
-                        animation-duration: 0.5s;
-                        animation-timing-function: ease-out;
-                        width: 300px;
-                        height: 100%;
-                      }
-
-                      @keyframes slideFromRight {
-                        0% {
-                          right: -300px;
-                        }
-                        100% {
-                          right: 0px;
-                        }
-                      }
-
-
-                      .cardImg {
-                        width: 100%;
-                      }
-                    `
-                }
-            </style>
-        </>
     )
-})
+}
+const CollegeUi = observer<CollegeUiProps>(CollegeUiComponent)
 
 export default CollegeUi

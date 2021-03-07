@@ -1,0 +1,48 @@
+.right {
+    text-align: right;
+    margin-right: 5%;
+}
+
+.content {
+    position: relative;
+}
+
+.image {
+    position: absolute;
+    bottom: 80%;
+    left: -10%;
+    width: 400px;
+}
+
+.bg {
+    width: 45%;
+    height: 10%;
+    transform: skew(30deg) translate(-50%, -50%);
+    background: white;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    color: white;
+    animation-name: slideFromBottom;
+    animation-duration: 200ms;
+    animation-timing-function: ease-out;
+    box-shadow: 20px 20px rgba(0,0,0,.15);
+}
+
+.unSkew {
+    transform: skew(-30deg);
+}
+
+.none {
+    display: none;
+}
+
+@keyframes slideFromBottom {
+
+    0% {
+        bottom: -20%;
+    }
+    100% {
+        bottom: 0%;
+    }
+}

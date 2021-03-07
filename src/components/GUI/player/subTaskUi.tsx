@@ -7,7 +7,7 @@ import 'antd/dist/antd.css';
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
 import Icon from "@ant-design/icons";
-
+import classes from './subTaskUi.module.css'
 
 export class SubTaskUiState {
 
@@ -33,7 +33,9 @@ type SubTaskUiProps = {
     uiState: SubTaskUiState
 }
 
-export const SubTaskUi = observer<SubTaskUiProps>(props => {
+
+
+const SubTaskUiComponent=(props:SubTaskUiProps) => {
     const uiState = props.uiState;
     const subTask = uiState.subTask;
     const subTaskType = (type: StudyType | undefined) => {
@@ -78,7 +80,8 @@ export const SubTaskUi = observer<SubTaskUiProps>(props => {
     return (
 
         <>
-            <Card className={`subTaskUi ${uiState.showing ? "" : "none"}`} title={subTask?.name}>
+            <Card className={`${classes.subTaskUi} ${uiState.showing ? "" : classes.none}`} title={subTask?.name}>
+                <div className={classes.subTaskUi}> </div>
                 <Typography>
                     <Title level={5}>
                         任务类型
@@ -98,37 +101,11 @@ export const SubTaskUi = observer<SubTaskUiProps>(props => {
                     {subTaskState(subTask?.status)}
                 </Typography>
             </Card>
-            <style jsx>
-                {`
-                  .subTaskUi {
-                    position: absolute;
-                    top: 72%;
-                    right: 0;
-                    width: 20%;
-                    height: 27%;
-                    animation-name: slideFromRight;
-                    animation-duration: 0.5s;
-                    animation-timing-function: ease-out;
-                  }
-
-                  .none {
-                    display: none;
-                  }
-
-                  @keyframes slideFromRight {
-                    0% {
-                      right: -30%;
-                    }
-                    100% {
-                      right: 0;
-                    }
-                  }
-                `}
-            </style>
         </>
     )
 }
-)
+
+export const SubTaskUi = observer<SubTaskUiProps>(SubTaskUiComponent)
 
 
 const ExerciseSVG = () => (

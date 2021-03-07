@@ -1,0 +1,36 @@
+.card {
+    margin-bottom: 2%;
+}
+.none {
+    display: none;
+}
+
+.closeButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.tab {
+    height: 100%;
+}
+
+.taskTab {
+    width: 50%;
+    height: 50%;
+    background: white;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    border: 5px solid deepskyblue;
+    transform: translate(-50%, -50%);
+}
+
+.main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+}

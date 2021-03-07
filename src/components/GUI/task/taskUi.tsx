@@ -6,11 +6,10 @@ import Layout, {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import {Button, Card, Col, Divider, Menu, Progress, Rate, Row, Timeline, Tooltip, Typography} from "antd";
 import {CloseOutlined, CodepenCircleOutlined, DatabaseFilled, HddOutlined} from "@ant-design/icons";
-import {MenuInfo} from "rc-menu/lib/interface";
 import Modal from "antd/es/modal/Modal";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
-
+import  classes from './taskUi.module.css'
 type TaskUiProps = {
     taskUiState: TaskUiState
 }
@@ -192,7 +191,7 @@ function Task(props: TaskProps) {
     return (
 
         <>
-            <Card className={"card"} title={<h3 style={{textAlign: "left"}}>{task.name}</h3>}>
+            <Card className={classes.card} title={<h3 style={{textAlign: "left"}}>{task.name}</h3>}>
                 <Row align={"middle"}>
                     <Col span={2}>
                         <DatabaseFilled style={{fontSize: "40px"}}/>
@@ -213,21 +212,13 @@ function Task(props: TaskProps) {
             {
                 modal()
             }
-            <style jsx>{
-                `
-                  .card {
-                    margin-bottom: 2%;
-                  }
-                `
-            }
 
-            </style>
         </>
     )
 }
 
 
-const TaskUi = observer<TaskUiProps>(props => {
+const TaskUiComponent=(props:TaskUiProps) => {
 
     const uiState = props.taskUiState;
     const list = uiState.taskList;
@@ -248,9 +239,9 @@ const TaskUi = observer<TaskUiProps>(props => {
     return (
         <>
 
-            <div className={`main ${uiState.isShowing ? "" : "none"}`}>
-                <div className={"taskTab"}>
-                    <Layout className={"tab"}>
+            <div className={`${classes.main} ${uiState.isShowing ? "" : classes.none}`}>
+                <div className={classes.taskTab}>
+                    <Layout className={classes.tab}>
                         {/*侧边栏*/}
                         <Sider theme={"light"} collapsed={false}>
                             <div className={"logo"}>
@@ -275,7 +266,7 @@ const TaskUi = observer<TaskUiProps>(props => {
                                         任务中心
                                     </Title>
                                 </Typography>
-                                <Button className={"closeButton"} icon={<CloseOutlined/>} type={"primary"}
+                                <Button className={classes.closeButton} icon={<CloseOutlined/>} type={"primary"}
                                         onClick={closeTask}/>
                             </Header>
                             <Content style={{
@@ -291,47 +282,10 @@ const TaskUi = observer<TaskUiProps>(props => {
                     </Layout>
                 </div>
             </div>
-            <style jsx>
-                {
-                    `
-                      .none {
-                        display: none;
-                      }
 
-                      .closeButton {
-                        position: absolute;
-                        top: 8px;
-                        right: 8px;
-                      }
-
-                      .tab {
-                        height: 100%;
-                      }
-
-                      .taskTab {
-                        width: 50%;
-                        height: 50%;
-                        background: white;
-                        left: 50%;
-                        top: 50%;
-                        position: absolute;
-                        border: 5px solid deepskyblue;
-                        transform: translate(-50%, -50%);
-                      }
-
-                      .main {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background: rgba(0, 0, 0, .5);
-                      }
-                    `
-                }
-            </style>
         </>
     )
-})
+}
+const TaskUi = observer<TaskUiProps>(TaskUiComponent)
 
 export default TaskUi
