@@ -2,13 +2,14 @@ import {makeAutoObservable} from "mobx";
 import {StudyType, SubTask, SubTaskState, Task, TaskState} from "../task/taskUi";
 import {fakeTask} from "../task/taskUiState";
 import {Staircase} from "../../../core/staircase/staircase";
+import {ReceptionistManager} from "../../../core/receptionist/receptionistManager";
 
 export interface Player {
 
 }
 
 export class PlayerState {
-
+    receptionistManager: ReceptionistManager | null = null
     staircase: Staircase | null = null
     isShowing: boolean = true
     currentTask: Task = {
@@ -22,7 +23,14 @@ export class PlayerState {
     currentSubTaskIndex: number = -1
 
     constructor() {
-        makeAutoObservable(this, {staircase: false, setStairCase: false, currentSubTaskIndex: false})
+        makeAutoObservable(this,
+            {
+                staircase: false,
+                setStairCase: false,
+                currentSubTaskIndex: false,
+                receptionistManager: false,
+                setReceptionistManager :false
+            })
     }
 
     public setCurrentTask(task: Task) { //设置当前任务
@@ -43,6 +51,10 @@ export class PlayerState {
         this.staircase = staircase
     }
 
+    public setReceptionistManager(receptionistManager: ReceptionistManager) {
+        this.receptionistManager = receptionistManager
+    }
+
 
     //完成任务
     public finishSubTask(subTaskIndex: number, newState: SubTaskState = SubTaskState.Finished) {
@@ -50,7 +62,7 @@ export class PlayerState {
             return
         this.currentTask.subTask[subTaskIndex].status = newState
 
-        this.currentTask.subTask[subTaskIndex].rate =5
+        this.currentTask.subTask[subTaskIndex].rate = 5
         //后台获取评价分数...
         if (this.staircase) {
             console.log('调用楼梯的moveNext')
@@ -73,27 +85,26 @@ export class PlayerState {
 const usePlayerUiState = new PlayerState()
 
 
-
-setTimeout(() => {
-    console.log('更新子任务')
-    usePlayerUiState.setCurrentTask(fakeTask[0])
-}, 3000+4000)
-
-setTimeout(() => {
-    console.log('更新子任务')
-    usePlayerUiState.finishSubTask(3)
-}, 5000+4000)
-
-setTimeout(() => {
-    console.log('更新子任务')
-    usePlayerUiState.finishSubTask(4)
-}, 6000+4000)
-setTimeout(() => {
-    console.log('更新子任务')
-    usePlayerUiState.finishSubTask(5)
-}, 7000+4000)
-setTimeout(() => {
-    console.log('更新任务')
-    // usePlayerUiState.setCurrentTask(fakeTask[1])
-}, 8000+4000)
+// setTimeout(() => {
+//     console.log('更新子任务')
+//     usePlayerUiState.setCurrentTask(fakeTask[1])
+// }, 3000+4000)
+//
+// setTimeout(() => {
+//     console.log('更新子任务')
+//     usePlayerUiState.finishSubTask(3)
+// }, 5000+4000)
+//
+// setTimeout(() => {
+//     console.log('更新子任务')
+//     usePlayerUiState.finishSubTask(4)
+// }, 6000+4000)
+// setTimeout(() => {
+//     console.log('更新子任务')
+//     usePlayerUiState.finishSubTask(5)
+// }, 7000+4000)
+// setTimeout(() => {
+//     console.log('更新任务')
+//     // usePlayerUiState.setCurrentTask(fakeTask[1])
+// }, 8000+4000)
 export default usePlayerUiState

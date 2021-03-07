@@ -9,10 +9,10 @@ import {CloseOutlined, CodepenCircleOutlined, DatabaseFilled, HddOutlined} from 
 import Modal from "antd/es/modal/Modal";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
-import  classes from './taskUi.module.css'
-type TaskUiProps = {
-    taskUiState: TaskUiState
-}
+import classes from './taskUi.module.css'
+import {notification} from "antd/es";
+
+
 
 
 export enum TaskState { //任务的状态
@@ -74,6 +74,20 @@ function Task(props: TaskProps) {
     }
     const handleCancel = () => {
         setIsModalVisible(false)
+    }
+    const handleAcceptTask = () => {
+        const taskUiState = useTaskUiState;
+        taskUiState.acceptTask(task.uuid)
+        notification.success(
+            {
+                message: `接收到新的任务`,
+                description: `任务名称:${task.name} `
+                ,
+                placement: "topLeft"
+            }
+        )
+        setIsModalVisible(false)
+
     }
     //对话框显示任务详细信息
     const modal = () => {
@@ -140,7 +154,8 @@ function Task(props: TaskProps) {
             //未完成的任务的详细信息
             return (
                 <>
-                    <Modal centered visible={isModalVisible} title={task.name} onOk={handleOk} onCancel={handleCancel}
+                    <Modal centered visible={isModalVisible} title={task.name} onOk={handleAcceptTask}
+                           onCancel={handleCancel}
                            cancelText={"取消"} okText={"接受任务"}>
                         <Typography>
                             <Title level={3}>
@@ -218,18 +233,22 @@ function Task(props: TaskProps) {
     )
 }
 
-
-const TaskUiComponent=(props:TaskUiProps) => {
+type TaskUiProps = {
+    taskUiState: TaskUiState
+}
+const TaskUi = observer<TaskUiProps>((props: TaskUiProps) => {
 
     const uiState = props.taskUiState;
-    const list = uiState.taskList;
+
     const [tabKey, setTabKey] = useState("unfinished");
     //创建task列表
     const taskList = (key: string) => {
-        if (key == "unfinished") {  //未完成的任务
-            return list.map(task => <Task key={task.uuid} task={task} finished={false}/>)
-        } else { //已完成的任务
-            return list.map(task => <Task key={task.uuid} task={task} finished={true}/>)
+        if (key == "unfinished") {
+            //未完成的任务
+             return uiState.unAcceptTask.map(task => <Task key={task.uuid} task={task} finished={false}/>)
+        } else {
+            //已完成的任务
+            return uiState.finishedTask.map(task => <Task key={task.uuid} task={task} finished={true}/>)
         }
     }
 
@@ -286,7 +305,6 @@ const TaskUiComponent=(props:TaskUiProps) => {
 
         </>
     )
-}
-const TaskUi = observer<TaskUiProps>(TaskUiComponent)
+})
 
 export default TaskUi

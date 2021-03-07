@@ -12,7 +12,12 @@ export class ReceptionistManager {
     private _receptionistModelURL: string;
     public receptionist!: Receptionist
     private _receptionistConfig: ReceptionistConfig;
-    private _greetingSound?: Sound
+    private _firstGreetingSound?: Sound
+    private _introductionSound?: Sound
+    private _videoHintSound?: Sound
+    private _exerciseHintSound?: Sound
+    private _readingHintSound?: Sound
+    private _firstGreetingSoundHasPlayed: boolean = false
 
     constructor(scene: Scene, receptionistConfig: ReceptionistConfig) {
         this._scene = scene;
@@ -51,7 +56,7 @@ export class ReceptionistManager {
             if (!this._triggeredLessThan && distance < length) {
                 this._triggeredLessThan = true
                 //注册键盘的监听器
-                if(!this.keyBoardObserver){
+                if (!this.keyBoardObserver) {
                     this.keyBoardObserver = this._scene.onKeyboardObservable.add(this.keyboardEventHandler)
                 }
                 func()
@@ -61,7 +66,7 @@ export class ReceptionistManager {
             const distance = playerManager.playerPosition.subtract(this.receptionistPosition).length()
             if (distance > length) {
                 this._triggeredLessThan = false
-                if(this.keyBoardObserver){ //如果走出了这个范围的话 清除键盘的监听器
+                if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
                     this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
                 }
             }
@@ -121,17 +126,48 @@ export class ReceptionistManager {
 
     private setUpSound() {
         console.log(this._receptionistConfig.greetingSoundURL)
-        this._greetingSound = new Sound("greetingSound", this._receptionistConfig.greetingSoundURL, this._scene, null, {
+        this._firstGreetingSound = new Sound("greetingSound", this._receptionistConfig.greetingSoundURL, this._scene, null, {
             autoplay: false,
             loop: false
         })
-
+        this._introductionSound = new Sound("introductionSound", this._receptionistConfig.introductionSoundURL, this._scene, null, {
+            autoplay: false,
+            loop: false
+        })
+        this._videoHintSound = new Sound("videoHintSound", "src/assets/sound/taskHint/videoHint.mp3", this._scene, null, {
+            autoplay: false,
+            loop: false
+        })
+        this._exerciseHintSound =new Sound("exerciseHintSound", "src/assets/sound/taskHint/exerciseHint.mp3", this._scene, null, {
+            autoplay: false,
+            loop: false
+        })
+        this._readingHintSound = new Sound("readingHintSound","src/assets/sound/taskHint/readingHint.mp3", this._scene, null, {
+            autoplay: false,
+            loop: false
+        })
+    }
+    public playVideoHintSound(){
+        this._videoHintSound?.play()
+    }
+    public playReadingHintSound(){
+        this._readingHintSound?.play()
+    }
+    public playExerciseHintSound(){
+        this._exerciseHintSound?.play()
     }
 
     public playGreeting() {
         //播放声音
-        if (this._greetingSound && !this._greetingSound.isPlaying) {
-            this._greetingSound.play()
+        if (this._firstGreetingSound && !this._firstGreetingSound.isPlaying) {
+            if (!this._firstGreetingSoundHasPlayed) {
+                this._firstGreetingSoundHasPlayed = true
+                this._firstGreetingSound.play()
+            } else {
+                if (!this._introductionSound?.isPlaying) {
+                    this._introductionSound?.play()
+                }
+            }
         }
 
         this.receptionist.playGreetingAnimation()
@@ -139,14 +175,15 @@ export class ReceptionistManager {
 
 
     private keyBoardObserver: Observer<KeyboardInfo> | null | undefined
-    private keyboardEventHandler = (kbInfo:KeyboardInfo) => {
+    private keyboardEventHandler = (kbInfo: KeyboardInfo) => {
 
         const taskUiState = useTaskUiState; //UI界面状态
-        switch (kbInfo.type){
+        switch (kbInfo.type) {
             case KeyboardEventTypes.KEYDOWN:
                 switch (kbInfo.event.key) {
                     case 'E':
                     case "e":
+                        console.log('打开任务UI')
                         taskUiState.setShowing(true) //显示UI界面
                 }
         }

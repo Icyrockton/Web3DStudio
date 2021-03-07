@@ -94,7 +94,8 @@ export class Web3DStudio implements IState {
                 receptionistSpawn: "receptionistSpawn",
                 receptionistRotateYAxis: Math.PI / 2,
                 distanceTrigger:3,
-                greetingSoundURL:"src/assets/sound/javaGreeting.mp3"
+                greetingSoundURL:"src/assets/sound/javaGreeting.mp3",
+                introductionSoundURL:"src/assets/sound/javaIntroduction.mp3"
             } as ReceptionistConfig,
             rotateCamera: [
                 {mesh: "cameraRotate_1", rotate: 0},

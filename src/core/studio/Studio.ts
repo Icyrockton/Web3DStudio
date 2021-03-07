@@ -26,4 +26,5 @@ export interface ReceptionistConfig {
     receptionistRotateYAxis:number //绕y轴旋转的角度
     distanceTrigger:number //当玩家与虚拟人员在distanceTrigger这个距离以内时，触发对应的事件
     greetingSoundURL:string //玩家进入工作室后的问候语..
+    introductionSoundURL:string //接任务的问候语
 }

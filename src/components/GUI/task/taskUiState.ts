@@ -1,12 +1,13 @@
 import {StudyType, SubTaskState, Task, TaskState} from "./taskUi";
 import {makeAutoObservable} from "mobx";
+import usePlayerUiState from "../player/playerUiState";
 
 
 export const fakeTask: Task[] = [{
     uuid: 1,
     name: '任务1',
     description: '从零入门Spring框架，学习IOC(DI)和AOP思想',
-    status: TaskState.OnProgress,
+    status: TaskState.Finished,
     goal: "学习了解Spring框架,初识后端开发",
     subTask: [
         {
@@ -66,14 +67,13 @@ export const fakeTask: Task[] = [{
                 name: "synchronized",
                 description: "了解synchronized底层所需要的基础知识synchronized的底层实现",
                 type: StudyType.video,
-                status: SubTaskState.Finished,
-                rate: 5,
+                status: SubTaskState.UnFinished,
             },
             {
                 name: "学习Java中的各种'锁'",
                 description: "无锁、偏向锁、轻量级锁、重量级锁",
                 type: StudyType.video,
-                status: SubTaskState.OnProgress,
+                status: SubTaskState.UnFinished,
             },
             {
                 name: "指令重排序",
@@ -89,13 +89,60 @@ export const fakeTask: Task[] = [{
 export class TaskUiState {
     isShowing: boolean = false
     taskList: Task[] = fakeTask
-
+    num =10
     constructor() {
         makeAutoObservable(this)
     }
 
     setShowing(showing: boolean) {
         this.isShowing = showing
+    }
+
+    //接受任务 将任务的状态改为 --> OnProgress
+    acceptTask(acceptTaskUUid: number) {
+
+        this.taskList.forEach(task => {
+            if (task.uuid == acceptTaskUUid) {
+                console.log('接受新的任务')
+                task.status = TaskState.OnProgress
+                usePlayerUiState.setCurrentTask(task) //设置当前任务
+                //虚拟人员
+                const receptionistManager = usePlayerUiState.receptionistManager;
+                //播放不同类型的接受任务声音
+                switch (task.subTask[0].type){
+                    case StudyType.video:
+                        receptionistManager?.playVideoHintSound()
+                        break
+                    case StudyType.read:
+                        receptionistManager?.playReadingHintSound()
+                        break
+                    case StudyType.exercise:
+                        receptionistManager?.playExerciseHintSound()
+                        break
+
+                }
+            }
+        })
+    }
+
+    test() {
+        this.num=Math.random()
+        this.taskList.push({
+            uuid: Math.random() * 1000,
+            status: TaskState.NotAccept,
+            goal: "",
+            subTask: [],
+            name: "Test",
+            description: ""
+        })
+    }
+    //未完成的任务
+    get unAcceptTask(){
+        return this.taskList.filter(task => task.status == TaskState.NotAccept)
+    }
+    //已完成的任务
+    get finishedTask(){
+        return this.taskList.filter(task => task.status == TaskState.Finished)
     }
 }
 

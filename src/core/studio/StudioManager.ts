@@ -16,6 +16,7 @@ import {ReceptionistManager} from "../receptionist/receptionistManager";
 import {AdvancedDynamicTexture} from "@babylonjs/gui";
 import useReceptionistUiState, {ReceptionistDescription} from "../../components/GUI/receptionist/receptionistUiState";
 import useTaskUiState from "../../components/GUI/task/taskUiState";
+import usePlayerUiState from "../../components/GUI/player/playerUiState";
 
 
 export class StudioManager {
@@ -127,6 +128,7 @@ export class StudioManager {
 
     private async setUpReceptionist() {
         this._receptionManager = new ReceptionistManager(this._scene, this._studio.receptionistConfig)
+        usePlayerUiState.setReceptionistManager(this._receptionManager) //设置玩家的虚拟人员
         await this._receptionManager.loadReceptionist()
         //设置虚拟人员的位置
         if (this._receptionistSpawn) {
