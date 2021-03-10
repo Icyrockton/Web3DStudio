@@ -125,7 +125,6 @@ export class ReceptionistManager {
     }
 
     private setUpSound() {
-        console.log(this._receptionistConfig.greetingSoundURL)
         this._firstGreetingSound = new Sound("greetingSound", this._receptionistConfig.greetingSoundURL, this._scene, null, {
             autoplay: false,
             loop: false
@@ -183,7 +182,6 @@ export class ReceptionistManager {
                 switch (kbInfo.event.key) {
                     case 'E':
                     case "e":
-                        console.log('打开任务UI')
                         taskUiState.setShowing(true) //显示UI界面
                 }
         }

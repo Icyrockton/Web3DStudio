@@ -9,17 +9,23 @@ import {College, SimpleStudio} from "./core/collegeMap/college";
 import {CollegeManager} from "./core/college/collegeManager";
 import {StudioManager} from "./core/studio/StudioManager";
 import {ReceptionistConfig, Studio} from "./core/studio/Studio";
+import {BookShelf} from "./core/bookshelf/BookShelf";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
 
 
 export class Web3DStudio implements IState {
+    setBookShelfShow(showing: boolean): void {
+        this._bookShelfShowing = showing
+    }
 
+    private _bookShelfShowing: boolean = false
     private _canvas: HTMLCanvasElement;
     private _engine: Engine;
     private _scene: Scene
     private _state: State = State.init
+    private _bookShelf: BookShelf | null = null
 
     /*
         Web3DStudio 构造函数
@@ -27,8 +33,9 @@ export class Web3DStudio implements IState {
     constructor(canvas: HTMLCanvasElement) {
         this._canvas = canvas;
 
-        this._engine = new Engine(this._canvas, true)  //开启抗锯齿
+        this._engine = new Engine(this._canvas, true,{stencil:true})  //开启抗锯齿
         this._scene = new Scene(this._engine);//初始化场景
+
         SceneLoader.ShowLoadingScreen = false //关闭默认的loading UI
 
         this.setDebugUI()
@@ -58,6 +65,13 @@ export class Web3DStudio implements IState {
     run() {
         this._engine.runRenderLoop(() => {
             this._scene.render()
+            if (this._bookShelfShowing) {
+                if (this._bookShelf == null) {
+                    this._bookShelf = new BookShelf(this._engine)
+                } else {
+                    this._bookShelf.render()
+                }
+            }
         })
         window.addEventListener('resize', _ => {
             this._engine.resize() //监听窗口调整大小事件
@@ -72,7 +86,7 @@ export class Web3DStudio implements IState {
 
         this.loadingScene = new LoadingScene(this._scene)
 
-       // await this.goToCollegeMap() //切换到地图场景
+        // await this.goToCollegeMap() //切换到地图场景
 
         // 暂时直接
         // await  this.goToCollege("北京三维学院")
@@ -88,14 +102,16 @@ export class Web3DStudio implements IState {
             playerSpawn: "playerSpawn",
             collisionBox: ["collision", "ground"],
             groundName: "ground",
+            playerAvatarURL:"src/assets/img/avatar/playerAvatar.png" ,
             directionalLightPosition: new Vector3(-10, 10, -10),
+            bookShelfStartName:"BookShelf",
             receptionistConfig: {
                 receptionistModelURL: "src/assets/model/receptionist.glb",
                 receptionistSpawn: "receptionistSpawn",
                 receptionistRotateYAxis: Math.PI / 2,
-                distanceTrigger:3,
-                greetingSoundURL:"src/assets/sound/javaGreeting.mp3",
-                introductionSoundURL:"src/assets/sound/javaIntroduction.mp3"
+                distanceTrigger: 2,
+                greetingSoundURL: "src/assets/sound/javaGreeting.mp3",
+                introductionSoundURL: "src/assets/sound/javaIntroduction.mp3"
             } as ReceptionistConfig,
             rotateCamera: [
                 {mesh: "cameraRotate_1", rotate: 0},

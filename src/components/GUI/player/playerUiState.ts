@@ -8,6 +8,13 @@ export interface Player {
 
 }
 
+
+export interface PlayerDialog {
+    avatarURL: string //玩家的头像
+    title: string //对话框标题
+    info: string //显示的信息
+}
+
 export class PlayerState {
     receptionistManager: ReceptionistManager | null = null
     staircase: Staircase | null = null
@@ -21,6 +28,21 @@ export class PlayerState {
         subTask: []
     }  //当前正在完成的任务
     currentSubTaskIndex: number = -1
+    isShowingDialog: boolean = false //显示对话框？
+
+    dialog: PlayerDialog = {
+        avatarURL: "", //玩家的头像
+        title: "", //对话框标题
+        info: "" //显示的信息
+    }
+
+    public setDialogShowing(showing:boolean){
+        this.isShowingDialog=showing
+    }
+
+    public setDialogInfo(dialog: PlayerDialog) {
+        this.dialog = dialog
+    }
 
     constructor() {
         makeAutoObservable(this,
@@ -29,7 +51,7 @@ export class PlayerState {
                 setStairCase: false,
                 currentSubTaskIndex: false,
                 receptionistManager: false,
-                setReceptionistManager :false
+                setReceptionistManager: false
             })
     }
 
@@ -78,7 +100,6 @@ export class PlayerState {
         //调整当前子任务索引
         this.currentSubTaskIndex = subTaskIndex
     }
-
 
 }
 

@@ -1,10 +1,20 @@
 import {
-    AbstractMesh, ArcRotateCamera, DirectionalLight, HemisphericLight, KeyboardEventTypes, KeyboardInfo,
+    AbstractMesh,
+    ArcRotateCamera,
+    Color3,
+    DirectionalLight,
+    HemisphericLight,
+    HighlightLayer,
+    KeyboardEventTypes,
+    KeyboardInfo,
     Matrix,
-    MeshBuilder,
-    Quaternion, RenderTargetTexture,
+    Mesh,
+    MeshBuilder, Observer,
+    Quaternion,
+    RenderTargetTexture,
     Scene,
-    SceneLoader, ShadowGenerator,
+    SceneLoader,
+    ShadowGenerator, Sound,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -17,7 +27,14 @@ import {AdvancedDynamicTexture} from "@babylonjs/gui";
 import useReceptionistUiState, {ReceptionistDescription} from "../../components/GUI/receptionist/receptionistUiState";
 import useTaskUiState from "../../components/GUI/task/taskUiState";
 import usePlayerUiState from "../../components/GUI/player/playerUiState";
+import {DistanceHelper} from "../../utils/distanceHelper";
 
+
+interface StudioSound {
+    bookShelf: Sound
+}
+
+type CurrentArea = "BookShelf" | null
 
 export class StudioManager {
     private _studio: Studio;
@@ -31,6 +48,8 @@ export class StudioManager {
     private _playerManager!: PlayerManager;
     private _directionalLight!: DirectionalLight
     private _receptionManager!: ReceptionistManager;
+    private _bookShelfMesh: Mesh[] = []
+    private _sound!: StudioSound
 
     constructor(scene: Scene, studio: Studio) {
         this._scene = scene;
@@ -46,6 +65,8 @@ export class StudioManager {
         await this.setUpPlayer() //加载玩家模型
         await this.setUpReceptionist() //加载虚拟人员模型
         this.setUpRotateCamera() //设置自动旋转相机
+        this.setUpSound() //设置声音
+        this.setUpBookShelf() //设置书架
         // let arcRotateCamera = new ArcRotateCamera("arc",0,0,10,Vector3.Zero(),this._scene);
         // arcRotateCamera.attachControl()
         // this._scene.activeCamera = arcRotateCamera
@@ -72,6 +93,13 @@ export class StudioManager {
         //找到接待员的出生点
         this._receptionistSpawn = transformNodes.find(node => node.name == this._studio.receptionistConfig.receptionistSpawn)
 
+        meshes.forEach(mesh => {
+            if (mesh.name.startsWith(this._studio.bookShelfStartName) && mesh instanceof Mesh) {
+                this._bookShelfMesh.push(mesh)
+            }
+
+
+        })
 
         console.log('设置碰撞盒子')
         this.setUpCollisionBox(meshes) //设置碰撞盒子
@@ -169,6 +197,103 @@ export class StudioManager {
 
     }
 
+    private _highlightBookShelf: boolean = true
+
+    private _currentArea: CurrentArea = null //当前所在区域 为了键盘事件
+
+    private setUpBookShelf() {
+
+        this._bookShelfMesh.forEach(bookShelf => {
+            bookShelf.renderOutline = true
+            const sourceColor = Color3.FromHexString("#1FA2FF")
+            const targetColor = Color3.FromHexString("#A6FFCB")
+            bookShelf.outlineColor = sourceColor
 
 
+            bookShelf.outlineWidth = 3
+            let up = true
+            let down = false
+            //边框动画
+            this._scene.registerBeforeRender(() => {
+                if (this._highlightBookShelf) {
+                    if (up) { //向target进行过渡
+                        bookShelf.outlineWidth += 0.05
+                        bookShelf.outlineColor = Color3.Lerp(bookShelf.outlineColor, targetColor, 0.02)
+                        if (bookShelf.outlineWidth > 5) {
+                            up = false
+                            down = true
+                        }
+                    }
+                    if (down) { //向source进行过渡
+                        bookShelf.outlineColor = Color3.Lerp(bookShelf.outlineColor, sourceColor, 0.02)
+
+                        bookShelf.outlineWidth -= 0.05
+                        if (bookShelf.outlineWidth < 3) {
+                            up = true
+                            down = false
+                        }
+                    }
+                }
+            })
+
+
+            //距离按键。。进入
+
+            const distanceHelper = new DistanceHelper(this._scene, bookShelf, this._playerManager);
+            const playerUiState = usePlayerUiState; //Ui 状态
+            distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
+                this._currentArea = "BookShelf" //当前所在位置为 图书架
+                playerUiState.setDialogShowing(true) //打开对话框
+                if (!this._sound.bookShelf.isPlaying)
+                    this._sound.bookShelf.play()//播放一次
+                playerUiState.setDialogInfo({
+                    avatarURL: this._studio.playerAvatarURL,
+                    title: "视频图书架",
+                    info: "这里是Java工作室的电子视频图书架,按E键可以打开书架"
+                })
+
+                //注册键盘的监听器
+                if (!this.keyBoardObserver) {
+                    this.keyBoardObserver = this._scene.onKeyboardObservable.add(this.keyboardEventHandler)
+                }
+
+            })
+
+            distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
+                this._currentArea=null //设置位置为null
+                playerUiState.setDialogShowing(false) //关闭对话框
+                if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
+                    this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
+                }
+            })
+        })
+
+    }
+
+
+    private keyBoardObserver: Observer<KeyboardInfo> | null | undefined
+    private keyboardEventHandler = (kbInfo: KeyboardInfo) => {
+        switch (kbInfo.type) {
+            case KeyboardEventTypes.KEYDOWN:
+                switch (kbInfo.event.key) {
+                    case 'E':
+                    case "e":
+                        if (this._currentArea == "BookShelf") {
+                            console.log('书架范围内按E')
+                        } else {
+
+                        }
+                }
+        }
+    }
+
+
+    private setUpSound() {
+        const bookShelf = new Sound("", "src/assets/sound/java/bookShelf.mp3", this._scene, () => {
+        }, {loop: false, autoplay: false});
+        this._sound = {
+            bookShelf: bookShelf
+
+        } as StudioSound
+    }
 }

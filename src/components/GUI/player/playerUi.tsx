@@ -26,7 +26,7 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
                 const state = usePlayerUiState;
                 state.setStairCase(staircase)
 
-                return ()=>{
+                return () => {
                     staircase.dispose()
                 }
             }
@@ -69,6 +69,14 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
             </div>
             <SubTaskUi uiState={subTaskUiState}/>
 
+            {/*自言自语对话框*/}
+            <div className={`${classes.bg} ${uiState.isShowingDialog ? "" : classes.none}`}>
+                <div className={`${classes.content} ${classes.unSkew}`}>
+                    <img src={uiState.dialog.avatarURL} alt="" className={classes.image}/>
+                    <br/><br/>
+                    <h1 style={{textAlign: "center"}}>{uiState.dialog.info}</h1>
+                </div>
+            </div>
 
         </>
     )
@@ -88,10 +96,12 @@ const TaskStateUi = observer((props: TaskStateUiProps) => {
     const task = props.task;
     let finishedTask = task.subTask.filter(subTask => subTask.status == SubTaskState.Finished);
     console.log(`${finishedTask.length} - ${task.subTask.length}`)
-    let progress= (finishedTask.length / task.subTask.length) * 100
-    let score= 0 //完成的任务的评分
-    finishedTask.forEach(subTask=>{score+=subTask.rate!})
-    let totalScore= task.subTask.length * 5 //总的分数
+    let progress = (finishedTask.length / task.subTask.length) * 100
+    let score = 0 //完成的任务的评分
+    finishedTask.forEach(subTask => {
+        score += subTask.rate!
+    })
+    let totalScore = task.subTask.length * 5 //总的分数
     if (props.task.uuid > 0) {
         return (
             <Card className={classes.taskTab} title={"正在进行中"}>
@@ -119,9 +129,11 @@ const TaskStateUi = observer((props: TaskStateUiProps) => {
                     </Title>
                     <Paragraph>
                         <Progress
-                            strokeColor={{"0%": "#f7797d",
+                            strokeColor={{
+                                "0%": "#f7797d",
                                 "50%": "#FBD786",
-                                "100%": "#C6FFDD"}}
+                                "100%": "#C6FFDD"
+                            }}
                             percent={progress}
                             status={"active"} format={(percent => `${percent?.toFixed(0)}%`)}
                         />

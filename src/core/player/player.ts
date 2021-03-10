@@ -119,7 +119,6 @@ export class Player extends TransformNode {
 
         let dashFactor = 1
         if (this._dashStart) {
-            console.log('跑步')
             if (this._dashTime > Player.PLAYER_DASH_TIME) {
                 this._dashTime = 0
                 this._canDash = true

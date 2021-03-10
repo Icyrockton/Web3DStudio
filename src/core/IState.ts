@@ -7,4 +7,5 @@ export interface IState {
     goToCollege(collegeName: string):void //进入学院
 
     goToStudio(studio: Studio):void//进入工作室
+    setBookShelfShow(showing:boolean) : void //打开书架
 }
