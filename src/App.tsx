@@ -10,6 +10,8 @@ import TaskUi from "./components/GUI/task/taskUi";
 import PlayerUi from "./components/GUI/player/playerUi";
 import usePlayerState from "./components/GUI/player/playerUiState";
 import usePlayerUiState from "./components/GUI/player/playerUiState";
+import BookShelfUi from "./components/GUI/bookShelf/bookShelfUi";
+import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 function App(){
 
     const canvas=useRef<HTMLCanvasElement>(null!)
@@ -21,6 +23,7 @@ function App(){
     const receptionistUiState = useReceptionistUiState;
     const taskUiState = useTaskUiState;
     const playerUiState = usePlayerUiState;
+    const bookShelfUiState = useBookShelfUiState;
     return (
         <React.Fragment>
             <canvas id="renderCanvas" ref={canvas}/>
@@ -28,6 +31,7 @@ function App(){
             <ReceptionistUi receptionistUiState={receptionistUiState} />
             <TaskUi taskUiState={taskUiState}/>
             <PlayerUi uiState={playerUiState}/>
+            <BookShelfUi uiState={bookShelfUiState}/>
         </React.Fragment>
     )
 }

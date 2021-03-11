@@ -28,6 +28,8 @@ import useReceptionistUiState, {ReceptionistDescription} from "../../components/
 import useTaskUiState from "../../components/GUI/task/taskUiState";
 import usePlayerUiState from "../../components/GUI/player/playerUiState";
 import {DistanceHelper} from "../../utils/distanceHelper";
+import {Web3DStudio} from "../../web3DStudio";
+import {IState} from "../IState";
 
 
 interface StudioSound {
@@ -50,10 +52,12 @@ export class StudioManager {
     private _receptionManager!: ReceptionistManager;
     private _bookShelfMesh: Mesh[] = []
     private _sound!: StudioSound
+    private _web3DStudio: IState;
 
-    constructor(scene: Scene, studio: Studio) {
+    constructor(scene: Scene, studio: Studio,web3DStudio:IState) {
         this._scene = scene;
         this._studio = studio;
+        this._web3DStudio = web3DStudio;
         this._scene.collisionsEnabled = true //打开碰撞
     }
 
@@ -280,6 +284,7 @@ export class StudioManager {
                     case "e":
                         if (this._currentArea == "BookShelf") {
                             console.log('书架范围内按E')
+                            this._web3DStudio.setBookShelfShow(true)
                         } else {
 
                         }
