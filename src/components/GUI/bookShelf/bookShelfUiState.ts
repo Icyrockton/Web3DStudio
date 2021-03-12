@@ -1,6 +1,7 @@
 import {BookDetail} from "../../../core/bookShelf/bookShelf";
 import {makeAutoObservable} from "mobx";
 import {Book} from "../../../core/bookShelf/book";
+import {Web3DStudio} from "../../../web3DStudio";
 
 
 const fakeBooks: BookDetail[] = [
@@ -8,92 +9,105 @@ const fakeBooks: BookDetail[] = [
         uuid: "1",
         area: "A_Area",
         videoName: "JDK的下载与安装",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_1.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_1.png",
+        thickness:1
     },
     {
         uuid: "2",
         area: "A_Area",
         videoName: "JAVA变量定义",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_2.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_2.png",
+        thickness:1
     },
     {
         uuid: "3",
         area: "A_Area",
         videoName: "JAVA条件语句",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_3.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_3.png",
+        thickness:0.5
     },
     {
         uuid: "4",
         area: "A_Area",
         videoName: "JAVA数组",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_4.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_4.png",
+        thickness:1
     },
     {
         uuid: "5",
         area: "A_Area",
         videoName: "JVM虚拟机",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_5.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_3.png",
+        thickness:0.5
     },
     {
         uuid: "6",
         area: "A_Area",
         videoName: "JVM虚拟机",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_5.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        thickness:1
     },
     {
         uuid: "7",
         area: "A_Area",
         videoName: "JVM虚拟机",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_5.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        thickness:0.8
     },
     {
         uuid: "8",
         area: "B_Area",
         videoName: "JVM虚拟机",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_5.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        thickness:0.55
     },
     {
         uuid: "9",
         area: "A_Area",
         videoName: "JVM虚拟机",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_5.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_3.png",
+        thickness:0.5
     },
     {
         uuid: "10",
         area: "B_Area",
         videoName: "JVM虚拟机",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_5.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        thickness:0.8
     },
     {
         uuid: "11",
         area: "A_Area",
         videoName: "JVM虚拟机",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_5.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        thickness:0.7
     },
     {
         uuid: "12",
         area: "C_Area",
         videoName: "JAVA数组",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_4.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_4.png",
+        thickness:0.6
     },
     {
         uuid: "13",
         area: "D_Area",
         videoName: "JVM虚拟机",
-        videoURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_5.png"
+        videoURL: "src/assets/video/javaVideo_1.flv",
+        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        thickness:0.5
     },
 ]
 
@@ -102,17 +116,26 @@ export class BookShelfUiState {
 
     books: BookDetail[ ] = fakeBooks
 
-    currentBook: Book | null = null
-    videoShowing:boolean=true
+    currentBook: Book | null = null //保存实例为了关闭书籍
+    currentBookDetail: BookDetail | null = null //书籍的信息
+    videoShowing: boolean = false //视频显示?
+    shelfShowing : boolean =false //书架显示?
+    web3DStudio:Web3DStudio | null =null
+
     constructor() {
-        makeAutoObservable(this, {currentBook: false, setBook: false})
+        makeAutoObservable(this, {web3DStudio:false,currentBook: false, setBookWithDetail: false, currentBookDetail: false})
     }
 
-    setBook(book: Book) {
+    setBookWithDetail(book: Book, bookDetail: BookDetail) {
         this.currentBook = book
+        this.currentBookDetail = bookDetail
     }
-    setVideoShowing(showing:boolean){
-        this.videoShowing  = showing
+
+    setVideoShowing(showing: boolean) {
+        this.videoShowing = showing
+    }
+    setShelfShowing(showing:boolean){
+        this.shelfShowing =showing
     }
 }
 

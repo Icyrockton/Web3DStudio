@@ -10,6 +10,7 @@ import {CollegeManager} from "./core/college/collegeManager";
 import {StudioManager} from "./core/studio/StudioManager";
 import {ReceptionistConfig, Studio} from "./core/studio/Studio";
 import {BookShelf} from "./core/bookShelf/bookShelf";
+import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -18,9 +19,13 @@ export enum State { init, chooseCollege, chooseStudio, studio }
 export class Web3DStudio implements IState {
     setBookShelfShow(showing: boolean): void {
         this._bookShelfShowing = showing
+        if (this._bookShelfShowing){ //显示关闭UI
+            const bookShelfUiState = useBookShelfUiState;
+            bookShelfUiState.setShelfShowing(true) //显示关闭UI
+        }
     }
 
-    private _bookShelfShowing: boolean = true
+    private _bookShelfShowing: boolean = false //书架显示
     private _canvas: HTMLCanvasElement;
     private _engine: Engine;
     private _scene: Scene
@@ -33,10 +38,13 @@ export class Web3DStudio implements IState {
     constructor(canvas: HTMLCanvasElement) {
         this._canvas = canvas;
 
-        this._engine = new Engine(this._canvas, true,{stencil:true})  //开启抗锯齿
+        this._engine = new Engine(this._canvas, true, {stencil: true})  //开启抗锯齿
         this._scene = new Scene(this._engine);//初始化场景
 
         SceneLoader.ShowLoadingScreen = false //关闭默认的loading UI
+
+        this.setBookShelfScene()
+
 
         this.setDebugUI()
         this.run()//运行渲染函数
@@ -94,35 +102,35 @@ export class Web3DStudio implements IState {
         // 暂时直接
 
 
-        // let fakeStudio = {
-        //     name: "java工作室",
-        //     modelURL: "src/assets/model/studio/java_studio.glb",
-        //     playerModelURL: "src/assets/model/player.glb",
-        //     description: "java工作室 一个学习高并发的工作室",
-        //     playerSpawn: "playerSpawn",
-        //     collisionBox: ["collision", "ground"],
-        //     groundName: "ground",
-        //     playerAvatarURL:"src/assets/img/avatar/playerAvatar.png" ,
-        //     directionalLightPosition: new Vector3(-10, 10, -10),
-        //     bookShelfStartName:"BookShelf",
-        //     receptionistConfig: {
-        //         receptionistModelURL: "src/assets/model/receptionist.glb",
-        //         receptionistSpawn: "receptionistSpawn",
-        //         receptionistRotateYAxis: Math.PI / 2,
-        //         distanceTrigger: 2,
-        //         greetingSoundURL: "src/assets/sound/javaGreeting.mp3",
-        //         introductionSoundURL: "src/assets/sound/javaIntroduction.mp3"
-        //     } as ReceptionistConfig,
-        //     rotateCamera: [
-        //         {mesh: "cameraRotate_1", rotate: 0},
-        //         {mesh: "cameraRotate_2", rotate: -Math.PI / 2},
-        //         {mesh: "cameraRotate_3", rotate: Math.PI / 2},
-        //         {mesh: "cameraRotate_4", rotate: 0},
-        //         {mesh: "cameraRotate_5", rotate: Math.PI},
-        //     ]
-        // } as Studio
-        //
-        // await this.goToStudio(fakeStudio)
+        let fakeStudio = {
+            name: "java工作室",
+            modelURL: "src/assets/model/studio/java_studio.glb",
+            playerModelURL: "src/assets/model/player.glb",
+            description: "java工作室 一个学习高并发的工作室",
+            playerSpawn: "playerSpawn",
+            collisionBox: ["collision", "ground"],
+            groundName: "ground",
+            playerAvatarURL: "src/assets/img/avatar/playerAvatar.png",
+            directionalLightPosition: new Vector3(-10, 10, -10),
+            bookShelfStartName: "BookShelf",
+            receptionistConfig: {
+                receptionistModelURL: "src/assets/model/receptionist.glb",
+                receptionistSpawn: "receptionistSpawn",
+                receptionistRotateYAxis: Math.PI / 2,
+                distanceTrigger: 2,
+                greetingSoundURL: "src/assets/sound/javaGreeting.mp3",
+                introductionSoundURL: "src/assets/sound/javaIntroduction.mp3"
+            } as ReceptionistConfig,
+            rotateCamera: [
+                {mesh: "cameraRotate_1", rotate: 0},
+                {mesh: "cameraRotate_2", rotate: -Math.PI / 2},
+                {mesh: "cameraRotate_3", rotate: Math.PI / 2},
+                {mesh: "cameraRotate_4", rotate: 0},
+                {mesh: "cameraRotate_5", rotate: Math.PI},
+            ]
+        } as Studio
+
+        await this.goToStudio(fakeStudio)
     }
 
 
@@ -155,11 +163,15 @@ export class Web3DStudio implements IState {
         console.log('进入工作室')
         let studioScene = new Scene(this._engine)
 
-        let manager = new StudioManager(studioScene, studio,this)
+        let manager = new StudioManager(studioScene, studio, this)
         await manager.load()
         this._scene.dispose()
         this._scene = studioScene
         this._scene.debugLayer.show()
     }
 
+    private setBookShelfScene() {
+        const bookShelfUiState = useBookShelfUiState;
+        bookShelfUiState.web3DStudio = this //注入web3DStudio
+    }
 }

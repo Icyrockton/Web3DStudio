@@ -1,4 +1,13 @@
-import {ArcRotateCamera, Engine, Scene, SceneLoader, Sound, TransformNode, Vector3} from "@babylonjs/core";
+import {
+    ArcRotateCamera, CascadedShadowGenerator, DirectionalLight,
+    Engine, HemisphericLight,
+    Scene,
+    SceneLoader,
+    ShadowGenerator,
+    Sound,
+    TransformNode,
+    Vector3
+} from "@babylonjs/core";
 import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState";
 import {Book} from "./book";
 
@@ -24,15 +33,22 @@ export interface BookDetail {
     videoURL: string //视频地址
     textureImgURL: string //纹理的地址
     area: AreaType
+    thickness:number  //书的厚度
 }
-export interface BookSound{
-    playOpenBookSound():void
-    playCloseBookSound():void
+
+export interface BookSound {
+    playOpenBookSound(): void
+
+    playCloseBookSound(): void
+
+    playClickBookSound(): void
 }
+
 export type AreaType = keyof BookLocTransformNode //每个区域的名称 作为类型
 
 
-export class BookShelf implements BookSound{
+export class BookShelf implements BookSound {
+
     private readonly _scene: Scene;
     private _bookLocName: BookLocName = {
         A_Area: "BookLocA",
@@ -46,20 +62,36 @@ export class BookShelf implements BookSound{
         C_Area: [],
         D_Area: [],
     }
-    private _openBookSound?:Sound
-    private _closeBookSound?:Sound
+    private _openBookSound?: Sound
+    private _closeBookSound?: Sound
     private _count: Map<TransformNode, number> = new Map<TransformNode, number>() //记录当前每个槽的位置上放置的书的个数
     static readonly MAX_PLACE = 3 //最大每个槽 放3本书
+    private _clickBookSound?: Sound;
+    private _shadowGenerator: CascadedShadowGenerator
+    private _directionalLight: DirectionalLight
 
     constructor(engine: Engine) {
         this._scene = new Scene(engine)
         this._scene.autoClear = false //关闭自动清除  作为前景
+        const hemisphericLight = new HemisphericLight("bookShelfHemisphericLight",Vector3.Up(),this._scene);
+        hemisphericLight.intensity=0.6
+        this._directionalLight = new DirectionalLight("bookShelfLight", new Vector3(1, -1, 1), this._scene)
+        this._directionalLight.intensity =0.7
+        this._shadowGenerator = new CascadedShadowGenerator(1024, this._directionalLight) //阴影贴图
+        this._shadowGenerator.stabilizeCascades = true;
+        this._shadowGenerator.forceBackFacesOnly = true;
+        this._shadowGenerator.shadowMaxZ = 20;
+        this._shadowGenerator.autoCalcDepthBounds = true;
+        this._shadowGenerator.lambda = 0.5;
+        this._shadowGenerator.depthClamp = true;
+        this._shadowGenerator.penumbraDarkness = 0.8;
+        this._shadowGenerator.usePercentageCloserFiltering = true;
+        this._shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH;  //高质量阴影
         this.setUpSound()
         this.setUpCamera()
-
         this.setUpShelf()
 
-        this._scene.debugLayer.show()
+        // this._scene.debugLayer.show()
     }
 
 
@@ -68,10 +100,10 @@ export class BookShelf implements BookSound{
     }
 
     private setUpCamera() {
-        this._scene.createDefaultLight()
-        const arcRotateCamera = new ArcRotateCamera("camera", Math.PI, Math.PI / (2.5), 2.640, new Vector3(0, 1, 0), this._scene);
-        //arcRotateCamera.attachControl(true)
-        arcRotateCamera.minZ =0.1
+
+        const arcRotateCamera = new ArcRotateCamera("camera", Math.PI, Math.PI / (2.4), 2.800, new Vector3(0, 0.8, 0), this._scene);
+        //arcRotateCamera.attachControl(true)   //摄像机控制
+        arcRotateCamera.minZ = 0.1
         arcRotateCamera.wheelPrecision = 50
     }
 
@@ -82,6 +114,10 @@ export class BookShelf implements BookSound{
 
         SceneLoader.ImportMesh("", BookShelf.BOOK_SHELF_URL, undefined, this._scene, (meshes, particleSystems, skeletons, animationGroups, transformNodes) => {
 
+            meshes.forEach(mesh=>{
+                this._shadowGenerator.addShadowCaster(mesh) //自阴影
+                mesh.receiveShadows = true//接受阴影
+            })
             transformNodes.forEach(transformNode => {
                 this.initCount(transformNode)
 
@@ -133,7 +169,7 @@ export class BookShelf implements BookSound{
                 this._count.set(slot, hasPlacedNum + 1)
                 const position = new Vector3(-slot.position.x, slot.position.y, slot.position.z - 0.1 * (hasPlacedNum))  //z轴进行偏移
 
-                new Book(this._scene, book, position,this)
+                new Book(this._scene, book, position, this,this._shadowGenerator)
                 break; //停止放置
             }
         }
@@ -144,7 +180,12 @@ export class BookShelf implements BookSound{
     }
 
     private setUpSound() { //加载声音
-        this._openBookSound=new Sound("openBookSound","src/assets/sound/book/openBook.mp3",this._scene,()=>{},{loop:false,autoplay:false})
+        this._openBookSound = new Sound("openBookSound", "src/assets/sound/book/openBook.mp3", this._scene, () => {
+        }, {loop: false, autoplay: false})
+        this._closeBookSound = new Sound("closeBookSound", "src/assets/sound/book/closeBook.mp3", this._scene, () => {
+        }, {loop: false, autoplay: false})
+        this._clickBookSound = new Sound("clickBookSound", "src/assets/sound/book/clickBook.mp3", this._scene, () => {
+        }, {loop: false, autoplay: false, volume: 0.2})
     }
 
     playCloseBookSound(): void {
@@ -152,8 +193,11 @@ export class BookShelf implements BookSound{
     }
 
     playOpenBookSound(): void {
-        this._openBookSound?.play(1000)
+        this._openBookSound?.play()
     }
 
+    playClickBookSound(): void {
+        this._clickBookSound?.play()
+    }
 
 }

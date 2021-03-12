@@ -14,3 +14,43 @@
     width: 50px;
     height: 50px;
 }
+.videoPlayerArea{
+    position: absolute;
+    top: 14%;
+    right: 22%;
+    width: 56%;
+    height: 62%;
+}
+
+.videoArea{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.videoNameArea{
+    position: absolute;
+    top: 10%;
+    right: 72%;
+    color: white;
+}
+
+.videoName{
+    color: white;
+}
+
+.shelfArea{
+    position: absolute;
+    top: 6%;
+    right: 16%;
+    width: 60px;
+    height: 60px;
+    background: red;
+}
+
+.shelfCloseButton{
+    width: 60px;
+    height: 60px;
+}

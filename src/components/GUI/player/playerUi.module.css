@@ -56,10 +56,10 @@
     background: white;
     position: absolute;
     left: 50%;
-    bottom: 0;
+    bottom: -40%;
     color: white;
     animation-name: slideFromBottom;
-    animation-duration: 200ms;
+    animation-duration: 3000ms;
     animation-timing-function: ease-out;
     box-shadow: 20px 20px rgba(0,0,0,.15);
 }
@@ -75,9 +75,16 @@
 @keyframes slideFromBottom {
 
     0% {
-        bottom: -20%;
+        bottom: -40%;
     }
-    100% {
+    20% {
         bottom: 0%;
+    }
+    80% {
+        bottom: 0%;
+    }
+    100%{
+        bottom: -40%;
+
     }
 }

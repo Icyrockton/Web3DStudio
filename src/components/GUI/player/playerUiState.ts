@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable, runInAction} from "mobx";
 import {StudyType, SubTask, SubTaskState, Task, TaskState} from "../task/taskUi";
 import {fakeTask} from "../task/taskUiState";
 import {Staircase} from "../../../core/staircase/staircase";

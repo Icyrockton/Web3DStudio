@@ -268,6 +268,7 @@ export class StudioManager {
                 playerUiState.setDialogShowing(false) //关闭对话框
                 if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
                     this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
+                    this.keyBoardObserver = null
                 }
             })
         })
