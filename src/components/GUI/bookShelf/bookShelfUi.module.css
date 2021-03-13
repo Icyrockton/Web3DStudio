@@ -16,7 +16,7 @@
 }
 .videoPlayerArea{
     position: absolute;
-    top: 14%;
+    top: 10%;
     right: 22%;
     width: 56%;
     height: 62%;
@@ -32,7 +32,7 @@
 
 .videoNameArea{
     position: absolute;
-    top: 10%;
+    top: 7%;
     right: 72%;
     color: white;
 }

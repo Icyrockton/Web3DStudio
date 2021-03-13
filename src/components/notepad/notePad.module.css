@@ -1,0 +1,89 @@
+.notePad {
+    position: absolute;
+    bottom: -36%;
+    left: 0;
+    width: 50%;
+    height: 40%;
+    transition-property: all;
+    transition-duration: .5s;
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+
+}
+
+
+.notePadSlide{
+    bottom: 0 !important;
+
+}
+.notePadSider {
+    position: fixed;
+    left: 0;
+    width: 10%;
+    height: 36%;
+    overflow: auto;
+}
+
+.notePadArea {
+    margin-left: 200px
+}
+
+.slideButton {
+    background: #1890FF;
+    width: 20%;
+    height: 10%;
+    margin: 0 auto;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 5px -2px 5px rgba(0, 0, 0, .2);
+}
+
+.slideButton:hover {
+    cursor: pointer;
+}
+
+.notePadEditor {
+    width: 100%;
+    height: 90%;
+    box-shadow: 5px 0px 5px rgba(0, 0, 0, .2);
+
+}
+
+.slideButtonText {
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.slideButtonText:hover {
+    cursor: pointer;
+}
+.newNote{
+    height: 64px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+.newNote button{
+    margin:  0 auto;
+}
+
+.header{
+    background: white;
+    padding: 0;
+}
+
+.centerButton{
+    display: block;
+    margin: 0 auto;
+}
+.deleteArea{
+
+}
+.editTitle{
+    margin-right: 20px;
+}
+

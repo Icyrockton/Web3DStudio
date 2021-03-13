@@ -12,6 +12,7 @@ import usePlayerState from "./components/GUI/player/playerUiState";
 import usePlayerUiState from "./components/GUI/player/playerUiState";
 import BookShelfUi from "./components/GUI/bookShelf/bookShelfUi";
 import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
+import NotePad from "./components/notepad/notePad";
 function App(){
 
     const canvas=useRef<HTMLCanvasElement>(null!)
@@ -32,6 +33,7 @@ function App(){
             <TaskUi taskUiState={taskUiState}/>
             <PlayerUi uiState={playerUiState}/>
             <BookShelfUi uiState={bookShelfUiState}/>
+            <NotePad />
         </React.Fragment>
     )
 }
