@@ -5,6 +5,8 @@ import classes from "./bookShelfUi.module.css"
 import {Button, Tooltip} from "antd";
 import {CloseSquareOutlined} from "@ant-design/icons";
 import ReactPlayer from "react-player";
+import usePlayerUiState from "../player/playerUiState";
+import {StudyType} from "../task/taskUi";
 
 type BookShelfUiProps = {
     uiState: BookShelfUiState
@@ -21,6 +23,17 @@ const BookShelfUi = observer<BookShelfUiProps>(props => {
         uiState.setShelfShowing(false)
         uiState.web3DStudio?.setBookShelfShow(false)
     }
+    const playerUiState = usePlayerUiState;
+    const onVideoProgress = (state: {
+        played: number  //played代表当前播放的百分比  0~1的范围
+        playedSeconds: number
+        loaded: number
+        loadedSeconds: number
+    }) => {
+        if (uiState.currentBookDetail) {
+            playerUiState.updateCurrentSubTaskProgress(StudyType.video, uiState.currentBookDetail.uuid,state.played * 100)
+        }
+    }
     return <>
         <div className={`${classes.videoArea} ${uiState.videoShowing ? "" : classes.none}`}>
             {/*关闭按钮*/}
@@ -33,7 +46,13 @@ const BookShelfUi = observer<BookShelfUiProps>(props => {
 
             {/*视频播放器*/}
             <div className={classes.videoPlayerArea}>
-                <ReactPlayer width={"100%"} height={"100%"} controls url={uiState.currentBookDetail?.videoURL}/>
+                <ReactPlayer playing={uiState.videoShowing}
+                             width={"100%"}
+                             height={"100%"}
+                             controls
+                             url={uiState.currentBookDetail?.videoURL}
+                             onProgress={onVideoProgress}
+                             loop={false}/>
             </div>
 
             <div className={classes.videoNameArea}>

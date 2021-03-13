@@ -15,42 +15,55 @@ export const fakeTask: Task[] = [{
             name: '子任务1',
             type: StudyType.video,
             description: '学习安装SpringBoot',
-            rate: 4
+            rate: 4,
+            progress: 100,
+            studyUuid : 0 ,
         },
         {
             status: SubTaskState.Finished,
             name: '子任务2',
             type: StudyType.exercise,
             description: '搭建一个基本的Restful风格的后端',
-            rate: 3
+            rate: 3,
+            progress: 100,
+            studyUuid : 0 ,
+
         },
         {
             status: SubTaskState.Finished,
             name: '子任务2',
             type: StudyType.exercise,
             description: '搭建一个基本的Restful风格的后端',
-            rate: 3
+            rate: 3,
+            progress: 100,
+            studyUuid : 0 ,
         },
         {
             status: SubTaskState.OnProgress,
             name: '子任务2',
             type: StudyType.exercise,
             description: '搭建一个基本的Restful风格的后端',
-            rate: 3
+            rate: 3,
+            progress: 100,
+            studyUuid : 0 ,
         },
         {
             status: SubTaskState.UnFinished,
             name: '子任务2',
             type: StudyType.exercise,
             description: '搭建一个基本的Restful风格的后端',
-            rate: 3
+            rate: 3,
+            progress: 100,
+            studyUuid : 0 ,
         },
         {
             status: SubTaskState.UnFinished,
             name: '子任务2',
             type: StudyType.exercise,
             description: '搭建一个基本的Restful风格的后端',
-            rate: 3
+            rate: 3,
+            progress: 100,
+            studyUuid : 0 ,
         }
     ],
     rate: 3.5
@@ -64,22 +77,61 @@ export const fakeTask: Task[] = [{
         status: TaskState.NotAccept,
         subTask: [
             {
-                name: "synchronized",
-                description: "了解synchronized底层所需要的基础知识synchronized的底层实现",
+                name: "jvm内存模型",
+                description: "解析jvm虚拟机底层的内存模型",
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
-            },
-            {
-                name: "学习Java中的各种'锁'",
-                description: "无锁、偏向锁、轻量级锁、重量级锁",
-                type: StudyType.video,
-                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid : 1 ,
             },
             {
                 name: "指令重排序",
-                description: "Volatile如何解决指令重排序？",
+                description: "解析jvm的指令重排序机制",
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid : 2 ,
+            },
+            {
+                name: "jvm内存屏障",
+                description: "jvm内存屏障解析",
+                type: StudyType.video,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid : 3 ,
+            }
+        ]
+    },
+    {
+        uuid: 3,
+        description: "JVM虚拟机学习，快速入门JVM虚拟机",
+        name: "JVM虚拟机系列",
+        goal: "明白类加载器,堆,栈的区别.新生代,老年代是干什么的",
+        status: TaskState.NotAccept,
+        subTask: [
+            {
+                name: "JVM体系结构",
+                description: "解析jvm虚拟机底层的内存模型",
+                type: StudyType.video,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid : 4 ,
+            },
+            {
+                name: "类加载器及双亲委派机制",
+                description: "解析jvm的类加载器",
+                type: StudyType.video,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid : 5 ,
+            },
+            {
+                name: "Native，方法区",
+                description: "解析jvm的方法区中有什么",
+                type: StudyType.video,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid : 6 ,
             }
         ]
     }
@@ -89,7 +141,7 @@ export const fakeTask: Task[] = [{
 export class TaskUiState {
     isShowing: boolean = false
     taskList: Task[] = fakeTask
-    num =10
+
     constructor() {
         makeAutoObservable(this)
     }
@@ -103,47 +155,44 @@ export class TaskUiState {
 
         this.taskList.forEach(task => {
             if (task.uuid == acceptTaskUUid) {
-                console.log('接受新的任务')
                 task.status = TaskState.OnProgress
-                usePlayerUiState.setCurrentTask(task) //设置当前任务
                 //虚拟人员
                 const receptionistManager = usePlayerUiState.receptionistManager;
+                const studioManager = usePlayerUiState.studioManager;
                 //播放不同类型的接受任务声音
-                switch (task.subTask[0].type){
-                    case StudyType.video:
-                        receptionistManager?.playVideoHintSound()
-                        break
-                    case StudyType.read:
-                        receptionistManager?.playReadingHintSound()
-                        break
-                    case StudyType.exercise:
-                        receptionistManager?.playExerciseHintSound()
-                        break
-
+                if (task.subTask.length >= 1) {  //子任务的数量大于1
+                    switch (task.subTask[0].type) {
+                        case StudyType.video:
+                            receptionistManager?.playVideoHintSound()
+                            studioManager?.setHighLightBookShelf(true)
+                            break
+                        case StudyType.read:
+                            receptionistManager?.playReadingHintSound()
+                            break
+                        case StudyType.exercise:
+                            receptionistManager?.playExerciseHintSound()
+                            break
+                        default:
+                            break
+                    }
+                    task.subTask[0].status = SubTaskState.OnProgress //正在进行第一个子任务
                 }
+                usePlayerUiState.setCurrentTask(task) //设置当前任务
             }
         })
     }
 
-    test() {
-        this.num=Math.random()
-        this.taskList.push({
-            uuid: Math.random() * 1000,
-            status: TaskState.NotAccept,
-            goal: "",
-            subTask: [],
-            name: "Test",
-            description: ""
-        })
-    }
     //未完成的任务
-    get unAcceptTask(){
+    get unAcceptTask() {
         return this.taskList.filter(task => task.status == TaskState.NotAccept)
     }
+
     //已完成的任务
-    get finishedTask(){
+    get finishedTask() {
         return this.taskList.filter(task => task.status == TaskState.Finished)
     }
+
+
 }
 
 

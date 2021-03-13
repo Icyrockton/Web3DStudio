@@ -17,6 +17,7 @@ export class ReceptionistManager {
     private _videoHintSound?: Sound
     private _exerciseHintSound?: Sound
     private _readingHintSound?: Sound
+    private _taskFinishedHintSound?: Sound
     private _firstGreetingSoundHasPlayed: boolean = false
 
     constructor(scene: Scene, receptionistConfig: ReceptionistConfig) {
@@ -68,6 +69,7 @@ export class ReceptionistManager {
                 this._triggeredLessThan = false
                 if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
                     this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
+                    this.keyBoardObserver = null
                 }
             }
         })
@@ -137,23 +139,34 @@ export class ReceptionistManager {
             autoplay: false,
             loop: false
         })
-        this._exerciseHintSound =new Sound("exerciseHintSound", "src/assets/sound/taskHint/exerciseHint.mp3", this._scene, null, {
+        this._exerciseHintSound = new Sound("exerciseHintSound", "src/assets/sound/taskHint/exerciseHint.mp3", this._scene, null, {
             autoplay: false,
             loop: false
         })
-        this._readingHintSound = new Sound("readingHintSound","src/assets/sound/taskHint/readingHint.mp3", this._scene, null, {
+        this._readingHintSound = new Sound("readingHintSound", "src/assets/sound/taskHint/readingHint.mp3", this._scene, null, {
+            autoplay: false,
+            loop: false
+        })
+        this._taskFinishedHintSound = new Sound("taskFinishedHintSound", "src/assets/sound/taskHint/taskFinishedHint.mp3", this._scene, null, {
             autoplay: false,
             loop: false
         })
     }
-    public playVideoHintSound(){
+
+    public playVideoHintSound() {
         this._videoHintSound?.play()
     }
-    public playReadingHintSound(){
+
+    public playReadingHintSound() {
         this._readingHintSound?.play()
     }
-    public playExerciseHintSound(){
+
+    public playExerciseHintSound() {
         this._exerciseHintSound?.play()
+    }
+
+    public playTaskFinishedHintSound() {
+        this._taskFinishedHintSound?.play()
     }
 
     public playGreeting() {

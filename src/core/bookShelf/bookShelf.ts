@@ -1,6 +1,6 @@
 import {
     ArcRotateCamera, CascadedShadowGenerator, DirectionalLight,
-    Engine, HemisphericLight,
+    Engine, HemisphericLight, HighlightLayer,
     Scene,
     SceneLoader,
     ShadowGenerator,
@@ -28,12 +28,12 @@ interface BookLocTransformNode {
 }
 
 export interface BookDetail {
-    uuid: string //ID
+    uuid: number //ID
     videoName: string //视频名称
     videoURL: string //视频地址
     textureImgURL: string //纹理的地址
     area: AreaType
-    thickness:number  //书的厚度
+    thickness: number  //书的厚度
 }
 
 export interface BookSound {
@@ -69,14 +69,15 @@ export class BookShelf implements BookSound {
     private _clickBookSound?: Sound;
     private _shadowGenerator: CascadedShadowGenerator
     private _directionalLight: DirectionalLight
+    private _highLightLayer : HighlightLayer
 
     constructor(engine: Engine) {
         this._scene = new Scene(engine)
         this._scene.autoClear = false //关闭自动清除  作为前景
-        const hemisphericLight = new HemisphericLight("bookShelfHemisphericLight",Vector3.Up(),this._scene);
-        hemisphericLight.intensity=0.6
+        const hemisphericLight = new HemisphericLight("bookShelfHemisphericLight", Vector3.Up(), this._scene);
+        hemisphericLight.intensity = 0.6
         this._directionalLight = new DirectionalLight("bookShelfLight", new Vector3(1, -1, 1), this._scene)
-        this._directionalLight.intensity =0.7
+        this._directionalLight.intensity = 0.7
         this._shadowGenerator = new CascadedShadowGenerator(1024, this._directionalLight) //阴影贴图
         this._shadowGenerator.stabilizeCascades = true;
         this._shadowGenerator.forceBackFacesOnly = true;
@@ -87,6 +88,7 @@ export class BookShelf implements BookSound {
         this._shadowGenerator.penumbraDarkness = 0.8;
         this._shadowGenerator.usePercentageCloserFiltering = true;
         this._shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH;  //高质量阴影
+        this._highLightLayer =new HighlightLayer("bookShelfHighLightLayer",this._scene)
         this.setUpSound()
         this.setUpCamera()
         this.setUpShelf()
@@ -114,7 +116,7 @@ export class BookShelf implements BookSound {
 
         SceneLoader.ImportMesh("", BookShelf.BOOK_SHELF_URL, undefined, this._scene, (meshes, particleSystems, skeletons, animationGroups, transformNodes) => {
 
-            meshes.forEach(mesh=>{
+            meshes.forEach(mesh => {
                 this._shadowGenerator.addShadowCaster(mesh) //自阴影
                 mesh.receiveShadows = true//接受阴影
             })
@@ -169,7 +171,7 @@ export class BookShelf implements BookSound {
                 this._count.set(slot, hasPlacedNum + 1)
                 const position = new Vector3(-slot.position.x, slot.position.y, slot.position.z - 0.1 * (hasPlacedNum))  //z轴进行偏移
 
-                new Book(this._scene, book, position, this,this._shadowGenerator)
+                new Book(this._scene, book, position, this, this._shadowGenerator,this._highLightLayer)
                 break; //停止放置
             }
         }

@@ -42,8 +42,11 @@ export interface SubTask {
     name: string //子任务的名称
     status: SubTaskState //子任务的状态
     description: string // 子任务的描述
+    progress:number //子任务的完成进度 0-100
     type: StudyType //子任务类型
+    studyUuid: number // 要么是一本书的ID 要么是电子书的ID 要么是练习的ID
     rate?: number //子任务评分 1-5
+
 }
 
 export enum StudyType {

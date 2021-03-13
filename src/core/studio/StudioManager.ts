@@ -1,35 +1,29 @@
 import {
     AbstractMesh,
-    ArcRotateCamera,
     Color3,
     DirectionalLight,
     HemisphericLight,
-    HighlightLayer,
     KeyboardEventTypes,
     KeyboardInfo,
-    Matrix,
     Mesh,
-    MeshBuilder, Observer,
-    Quaternion,
+    Observer,
     RenderTargetTexture,
     Scene,
     SceneLoader,
-    ShadowGenerator, Sound,
+    ShadowGenerator,
+    Sound,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
 import {Studio} from "./Studio";
-import {Player, PlayerAssets} from "../player/player";
-import {InputController} from "../player/inputController";
 import {PlayerManager} from "../player/playerManager";
 import {ReceptionistManager} from "../receptionist/receptionistManager";
 import {AdvancedDynamicTexture} from "@babylonjs/gui";
 import useReceptionistUiState, {ReceptionistDescription} from "../../components/GUI/receptionist/receptionistUiState";
-import useTaskUiState from "../../components/GUI/task/taskUiState";
 import usePlayerUiState from "../../components/GUI/player/playerUiState";
 import {DistanceHelper} from "../../utils/distanceHelper";
-import {Web3DStudio} from "../../web3DStudio";
 import {IState} from "../IState";
+import {StudyType} from "../../components/GUI/task/taskUi";
 
 
 interface StudioSound {
@@ -59,6 +53,8 @@ export class StudioManager {
         this._studio = studio;
         this._web3DStudio = web3DStudio;
         this._scene.collisionsEnabled = true //打开碰撞
+        const playerUiState = usePlayerUiState;
+        playerUiState.setStudioManager(this) //注入
     }
 
     async load() {
@@ -201,14 +197,24 @@ export class StudioManager {
 
     }
 
-    private _highlightBookShelf: boolean = true
+    //高亮
+    private _highlightBookShelf: boolean = false
 
+    public setHighLightBookShelf(highLight:boolean){
+        this._highlightBookShelf =highLight
+    }
+
+    public turnOffAllHighLight(){//关闭所有highlight
+        this._highlightBookShelf =false
+    }
+
+    //
     private _currentArea: CurrentArea = null //当前所在区域 为了键盘事件
-
+    private _bookShelfAreaHint=true //提示只显示一遍
     private setUpBookShelf() {
 
         this._bookShelfMesh.forEach(bookShelf => {
-            bookShelf.renderOutline = true
+            bookShelf.renderOutline = false
             const sourceColor = Color3.FromHexString("#1FA2FF")
             const targetColor = Color3.FromHexString("#A6FFCB")
             bookShelf.outlineColor = sourceColor
@@ -219,7 +225,9 @@ export class StudioManager {
             let down = false
             //边框动画
             this._scene.registerBeforeRender(() => {
+                //高亮书架
                 if (this._highlightBookShelf) {
+                    bookShelf.renderOutline=true //打开渲染边框
                     if (up) { //向target进行过渡
                         bookShelf.outlineWidth += 0.05
                         bookShelf.outlineColor = Color3.Lerp(bookShelf.outlineColor, targetColor, 0.02)
@@ -238,23 +246,30 @@ export class StudioManager {
                         }
                     }
                 }
+                else{
+                    bookShelf.renderOutline =false
+                }
             })
 
 
             //距离按键。。进入
+            const playerUiState = usePlayerUiState;
 
             const distanceHelper = new DistanceHelper(this._scene, bookShelf, this._playerManager);
-            const playerUiState = usePlayerUiState; //Ui 状态
+
             distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
                 this._currentArea = "BookShelf" //当前所在位置为 图书架
-                playerUiState.setDialogShowing(true) //打开对话框
-                if (!this._sound.bookShelf.isPlaying)
-                    this._sound.bookShelf.play()//播放一次
-                playerUiState.setDialogInfo({
-                    avatarURL: this._studio.playerAvatarURL,
-                    title: "视频图书架",
-                    info: "这里是Java工作室的电子视频图书架,按E键可以打开书架"
-                })
+                if (this._bookShelfAreaHint){
+                    playerUiState.setDialogShowing(true) //打开对话框
+                    if (!this._sound.bookShelf.isPlaying  )
+                        this._sound.bookShelf.play()//播放一次
+                    playerUiState.setDialogInfo({
+                        avatarURL: this._studio.playerAvatarURL,
+                        title: "视频图书架",
+                        info: "这里是Java工作室的电子视频图书架,按E键可以打开书架"
+                    })
+                    this._bookShelfAreaHint =false
+                }
 
                 //注册键盘的监听器
                 if (!this.keyBoardObserver) {

@@ -5,8 +5,8 @@ import {
     BackEase,
     Color3,
     EasingFunction,
-    ExecuteCodeAction,
-    IAnimationKey,
+    ExecuteCodeAction, HighlightLayer,
+    IAnimationKey, Mesh,
     MeshBuilder,
     Scene,
     SceneLoader,
@@ -21,6 +21,7 @@ import {BookDetail, BookShelf, BookSound} from "./bookShelf";
 import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
 import {AdvancedDynamicTexture} from "@babylonjs/gui";
 import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState";
+import usePlayerUiState from "../../components/GUI/player/playerUiState";
 
 enum BookState {
     init, //原始位置
@@ -45,13 +46,15 @@ export class Book {
     private _targetCameraPos: Vector3 //鼠标点击后 书籍移动到的位置
     private _bookSound: BookSound;
     private _shadowGenerator: ShadowGenerator;
+    private _highLightLayer: HighlightLayer;
 
-    constructor(scene: Scene, bookDetail: BookDetail, position: Vector3, bookSound: BookSound, shadowGenerator: ShadowGenerator) {
+    constructor(scene: Scene, bookDetail: BookDetail, position: Vector3, bookSound: BookSound, shadowGenerator: ShadowGenerator, highLightLayer: HighlightLayer) {
         this._scene = scene;
         this._bookDetail = bookDetail;
         this._position = position;
         this._bookSound = bookSound;
         this._shadowGenerator = shadowGenerator;
+        this._highLightLayer = highLightLayer;
         this._targetCameraPos = new Vector3(-2.2, 1.25, 0)
         //0.1的悬浮出来的位置
         this._targetPos = new Vector3(position.x - 0.15, position.y, position.z)
@@ -68,13 +71,29 @@ export class Book {
         meshes[0].parent = this.bookNode
         this.bookNode.rotation.x = -Math.PI / 2
         this.bookNode.scaling.y = this._bookDetail.thickness //书的厚度
-        const content = meshes[1];
-        const cover = meshes[2];
+        const content = meshes[1] as Mesh;
+        const cover = meshes[2] as Mesh;
+
         this._shadowGenerator.addShadowCaster(meshes[0], true) //添加阴影
+
+        const playerUiState = usePlayerUiState;
+        this._scene.registerBeforeRender(()=>{
+            const videoUUID = playerUiState.currentSubTaskVideoUUID;
+            if (videoUUID && videoUUID == this._bookDetail.uuid){
+                this._highLightLayer.addMesh(cover,Color3.Green())
+            }
+            else{
+                this._highLightLayer.removeMesh(cover)
+            }
+        })
+
+
+
+
         //设置位置
         this.bookNode.position.copyFrom(this._position)
-
         const bookShelfUiState = useBookShelfUiState;
+
         this._openBookAnim = animationGroups.find(animationGroup => animationGroup.name == "OpenBook")
         //打开书后开始播放回调
         this._openBookAnim?.onAnimationGroupEndObservable.add(() => {

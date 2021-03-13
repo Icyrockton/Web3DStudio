@@ -6,55 +6,55 @@ import {Web3DStudio} from "../../../web3DStudio";
 
 const fakeBooks: BookDetail[] = [
     {
-        uuid: "1",
+        uuid: 1,
         area: "A_Area",
-        videoName: "JDK的下载与安装",
+        videoName: "JVM内存模型",
         videoURL: "src/assets/video/javaVideo_1.flv",
         textureImgURL: "src/assets/img/bookCover/book_1.png",
         thickness:1
     },
     {
-        uuid: "2",
+        uuid: 2,
         area: "A_Area",
-        videoName: "JAVA变量定义",
+        videoName: "指令重排序",
         videoURL: "src/assets/video/javaVideo_1.flv",
         textureImgURL: "src/assets/img/bookCover/book_2.png",
         thickness:1
     },
     {
-        uuid: "3",
+        uuid: 3,
         area: "A_Area",
-        videoName: "JAVA条件语句",
+        videoName: "JVM内存屏障",
         videoURL: "src/assets/video/javaVideo_1.flv",
         textureImgURL: "src/assets/img/bookCover/book_3.png",
         thickness:0.5
     },
     {
-        uuid: "4",
+        uuid: 4,
         area: "A_Area",
-        videoName: "JAVA数组",
+        videoName: "JVM体系结构",
         videoURL: "src/assets/video/javaVideo_1.flv",
         textureImgURL: "src/assets/img/bookCover/book_4.png",
         thickness:1
     },
     {
-        uuid: "5",
+        uuid: 5,
         area: "A_Area",
-        videoName: "JVM虚拟机",
+        videoName: "类加载器及双亲委派机制",
         videoURL: "src/assets/video/javaVideo_1.flv",
         textureImgURL: "src/assets/img/bookCover/book_3.png",
         thickness:0.5
     },
     {
-        uuid: "6",
+        uuid: 6,
         area: "A_Area",
-        videoName: "JVM虚拟机",
+        videoName: "Native，方法区",
         videoURL: "src/assets/video/javaVideo_1.flv",
         textureImgURL: "src/assets/img/bookCover/book_5.png",
         thickness:1
     },
     {
-        uuid: "7",
+        uuid: 7,
         area: "A_Area",
         videoName: "JVM虚拟机",
         videoURL: "src/assets/video/javaVideo_1.flv",
@@ -62,7 +62,7 @@ const fakeBooks: BookDetail[] = [
         thickness:0.8
     },
     {
-        uuid: "8",
+        uuid: 8,
         area: "B_Area",
         videoName: "JVM虚拟机",
         videoURL: "src/assets/video/javaVideo_1.flv",
@@ -70,7 +70,7 @@ const fakeBooks: BookDetail[] = [
         thickness:0.55
     },
     {
-        uuid: "9",
+        uuid: 9,
         area: "A_Area",
         videoName: "JVM虚拟机",
         videoURL: "src/assets/video/javaVideo_1.flv",
@@ -78,7 +78,7 @@ const fakeBooks: BookDetail[] = [
         thickness:0.5
     },
     {
-        uuid: "10",
+        uuid: 10,
         area: "B_Area",
         videoName: "JVM虚拟机",
         videoURL: "src/assets/video/javaVideo_1.flv",
@@ -86,7 +86,7 @@ const fakeBooks: BookDetail[] = [
         thickness:0.8
     },
     {
-        uuid: "11",
+        uuid: 11,
         area: "A_Area",
         videoName: "JVM虚拟机",
         videoURL: "src/assets/video/javaVideo_1.flv",
@@ -94,7 +94,7 @@ const fakeBooks: BookDetail[] = [
         thickness:0.7
     },
     {
-        uuid: "12",
+        uuid: 12,
         area: "C_Area",
         videoName: "JAVA数组",
         videoURL: "src/assets/video/javaVideo_1.flv",
@@ -102,7 +102,7 @@ const fakeBooks: BookDetail[] = [
         thickness:0.6
     },
     {
-        uuid: "13",
+        uuid: 13,
         area: "D_Area",
         videoName: "JVM虚拟机",
         videoURL: "src/assets/video/javaVideo_1.flv",
@@ -123,7 +123,10 @@ export class BookShelfUiState {
     web3DStudio:Web3DStudio | null =null
 
     constructor() {
-        makeAutoObservable(this, {web3DStudio:false,currentBook: false, setBookWithDetail: false, currentBookDetail: false})
+        makeAutoObservable(this, {web3DStudio:false,
+            currentBook: false,
+            setBookWithDetail: false,
+            currentBookDetail: false})
     }
 
     setBookWithDetail(book: Book, bookDetail: BookDetail) {
