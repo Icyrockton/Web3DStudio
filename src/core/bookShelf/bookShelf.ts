@@ -64,9 +64,9 @@ export class BookShelf implements BookSound {
     }
     private _openBookSound?: Sound
     private _closeBookSound?: Sound
+    private _clickBookSound?: Sound;
     private _count: Map<TransformNode, number> = new Map<TransformNode, number>() //记录当前每个槽的位置上放置的书的个数
     static readonly MAX_PLACE = 3 //最大每个槽 放3本书
-    private _clickBookSound?: Sound;
     private _shadowGenerator: CascadedShadowGenerator
     private _directionalLight: DirectionalLight
     private _highLightLayer : HighlightLayer
@@ -120,6 +120,7 @@ export class BookShelf implements BookSound {
                 this._shadowGenerator.addShadowCaster(mesh) //自阴影
                 mesh.receiveShadows = true//接受阴影
             })
+
             transformNodes.forEach(transformNode => {
                 this.initCount(transformNode)
 

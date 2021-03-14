@@ -17,6 +17,7 @@ export interface Studio {
     collisionBox:string[] //碰撞盒子的Mesh名称
     groundName:string //地面Mesh名称
     bookShelfStartName:string //所有书架的统一起始的Mesh名称
+    practiceTableStartName:string //练习台的统一起始的Mesh名称
     directionalLightPosition:Vector3 //平行光的位置
     rotateCamera:RotateCamera[] //相机的自动旋转
     receptionistConfig:ReceptionistConfig //虚拟人员配置文件

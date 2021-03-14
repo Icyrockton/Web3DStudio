@@ -8,4 +8,5 @@ export interface IState {
 
     goToStudio(studio: Studio):void//进入工作室
     setBookShelfShow(showing:boolean) : void //打开书架
+    setPracticeTableShow(showing:boolean) : void //打开练习台
 }

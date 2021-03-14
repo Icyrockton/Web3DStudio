@@ -1,4 +1,4 @@
-import {Mesh, Scene} from "@babylonjs/core";
+import {Mesh, Scene, Vector3} from "@babylonjs/core";
 import {PlayerManager} from "../core/player/playerManager";
 
 
@@ -20,15 +20,16 @@ export  class DistanceHelper {
     }
 
     public triggerOnceWhenDistanceLessThan(length: number, func: () => void) {
+        //要乘以 (-1,1,1) BabylonJS是右手坐标系...
         this._scene.registerBeforeRender(() => {
-            const distance = this._player.playerPosition.subtract(this._mesh.position).length()
+            const distance = this._player.playerPosition.subtract(this._mesh.position.multiply(new Vector3(-1,1,1))).length()
             if (!this._triggeredLessThan && distance < length) {
                 this._triggeredLessThan = true
                 func()
             }
         })
         this._scene.registerAfterRender(() => {
-            const distance = this._player.playerPosition.subtract(this._mesh.position).length()
+            const distance = this._player.playerPosition.subtract(this._mesh.position.multiply(new Vector3(-1,1,1))).length()
             if (distance > length) {
                 this._triggeredLessThan = false
             }
@@ -37,15 +38,16 @@ export  class DistanceHelper {
 
 
     public triggerOnceWhenDistanceMoreThan(length: number, func: () => void) {
+        //要乘以 (-1,1,1) BabylonJS是右手坐标系...
         this._scene.registerBeforeRender(() => {
-            const distance = this._player.playerPosition.subtract(this._mesh.position).length()
+            const distance = this._player.playerPosition.subtract(this._mesh.position.multiply(new Vector3(-1,1,1))).length()
             if (!this._triggeredMoreThan && distance > length) {
                 this._triggeredMoreThan = true
                 func()
             }
         })
         this._scene.registerAfterRender(() => {
-            const distance = this._player.playerPosition.subtract(this._mesh.position).length()
+            const distance = this._player.playerPosition.subtract(this._mesh.position.multiply(new Vector3(-1,1,1))).length()
             if (distance < length) {
                 this._triggeredMoreThan = false
 
@@ -54,11 +56,12 @@ export  class DistanceHelper {
     }
 
     //小于length时 始终触发
-    public triggerWhenDistanceLessThan(length: number, func: () => void) {
+    public triggerWhenDistanceLessThan(length: number, func: (distance:number) => void) {
+        //要乘以 (-1,1,1) BabylonJS是右手坐标系...
         this._scene.registerBeforeRender(() => {
-            const distance = this._player.playerPosition.subtract(this._mesh.position).length()
+            const distance = this._player.playerPosition.subtract(this._mesh.position.multiply(new Vector3(-1,1,1))).length()
             if (distance < length) {
-                func()
+                func(distance)
             }
         })
     }

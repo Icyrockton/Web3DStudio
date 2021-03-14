@@ -1,6 +1,6 @@
-import React, { createRef, useEffect, useRef } from 'react'
+import React, {createRef, useEffect, useRef} from 'react'
 import './App.css'
-import { Web3DStudio } from './web3DStudio';
+import {Web3DStudio} from './web3DStudio';
 import CollegeUi from "./components/GUI/college/collegeUi";
 import useCollegeUiState from "./components/GUI/college/collegeUiState";
 import ReceptionistUi from "./components/GUI/receptionist/receptionistUi";
@@ -13,10 +13,13 @@ import usePlayerUiState from "./components/GUI/player/playerUiState";
 import BookShelfUi from "./components/GUI/bookShelf/bookShelfUi";
 import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 import NotePad from "./components/notepad/notePad";
-function App(){
+import PracticeTableUi from "./components/GUI/practiceTable/practiceTableUi";
+import usePracticeTableUiState from "./components/GUI/practiceTable/practiceTableUiState";
 
-    const canvas=useRef<HTMLCanvasElement>(null!)
-    useEffect(()=>{
+function App() {
+
+    const canvas = useRef<HTMLCanvasElement>(null!)
+    useEffect(() => {
         const web3DStudio = new Web3DStudio(canvas.current)
     })
 
@@ -25,15 +28,17 @@ function App(){
     const taskUiState = useTaskUiState;
     const playerUiState = usePlayerUiState;
     const bookShelfUiState = useBookShelfUiState;
+    const practiceTableUiState = usePracticeTableUiState;
     return (
         <React.Fragment>
             <canvas id="renderCanvas" ref={canvas}/>
             <CollegeUi uiState={collegeUiState}/>
-            <ReceptionistUi receptionistUiState={receptionistUiState} />
+            <ReceptionistUi receptionistUiState={receptionistUiState}/>
             <TaskUi taskUiState={taskUiState}/>
             <PlayerUi uiState={playerUiState}/>
             <BookShelfUi uiState={bookShelfUiState}/>
-            <NotePad />
+            <PracticeTableUi uiState={practiceTableUiState}/>
+            <NotePad/>
         </React.Fragment>
     )
 }

@@ -28,11 +28,13 @@ import {StudyType} from "../../components/GUI/task/taskUi";
 
 interface StudioSound {
     bookShelf: Sound
+    practiceTable: Sound
 }
 
-type CurrentArea = "BookShelf" | null
+type CurrentArea = "BookShelf" | "PracticeTable" | null
 
 export class StudioManager {
+
     private _studio: Studio;
     private _scene: Scene;
     private _playerSpawn ?: TransformNode //玩家的出生点
@@ -44,11 +46,12 @@ export class StudioManager {
     private _playerManager!: PlayerManager;
     private _directionalLight!: DirectionalLight
     private _receptionManager!: ReceptionistManager;
-    private _bookShelfMesh: Mesh[] = []
+    private _bookShelfMesh: Mesh[] = [] //书架
+    private _practiceTableMesh: Mesh [] = [] //练习台
     private _sound!: StudioSound
     private _web3DStudio: IState;
 
-    constructor(scene: Scene, studio: Studio,web3DStudio:IState) {
+    constructor(scene: Scene, studio: Studio, web3DStudio: IState) {
         this._scene = scene;
         this._studio = studio;
         this._web3DStudio = web3DStudio;
@@ -67,6 +70,7 @@ export class StudioManager {
         this.setUpRotateCamera() //设置自动旋转相机
         this.setUpSound() //设置声音
         this.setUpBookShelf() //设置书架
+        this.setUpPracticeTable() //设置练习台
         // let arcRotateCamera = new ArcRotateCamera("arc",0,0,10,Vector3.Zero(),this._scene);
         // arcRotateCamera.attachControl()
         // this._scene.activeCamera = arcRotateCamera
@@ -94,8 +98,12 @@ export class StudioManager {
         this._receptionistSpawn = transformNodes.find(node => node.name == this._studio.receptionistConfig.receptionistSpawn)
 
         meshes.forEach(mesh => {
-            if (mesh.name.startsWith(this._studio.bookShelfStartName) && mesh instanceof Mesh) {
-                this._bookShelfMesh.push(mesh)
+            if (mesh instanceof Mesh) {
+                if (mesh.name.startsWith(this._studio.bookShelfStartName)) {
+                    this._bookShelfMesh.push(mesh)
+                } else if (mesh.name.startsWith(this._studio.practiceTableStartName)) {
+                    this._practiceTableMesh.push(mesh)
+                }
             }
 
 
@@ -199,18 +207,26 @@ export class StudioManager {
 
     //高亮
     private _highlightBookShelf: boolean = false
+    private _highlightPracticeTable: boolean = true
 
-    public setHighLightBookShelf(highLight:boolean){
-        this._highlightBookShelf =highLight
+    public setHighLightBookShelf(highLight: boolean) {
+        this._highlightBookShelf = highLight
     }
 
-    public turnOffAllHighLight(){//关闭所有highlight
-        this._highlightBookShelf =false
+    public setHighlightPracticeTable(highLight: boolean) {
+        this._highlightPracticeTable = highLight;
+    }
+
+    public turnOffAllHighLight() {//关闭所有highlight
+        this._highlightBookShelf = false
+        this._highlightPracticeTable = false
     }
 
     //
     private _currentArea: CurrentArea = null //当前所在区域 为了键盘事件
-    private _bookShelfAreaHint=true //提示只显示一遍
+    private _bookShelfAreaHint = true //书架位置提示 只显示一次
+    private _practiceTableAreaHint = true //书架位置提示 只显示一次
+
     private setUpBookShelf() {
 
         this._bookShelfMesh.forEach(bookShelf => {
@@ -227,7 +243,7 @@ export class StudioManager {
             this._scene.registerBeforeRender(() => {
                 //高亮书架
                 if (this._highlightBookShelf) {
-                    bookShelf.renderOutline=true //打开渲染边框
+                    bookShelf.renderOutline = true //打开渲染边框
                     if (up) { //向target进行过渡
                         bookShelf.outlineWidth += 0.05
                         bookShelf.outlineColor = Color3.Lerp(bookShelf.outlineColor, targetColor, 0.02)
@@ -245,9 +261,8 @@ export class StudioManager {
                             down = false
                         }
                     }
-                }
-                else{
-                    bookShelf.renderOutline =false
+                } else {
+                    bookShelf.renderOutline = false
                 }
             })
 
@@ -259,16 +274,16 @@ export class StudioManager {
 
             distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
                 this._currentArea = "BookShelf" //当前所在位置为 图书架
-                if (this._bookShelfAreaHint){
+                if (this._bookShelfAreaHint) {
                     playerUiState.setDialogShowing(true) //打开对话框
-                    if (!this._sound.bookShelf.isPlaying  )
+                    if (!this._sound.bookShelf.isPlaying)
                         this._sound.bookShelf.play()//播放一次
                     playerUiState.setDialogInfo({
                         avatarURL: this._studio.playerAvatarURL,
                         title: "视频图书架",
                         info: "这里是Java工作室的电子视频图书架,按E键可以打开书架"
                     })
-                    this._bookShelfAreaHint =false
+                    this._bookShelfAreaHint = false
                 }
 
                 //注册键盘的监听器
@@ -279,7 +294,7 @@ export class StudioManager {
             })
 
             distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
-                this._currentArea=null //设置位置为null
+                this._currentArea = null //设置位置为null
                 playerUiState.setDialogShowing(false) //关闭对话框
                 if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
                     this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
@@ -299,10 +314,9 @@ export class StudioManager {
                     case 'E':
                     case "e":
                         if (this._currentArea == "BookShelf") {
-                            console.log('书架范围内按E')
                             this._web3DStudio.setBookShelfShow(true)
-                        } else {
-
+                        } else if (this._currentArea == "PracticeTable") {
+                            this._web3DStudio.setPracticeTableShow(true)
                         }
                 }
         }
@@ -312,9 +326,92 @@ export class StudioManager {
     private setUpSound() {
         const bookShelf = new Sound("", "src/assets/sound/java/bookShelf.mp3", this._scene, () => {
         }, {loop: false, autoplay: false});
-        this._sound = {
-            bookShelf: bookShelf
 
+        const practiceTable = new Sound("", "src/assets/sound/java/practiceTable.mp3", this._scene, () => {
+        }, {loop: false, autoplay: false});
+        this._sound = {
+            bookShelf: bookShelf,
+            practiceTable: practiceTable
         } as StudioSound
     }
+
+
+    private setUpPracticeTable() {
+        this._practiceTableMesh.forEach(mesh => {
+            mesh.renderOutline = false
+            const sourceColor = Color3.FromHexString("#1FA2FF")
+            const targetColor = Color3.FromHexString("#A6FFCB")
+            mesh.outlineColor = sourceColor
+            mesh.outlineWidth = 3
+            let up = true
+            let down = false
+            //边框动画
+            this._scene.registerBeforeRender(() => {
+                //高亮书架
+                if (this._highlightPracticeTable) {
+                    mesh.renderOutline = true //打开渲染边框
+                    if (up) { //向target进行过渡
+                        mesh.outlineWidth += 0.05
+                        mesh.outlineColor = Color3.Lerp(mesh.outlineColor, targetColor, 0.02)
+                        if (mesh.outlineWidth > 5) {
+                            up = false
+                            down = true
+                        }
+                    }
+                    if (down) { //向source进行过渡
+                        mesh.outlineColor = Color3.Lerp(mesh.outlineColor, sourceColor, 0.02)
+
+                        mesh.outlineWidth -= 0.05
+                        if (mesh.outlineWidth < 3) {
+                            up = true
+                            down = false
+                        }
+                    }
+                } else {
+                    mesh.renderOutline = false
+                }
+            })
+
+
+            //距离按键。。进入
+            const playerUiState = usePlayerUiState;
+
+            const distanceHelper = new DistanceHelper(this._scene, mesh, this._playerManager);
+
+            distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
+                this._currentArea = "PracticeTable" //当前所在位置为 练习台
+                if (this._practiceTableAreaHint) {
+                    playerUiState.setDialogShowing(true) //打开对话框
+                    if (!this._sound.practiceTable.isPlaying)
+                        this._sound.practiceTable.play()//播放一次
+                    playerUiState.setDialogInfo({
+                        avatarURL: this._studio.playerAvatarURL,
+                        title: "课后练习台",
+                        info: "这里是Java工作室的课后练习台,按E键可以打开练习台"
+                    })
+                    this._practiceTableAreaHint = false
+                }
+
+                //注册键盘的监听器
+                if (!this.keyBoardObserver) {
+                    this.keyBoardObserver = this._scene.onKeyboardObservable.add(this.keyboardEventHandler)
+                }
+
+            })
+
+            distanceHelper.triggerWhenDistanceLessThan(1, (distance: number) => {
+                console.log('小于4', distance)
+            })
+            distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
+                this._currentArea = null //设置位置为null
+                playerUiState.setDialogShowing(false) //关闭对话框
+                if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
+                    this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
+                    this.keyBoardObserver = null
+                }
+            })
+        })
+
+    }
+
 }
