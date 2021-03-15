@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {StudyType, SubTaskState, Task, TaskState} from "../task/taskUi";
+import {StudyType, SubTask, SubTaskState, Task, TaskState} from "../task/taskUi";
 import {Staircase} from "../../../core/staircase/staircase";
 import {ReceptionistManager} from "../../../core/receptionist/receptionistManager";
 import {StudioManager} from "../../../core/studio/StudioManager";
@@ -71,7 +71,7 @@ export class PlayerState {
             case StudyType.read:
                 this.receptionistManager?.playReadingHintSound()
                 break
-            case StudyType.exercise:
+            case StudyType.practice:
                 this.receptionistManager?.playExerciseHintSound()
                 break
             default:
@@ -187,6 +187,47 @@ export class PlayerState {
             }
         }
         return null
+    }
+
+    //获取当前的练习子任务
+    get currentPracticeSubTask(): SubTask[] {
+        let practiceSubTask: SubTask[] = []
+        this.currentTask.subTask.forEach(subTask => {
+            if ((subTask.status == SubTaskState.OnProgress || subTask.status == SubTaskState.UnFinished) && subTask.type == StudyType.practice) {
+                practiceSubTask.push(subTask)
+            }
+        })
+
+        const fakeTask:SubTask[] = [
+            {
+                name: "Java循环",
+                status: SubTaskState.UnFinished,
+                type:StudyType.practice,
+                studyUuid:1,
+                progress:100,
+                description:"哈哈"
+             },
+            {
+                name: "Java条件语句",
+                status: SubTaskState.UnFinished,
+                type:StudyType.practice,
+                studyUuid:2,
+                progress:100,
+                description:"哈哈"
+            },
+            {
+                name: "Java并发",
+                status: SubTaskState.UnFinished,
+                type:StudyType.practice,
+                studyUuid:3,
+                progress:100,
+                description:"哈哈"
+            },
+        ]
+
+
+        //return practiceSubTask
+        return fakeTask
     }
 
 }

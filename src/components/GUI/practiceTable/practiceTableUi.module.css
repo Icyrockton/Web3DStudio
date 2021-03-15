@@ -22,3 +22,51 @@
     width: 50px;
     height: 50px;
 }
+
+.practiceArea{
+    position: absolute;
+    top: 10%;
+    left: 20%;
+    width: 60%;
+    height: 70%;
+    background: red;
+}
+
+.practiceSider{
+    left: 0;
+    width: 10%;
+    height: 100%;
+    overflow: auto;
+}
+
+.practiceMainArea{
+
+}
+
+.practiceHeader{
+    background: white;
+    padding: 0;
+}
+
+
+.centerButton {
+    display: block;
+    margin: 0 auto;
+}
+.centerText{
+    text-align: center;
+}
+
+.practiceContentArea{
+    overflow: auto;
+}
+
+.taskCard{
+    margin-top: 16px;
+}
+
+.logo {
+    width: 20%;
+    height: 64px;
+    margin: 0 auto;
+}

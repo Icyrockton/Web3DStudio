@@ -51,7 +51,7 @@ export interface SubTask {
 
 export enum StudyType {
     video, //视频
-    exercise, //课后练习
+    practice, //课后练习
     read //读书
 
 }

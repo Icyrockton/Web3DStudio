@@ -15,31 +15,22 @@ import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 import NotePad from "./components/notepad/notePad";
 import PracticeTableUi from "./components/GUI/practiceTable/practiceTableUi";
 import usePracticeTableUiState from "./components/GUI/practiceTable/practiceTableUiState";
+import {BrowserRouter, Switch, Route} from "react-router-dom";
+import {Web3D} from "./core/web3D";
 
 function App() {
 
-    const canvas = useRef<HTMLCanvasElement>(null!)
-    useEffect(() => {
-        const web3DStudio = new Web3DStudio(canvas.current)
-    })
-
-    const collegeUiState = useCollegeUiState;
-    const receptionistUiState = useReceptionistUiState;
-    const taskUiState = useTaskUiState;
-    const playerUiState = usePlayerUiState;
-    const bookShelfUiState = useBookShelfUiState;
-    const practiceTableUiState = usePracticeTableUiState;
     return (
-        <React.Fragment>
-            <canvas id="renderCanvas" ref={canvas}/>
-            <CollegeUi uiState={collegeUiState}/>
-            <ReceptionistUi receptionistUiState={receptionistUiState}/>
-            <TaskUi taskUiState={taskUiState}/>
-            <PlayerUi uiState={playerUiState}/>
-            <BookShelfUi uiState={bookShelfUiState}/>
-            <PracticeTableUi uiState={practiceTableUiState}/>
-            <NotePad/>
-        </React.Fragment>
+        <BrowserRouter>
+            <Switch>
+                <Route path={"/computer"}>
+                    <h1>Computer</h1>
+                </Route>
+                <Route path={"/"}>
+                    <Web3D/>
+                </Route>
+            </Switch>
+        </BrowserRouter>
     )
 }
 

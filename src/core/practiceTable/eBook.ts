@@ -334,4 +334,8 @@ export class EBook {
 
         return [rotateXAnim, rotateYAnim, moveAnim]
     }
+
+    public dispose(){
+        this._eBookNode.dispose(false,true)
+    }
 }

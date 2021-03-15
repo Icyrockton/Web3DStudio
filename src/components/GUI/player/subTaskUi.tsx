@@ -41,7 +41,7 @@ const SubTaskUiComponent = (props: SubTaskUiProps) => {
         switch (type) {
             case StudyType.video:
                 return (<><Icon component={VideoSVG}/>&nbsp;&nbsp;观看视频</>)
-            case StudyType.exercise:
+            case StudyType.practice:
                 return (<><Icon component={ExerciseSVG}/>&nbsp;&nbsp;课后练习</>)
             case StudyType.read:
                 return (<><Icon component={ReadingSVG}/>&nbsp;&nbsp;阅读电子书籍</>)

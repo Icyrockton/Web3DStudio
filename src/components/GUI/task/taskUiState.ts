@@ -1,4 +1,4 @@
-import {StudyType, SubTaskState, Task, TaskState} from "./taskUi";
+import {StudyType, SubTask, SubTaskState, Task, TaskState} from "./taskUi";
 import {makeAutoObservable} from "mobx";
 import usePlayerUiState from "../player/playerUiState";
 
@@ -17,53 +17,53 @@ export const fakeTask: Task[] = [{
             description: '学习安装SpringBoot',
             rate: 4,
             progress: 100,
-            studyUuid : 0 ,
+            studyUuid: 0,
         },
         {
             status: SubTaskState.Finished,
             name: '子任务2',
-            type: StudyType.exercise,
+            type: StudyType.practice,
             description: '搭建一个基本的Restful风格的后端',
             rate: 3,
             progress: 100,
-            studyUuid : 0 ,
+            studyUuid: 0,
 
         },
         {
             status: SubTaskState.Finished,
             name: '子任务2',
-            type: StudyType.exercise,
+            type: StudyType.practice,
             description: '搭建一个基本的Restful风格的后端',
             rate: 3,
             progress: 100,
-            studyUuid : 0 ,
+            studyUuid: 0,
         },
         {
             status: SubTaskState.OnProgress,
             name: '子任务2',
-            type: StudyType.exercise,
+            type: StudyType.practice,
             description: '搭建一个基本的Restful风格的后端',
             rate: 3,
             progress: 100,
-            studyUuid : 0 ,
+            studyUuid: 0,
         },
         {
             status: SubTaskState.UnFinished,
             name: '子任务2',
-            type: StudyType.exercise,
+            type: StudyType.practice,
             description: '搭建一个基本的Restful风格的后端',
             rate: 3,
             progress: 100,
-            studyUuid : 0 ,
+            studyUuid: 0,
         },
         {
             status: SubTaskState.UnFinished,
             name: '子任务2',
-            type: StudyType.exercise,
+            type: StudyType.practice,
             description: '搭建一个基本的Restful风格的后端',
             rate: 3,
             progress: 100,
-            studyUuid : 0 ,
+            studyUuid: 0,
         }
     ],
     rate: 3.5
@@ -77,12 +77,36 @@ export const fakeTask: Task[] = [{
         status: TaskState.NotAccept,
         subTask: [
             {
+                name: "Java循环",
+                status: SubTaskState.UnFinished,
+                type: StudyType.practice,
+                studyUuid: 1,
+                progress: 100,
+                description: "哈哈"
+            },
+            {
+                name: "Java条件语句",
+                status: SubTaskState.UnFinished,
+                type: StudyType.practice,
+                studyUuid: 2,
+                progress: 100,
+                description: "哈哈"
+            },
+            {
+                name: "Java并发",
+                status: SubTaskState.UnFinished,
+                type: StudyType.practice,
+                studyUuid: 3,
+                progress: 100,
+                description: "哈哈"
+            },
+            {
                 name: "jvm内存模型",
                 description: "解析jvm虚拟机底层的内存模型",
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid : 1 ,
+                studyUuid: 1,
             },
             {
                 name: "指令重排序",
@@ -90,7 +114,7 @@ export const fakeTask: Task[] = [{
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid : 2 ,
+                studyUuid: 2,
             },
             {
                 name: "jvm内存屏障",
@@ -98,7 +122,7 @@ export const fakeTask: Task[] = [{
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid : 3 ,
+                studyUuid: 3,
             }
         ]
     },
@@ -115,7 +139,7 @@ export const fakeTask: Task[] = [{
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid : 4 ,
+                studyUuid: 4,
             },
             {
                 name: "类加载器及双亲委派机制",
@@ -123,7 +147,7 @@ export const fakeTask: Task[] = [{
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid : 5 ,
+                studyUuid: 5,
             },
             {
                 name: "Native，方法区",
@@ -131,7 +155,7 @@ export const fakeTask: Task[] = [{
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid : 6 ,
+                studyUuid: 6,
             }
         ]
     }
@@ -169,7 +193,7 @@ export class TaskUiState {
                         case StudyType.read:
                             receptionistManager?.playReadingHintSound()
                             break
-                        case StudyType.exercise:
+                        case StudyType.practice:
                             receptionistManager?.playExerciseHintSound()
                             break
                         default:
