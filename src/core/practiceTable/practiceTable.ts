@@ -279,7 +279,7 @@ export class PracticeTable implements EBookUtil {
         const title = new TextBlock("main", "Java工作室练习台");
         title.fontSize = "60px"
         title.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
-        title.color = "Black"
+        title.color = "white"
         title.height = "100px"  //标题高度100px
         title.width = "100%"
         topLevel.addControl(title)
@@ -337,13 +337,17 @@ export class PracticeTable implements EBookUtil {
 
     public updatePracticeButton() { //刷新练习按钮
         if (this._practiceColumn) {
+
+            //清空之前的东西
+            this._practiceColumn.children.splice(0,this._practiceColumn.children.length)
+            //标题
             const practiceColumn = this._practiceColumn;
             const practiceTitle = new TextBlock("practice", "练习");
             practiceTitle.height = "100px"
             practiceTitle.color = "white"
             practiceTitle.fontSize = "50px"
             practiceColumn.addControl(practiceTitle)
-
+            //练习按钮
             const playerUiState = usePlayerUiState;
             const practiceTableUiState = usePracticeTableUiState;
             playerUiState.currentPracticeSubTask.forEach(subTask => {
@@ -351,7 +355,6 @@ export class PracticeTable implements EBookUtil {
                 this.addButton(subTask.name, this._practiceColumn!, () => {
                     practiceTableUiState.setCurrentPractice(subTask) //设置当前正在进行的练习...
                     practiceTableUiState.setPracticeShowing(true) //显示
-
                 })
             })
         }

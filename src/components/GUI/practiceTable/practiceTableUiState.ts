@@ -1,8 +1,9 @@
 import {makeAutoObservable, runInAction} from "mobx";
-import {EBookDetail} from "../../../core/practiceTable/practiceTable";
+import {EBookDetail, PracticeTable} from "../../../core/practiceTable/practiceTable";
 import {EBook} from "../../../core/practiceTable/eBook";
 import {StudyType, SubTask} from "../task/taskUi";
 import usePlayerUiState from "../player/playerUiState";
+import {Web3DStudio} from "../../../web3DStudio";
 
 
 const fakeEBooks: EBookDetail [] = [
@@ -167,11 +168,19 @@ export class PracticeTableUiState {
     currentPractice: SubTask | null = null //保存
     currentPracticeDetail: PracticeTask | null = fakePracticeTask[0]  //练习的详细数据结构 保存了练习的所有题目等...
     practiceAnswer: PracticeAnswer[] = []
+    web3DStudio:Web3DStudio | null =null
+    practiceTable : PracticeTable | null = null
+
+    setPracticeTable(practiceTable: PracticeTable){
+        this.practiceTable = practiceTable
+    }
+
 
     private async getPracticeTaskDetail(uuid: number) {
         const task = await this.fetchPracticeTask(uuid);
         runInAction(() => {
             this.currentPracticeDetail = task  //设置当前练习
+
             this.practiceAnswer.splice(0, this.practiceAnswer.length)
             for (let i = 0; i < this.currentPracticeDetail.subTasks.length; i++) {
                 this.practiceAnswer.push({answer: ""})
@@ -198,13 +207,28 @@ export class PracticeTableUiState {
 
     eBookReaderShowing: boolean = false //电子书显示
     practiceShowing: boolean = false //练习显示
+    practiceTableShowing : boolean =false //练习台关闭按钮显示
+
+    setPracticeTableShowing(showing:boolean){
+        this.practiceTableShowing = showing
+    }
 
     setEBookReaderShowing(showing: boolean) {
         this.eBookReaderShowing = showing
+        if (showing){
+            this.practiceTableShowing =false
+        }
+        else
+            this.practiceTableShowing =true
     }
 
     setPracticeShowing(showing: boolean) {
         this.practiceShowing = showing
+        if (showing){
+            this.practiceTableShowing =false
+        }
+        else
+            this.practiceTableShowing =true
     }
 
 
@@ -216,7 +240,10 @@ export class PracticeTableUiState {
             fetchPracticeTask: false,
             practiceAnswer: false,
             submit:false,
-            unFinishedPracticeCount:false
+            unFinishedPracticeCount:false,
+            web3DStudio:false,
+            practiceTable:false,
+            setPracticeTable:false
         })
     }
 

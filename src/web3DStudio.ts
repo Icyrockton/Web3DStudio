@@ -12,6 +12,7 @@ import {ReceptionistConfig, Studio} from "./core/studio/Studio";
 import {BookShelf} from "./core/bookShelf/bookShelf";
 import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 import {PracticeTable} from "./core/practiceTable/practiceTable";
+import usePracticeTableUiState from "./components/GUI/practiceTable/practiceTableUiState";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -21,7 +22,7 @@ export class Web3DStudio implements IState {
 
 
     private _bookShelfShowing: boolean = false //书架显示
-    private _practiceTableShowing: boolean = true //练习台显示
+    private _practiceTableShowing: boolean = false //练习台显示
     private _canvas: HTMLCanvasElement;
     private _engine: Engine;
     private _scene: Scene
@@ -41,7 +42,7 @@ export class Web3DStudio implements IState {
         SceneLoader.ShowLoadingScreen = false //关闭默认的loading UI
 
         this.setBookShelfScene()
-
+        this.setPracticeTableScene()
 
         this.setDebugUI()
         this.run()//运行渲染函数
@@ -82,6 +83,8 @@ export class Web3DStudio implements IState {
             if (this._practiceTableShowing){
                 if (this._practiceTable == null){
                     this._practiceTable =new PracticeTable(this._engine)
+                    const practiceTableUiState = usePracticeTableUiState;
+                    practiceTableUiState.practiceTable = this._practiceTable
                 }
                 else{
                     this._practiceTable.render()
@@ -109,36 +112,36 @@ export class Web3DStudio implements IState {
         // 暂时直接
 
 
-        // let fakeStudio = {
-        //     name: "java工作室",
-        //     modelURL: "src/assets/model/studio/java_studio.glb",
-        //     playerModelURL: "src/assets/model/player.glb",
-        //     description: "java工作室 一个学习高并发的工作室",
-        //     playerSpawn: "playerSpawn",
-        //     collisionBox: ["collision", "ground"],
-        //     groundName: "ground",
-        //     playerAvatarURL: "src/assets/img/avatar/playerAvatar.png",
-        //     directionalLightPosition: new Vector3(-10, 10, -10),
-        //     bookShelfStartName: "BookShelf",
-        //     practiceTableStartName: "PracticeTable",
-        //     receptionistConfig: {
-        //         receptionistModelURL: "src/assets/model/receptionist.glb",
-        //         receptionistSpawn: "receptionistSpawn",
-        //         receptionistRotateYAxis: Math.PI / 2,
-        //         distanceTrigger: 2,
-        //         greetingSoundURL: "src/assets/sound/javaGreeting.mp3",
-        //         introductionSoundURL: "src/assets/sound/javaIntroduction.mp3"
-        //     } as ReceptionistConfig,
-        //     rotateCamera: [
-        //         {mesh: "cameraRotate_1", rotate: 0},
-        //         {mesh: "cameraRotate_2", rotate: -Math.PI / 2},
-        //         {mesh: "cameraRotate_3", rotate: Math.PI / 2},
-        //         {mesh: "cameraRotate_4", rotate: 0},
-        //         {mesh: "cameraRotate_5", rotate: Math.PI},
-        //     ]
-        // } as Studio
-        //
-        // await this.goToStudio(fakeStudio)
+        let fakeStudio = {
+            name: "java工作室",
+            modelURL: "src/assets/model/studio/java_studio.glb",
+            playerModelURL: "src/assets/model/player.glb",
+            description: "java工作室 一个学习高并发的工作室",
+            playerSpawn: "playerSpawn",
+            collisionBox: ["collision", "ground"],
+            groundName: "ground",
+            playerAvatarURL: "src/assets/img/avatar/playerAvatar.png",
+            directionalLightPosition: new Vector3(-10, 10, -10),
+            bookShelfStartName: "BookShelf",
+            practiceTableStartName: "PracticeTable",
+            receptionistConfig: {
+                receptionistModelURL: "src/assets/model/receptionist.glb",
+                receptionistSpawn: "receptionistSpawn",
+                receptionistRotateYAxis: Math.PI / 2,
+                distanceTrigger: 2,
+                greetingSoundURL: "src/assets/sound/javaGreeting.mp3",
+                introductionSoundURL: "src/assets/sound/javaIntroduction.mp3"
+            } as ReceptionistConfig,
+            rotateCamera: [
+                {mesh: "cameraRotate_1", rotate: 0},
+                {mesh: "cameraRotate_2", rotate: -Math.PI / 2},
+                {mesh: "cameraRotate_3", rotate: Math.PI / 2},
+                {mesh: "cameraRotate_4", rotate: 0},
+                {mesh: "cameraRotate_5", rotate: Math.PI},
+            ]
+        } as Studio
+
+        await this.goToStudio(fakeStudio)
     }
 
 
@@ -194,9 +197,14 @@ export class Web3DStudio implements IState {
     setPracticeTableShow(showing: boolean): void {
         this._practiceTableShowing = showing
         if (this._practiceTableShowing){
-
+            const practiceTableUiState = usePracticeTableUiState;
+            practiceTableUiState.setPracticeTableShowing(true) //显示关闭UI
         }
     }
 
 
+    private setPracticeTableScene() {
+        const practiceTableUiState = usePracticeTableUiState;
+        practiceTableUiState.web3DStudio = this //注入web3DStudio
+    }
 }

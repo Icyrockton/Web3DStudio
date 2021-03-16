@@ -81,7 +81,7 @@ export const fakeTask: Task[] = [{
                 status: SubTaskState.UnFinished,
                 type: StudyType.practice,
                 studyUuid: 1,
-                progress: 100,
+                progress: 0,
                 description: "哈哈"
             },
             {
@@ -89,7 +89,7 @@ export const fakeTask: Task[] = [{
                 status: SubTaskState.UnFinished,
                 type: StudyType.practice,
                 studyUuid: 2,
-                progress: 100,
+                progress: 0,
                 description: "哈哈"
             },
             {
@@ -97,7 +97,7 @@ export const fakeTask: Task[] = [{
                 status: SubTaskState.UnFinished,
                 type: StudyType.practice,
                 studyUuid: 3,
-                progress: 100,
+                progress: 0,
                 description: "哈哈"
             },
             {
@@ -192,9 +192,11 @@ export class TaskUiState {
                             break
                         case StudyType.read:
                             receptionistManager?.playReadingHintSound()
+                            studioManager?.setHighlightPracticeTable(true)
                             break
                         case StudyType.practice:
                             receptionistManager?.playExerciseHintSound()
+                            studioManager?.setHighlightPracticeTable(true)
                             break
                         default:
                             break

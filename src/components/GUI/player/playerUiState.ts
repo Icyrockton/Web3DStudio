@@ -4,6 +4,7 @@ import {Staircase} from "../../../core/staircase/staircase";
 import {ReceptionistManager} from "../../../core/receptionist/receptionistManager";
 import {StudioManager} from "../../../core/studio/StudioManager";
 import {notification} from "antd";
+import usePracticeTableUiState from "../practiceTable/practiceTableUiState";
 
 export interface Player {
 
@@ -57,11 +58,16 @@ export class PlayerState {
                 studioManager: false,
                 setStudioManager: false,
                 currentSubTaskVideoUUID: false,
-                playSound: false
+                playSoundAndHighLight: false,
             })
     }
 
-    public playSound(subTaskIndex: number) {
+    public playSoundAndHighLight(subTaskIndex: number) {
+        //关闭所有的高亮
+        this.studioManager?.setHighLightBookShelf(false)
+        this.studioManager?.setHighlightPracticeTable(false)
+        this.studioManager?.setHighlightPracticeTable(false)
+
         //播放不同类型的接受任务声音
         switch (this.currentTask.subTask[subTaskIndex].type) {
             case StudyType.video:
@@ -70,14 +76,17 @@ export class PlayerState {
                 break
             case StudyType.read:
                 this.receptionistManager?.playReadingHintSound()
+                this.studioManager?.setHighlightPracticeTable(true)
                 break
             case StudyType.practice:
                 this.receptionistManager?.playExerciseHintSound()
+                this.studioManager?.setHighlightPracticeTable(true)
                 break
             default:
                 break
         }
     }
+
 
     public setCurrentTask(task: Task) { //设置当前任务
         this.isShowing = true
@@ -87,6 +96,14 @@ export class PlayerState {
             }
         })
         this.currentTask = task
+        this.updatePracticeTableButton() //刷新练习台上的练习按钮
+    }
+
+    private updatePracticeTableButton() {
+        const practiceTableUiState = usePracticeTableUiState;
+        if (practiceTableUiState.practiceTable) { //获取到任务后就更新按钮
+            practiceTableUiState.practiceTable.updatePracticeButton()
+        }
     }
 
     public setShowing(showing: boolean) {
@@ -131,12 +148,14 @@ export class PlayerState {
                 onClose: () => {
                     //播放提示声音
                     if (subTaskIndex < this.currentTask.subTask.length) {
-                        this.playSound(this.currentSubTaskIndex)
+                        this.playSoundAndHighLight(this.currentSubTaskIndex)
                     }
                 },
                 duration: 3   //3秒结束后  播放下一个任务的提示音
             }
         )
+        this.updatePracticeTableButton() //刷新练习台上的练习按钮
+
         if (subTaskIndex >= this.currentTask.subTask.length) {
             //计算总分
             const totalScore = this.currentTask.subTask.reduce((previousValue: number, currentTask) => previousValue + currentTask.rate!, 0)
@@ -153,6 +172,7 @@ export class PlayerState {
                 }
             )
             this.currentSubTaskIndex = -1 //任务完成...
+            this.turnOffAllHighLight() //关闭所有高亮
             return;
         }
         //调整任务状态
@@ -161,6 +181,14 @@ export class PlayerState {
         this.currentSubTaskIndex = subTaskIndex
 
     }
+
+    private turnOffAllHighLight() { //关闭所有高亮
+        //关闭所有的高亮
+        this.studioManager?.setHighLightBookShelf(false)
+        this.studioManager?.setHighlightPracticeTable(false)
+        this.studioManager?.setHighlightPracticeTable(false)
+    }
+
 
     public updateCurrentSubTaskProgress(studyType: StudyType, studyUuid: number, progress: number) {
         if (this.currentTask.uuid >= 0) {
@@ -198,36 +226,10 @@ export class PlayerState {
             }
         })
 
-        const fakeTask:SubTask[] = [
-            {
-                name: "Java循环",
-                status: SubTaskState.UnFinished,
-                type:StudyType.practice,
-                studyUuid:1,
-                progress:100,
-                description:"哈哈"
-             },
-            {
-                name: "Java条件语句",
-                status: SubTaskState.UnFinished,
-                type:StudyType.practice,
-                studyUuid:2,
-                progress:100,
-                description:"哈哈"
-            },
-            {
-                name: "Java并发",
-                status: SubTaskState.UnFinished,
-                type:StudyType.practice,
-                studyUuid:3,
-                progress:100,
-                description:"哈哈"
-            },
-        ]
 
-
-        //return practiceSubTask
-        return fakeTask
+        console.log('返回练习任务', practiceSubTask)
+        return practiceSubTask
+        //return fakeTask
     }
 
 }

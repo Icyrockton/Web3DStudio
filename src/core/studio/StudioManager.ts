@@ -207,7 +207,7 @@ export class StudioManager {
 
     //高亮
     private _highlightBookShelf: boolean = false
-    private _highlightPracticeTable: boolean = true
+    private _highlightPracticeTable: boolean = false
 
     public setHighLightBookShelf(highLight: boolean) {
         this._highlightBookShelf = highLight
@@ -399,9 +399,6 @@ export class StudioManager {
 
             })
 
-            distanceHelper.triggerWhenDistanceLessThan(1, (distance: number) => {
-                console.log('小于4', distance)
-            })
             distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
                 this._currentArea = null //设置位置为null
                 playerUiState.setDialogShowing(false) //关闭对话框

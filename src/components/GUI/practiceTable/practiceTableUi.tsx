@@ -111,7 +111,7 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
     const eReaderClose = () => {
         uiState.setEBookReaderShowing(false)
         uiState.currentEBook?.moveToOriginStepOne()
-        //uiState.setShelfShowing(true) //显示书架的关闭
+
     }
     const practiceClose = () => { //关闭练习
         uiState.setPracticeShowing(false)
@@ -143,9 +143,13 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
         setVisible(false)
     }
     const handleOk = () => { //确认提交
+        setVisible(false)
         uiState.submit()
     }
-
+    const closeTable = ()=>{
+        uiState.setPracticeTableShowing(false)
+        uiState.web3DStudio?.setPracticeTableShow(false)
+    }
     const confirmContent = () => {
         const unFinishedPracticeCount = uiState.unFinishedPracticeCount;
         console.log(unFinishedPracticeCount)
@@ -155,6 +159,13 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
             return <p>你已完成所有题目,可以提交</p>
     }
     return (<>
+
+            <div className={`${classes.practiceTableCloseArea} ${uiState.practiceTableShowing ?"" : classes.none}`}>
+                <Tooltip title={"关闭练习台"}>
+                    <Button type={"primary"} icon={<CloseSquareOutlined style={{fontSize: "50px"}} onClick={closeTable}/>}
+                            className={classes.practiceTableCloseButton}/>
+                </Tooltip>
+            </div>
 
             <div className={`${classes.eBookReaderClose} ${uiState.eBookReaderShowing ? "" : classes.none}`}>
                 <Tooltip title={"关闭电子书"}>
