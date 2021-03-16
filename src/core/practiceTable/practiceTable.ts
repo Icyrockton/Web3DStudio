@@ -70,7 +70,7 @@ export class PracticeTable implements EBookUtil {
 
         this.setUpPracticeTable()
 
-        this._scene.debugLayer.show()
+        // this._scene.debugLayer.show()
     }
 
     public render() {

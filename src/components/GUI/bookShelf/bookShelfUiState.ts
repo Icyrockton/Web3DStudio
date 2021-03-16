@@ -8,15 +8,15 @@ const fakeBooks: BookDetail[] = [
     {
         uuid: 1,
         area: "A_Area",
-        videoName: "JVM内存模型",
+            videoName: "JVM内存模型",
         videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_1.png",
+        textureImgURL: "src/assets/img/bookCover/videoBook/内存模型.png",
         thickness:1
     },
     {
         uuid: 2,
         area: "A_Area",
-        videoName: "指令重排序",
+        videoName: "JVM体系结构",
         videoURL: "src/assets/video/javaVideo_1.flv",
         textureImgURL: "src/assets/img/bookCover/book_2.png",
         thickness:1
@@ -24,7 +24,7 @@ const fakeBooks: BookDetail[] = [
     {
         uuid: 3,
         area: "A_Area",
-        videoName: "JVM内存屏障",
+        videoName: "",
         videoURL: "src/assets/video/javaVideo_1.flv",
         textureImgURL: "src/assets/img/bookCover/book_3.png",
         thickness:0.5
@@ -32,9 +32,9 @@ const fakeBooks: BookDetail[] = [
     {
         uuid: 4,
         area: "A_Area",
-        videoName: "JVM体系结构",
+        videoName: "指令重排序",
         videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_4.png",
+        textureImgURL: "src/assets/img/bookCover/videoBook/指令重排序.png",
         thickness:1
     },
     {
@@ -64,9 +64,9 @@ const fakeBooks: BookDetail[] = [
     {
         uuid: 8,
         area: "B_Area",
-        videoName: "JVM虚拟机",
+        videoName: "JVM内存屏障",
         videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        textureImgURL: "src/assets/img/bookCover/videoBook/内存屏障.png",
         thickness:0.55
     },
     {

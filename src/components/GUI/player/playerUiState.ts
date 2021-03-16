@@ -217,6 +217,19 @@ export class PlayerState {
         return null
     }
 
+    //获取当前子任务的电子书uuid 如果当前子任务不是看电子书的子任务 返回null
+    get currentSubTaskEBookUUID(): number | null {
+
+        if (this.currentTask.uuid >= 0) {
+            if (this.currentSubTaskIndex >= 0 && this.currentSubTaskIndex < this.currentTask.subTask.length) {
+                if (this.currentTask.subTask[this.currentSubTaskIndex].type == StudyType.read)
+                    return this.currentTask.subTask[this.currentSubTaskIndex].studyUuid  //返回电子书的ID
+            }
+        }
+        return null
+    }
+
+
     //获取当前的练习子任务
     get currentPracticeSubTask(): SubTask[] {
         let practiceSubTask: SubTask[] = []

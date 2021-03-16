@@ -11,6 +11,7 @@ import {EBookDetail, EBookUtil, PracticeTable} from "./practiceTable";
 import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
 import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState";
 import usePracticeTableUiState from "../../components/GUI/practiceTable/practiceTableUiState";
+import usePlayerUiState from "../../components/GUI/player/playerUiState";
 
 enum BookState {
     init, //原始位置
@@ -61,6 +62,21 @@ export class EBook {
         meshes[0].parent = this._eBookNode
         const content = meshes[1] as Mesh;
         const cover = meshes[2] as Mesh;
+
+
+        //高光
+        const playerUiState = usePlayerUiState;
+        this._scene.registerBeforeRender(()=>{
+            const eBookUUID = playerUiState.currentSubTaskEBookUUID;
+            if (eBookUUID && eBookUUID == this._eBook.uuid){
+                this._highLightLayer.addMesh(cover,Color3.Green())
+            }
+            else{
+                this._highLightLayer.removeMesh(cover)
+            }
+        })
+
+
 
         const practiceTableUiState = usePracticeTableUiState;
         //动画

@@ -101,7 +101,7 @@ export const fakeTask: Task[] = [{
                 description: "哈哈"
             },
             {
-                name: "jvm内存模型",
+                name: "JVM内存模型",
                 description: "解析jvm虚拟机底层的内存模型",
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
@@ -114,15 +114,15 @@ export const fakeTask: Task[] = [{
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid: 2,
+                studyUuid: 4,
             },
             {
-                name: "jvm内存屏障",
-                description: "jvm内存屏障解析",
+                name: "JVM内存屏障",
+                description: "JVM内存屏障解析",
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid: 3,
+                studyUuid: 8    ,
             }
         ]
     },
@@ -148,6 +148,39 @@ export const fakeTask: Task[] = [{
                 status: SubTaskState.UnFinished,
                 progress: 0,
                 studyUuid: 5,
+            },
+            {
+                name: "Native，方法区",
+                description: "解析jvm的方法区中有什么",
+                type: StudyType.video,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid: 6,
+            }
+        ]
+    },
+    {
+        uuid: 4,
+        description: "JAVA8有lambda等新特性...",
+        name: "JAVA8系列",
+        goal: "熟悉了解JAVA8的语法,能熟练应用于项目当中",
+        status: TaskState.NotAccept,
+        subTask: [
+            {
+                name: "Lambda表达式",
+                description: "什么是lambda表达式",
+                type: StudyType.read,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid: 1,
+            },
+            {
+                name: "Java8实战",
+                description: "Java8实战",
+                type: StudyType.read,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid: 2,
             },
             {
                 name: "Native，方法区",

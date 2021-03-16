@@ -1,10 +1,11 @@
 .eBookReaderArea{
     position: absolute;
     top: 15%;
-    left: 15%;
-    width: 70%;
+    left: 22%;
+    width: 55%;
     height: 60%;
-    background: black;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.3)
 }
 
 .none{
@@ -80,4 +81,11 @@
 .practiceTableCloseButton{
     width: 60px;
     height: 60px;
+}
+.eBookReaderLoaderProgressArea{
+    background: white;
+    width: 80%;
+}
+.eBookReaderLoaderProgress{
+
 }

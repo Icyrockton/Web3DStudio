@@ -9,44 +9,44 @@ import {Web3DStudio} from "../../../web3DStudio";
 const fakeEBooks: EBookDetail [] = [
     {
         uuid: 1,
-        bookName: "Java从入门到精通（第5版）",
-        bookURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_1.png",
+        bookName: "Java8函数式编程",
+        bookURL: "src/assets/pdf/Java8函数式编程-22-25.pdf",
+        textureImgURL: "src/assets/img/bookCover/eBook/函数式编程.png",
         thickness: 1.0
     },
     {
         uuid: 2,
-        bookName: "Java核心技术 卷I 基础知识",
-        bookURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_2.png",
+        bookName: "Java8实战",
+        bookURL: "src/assets/pdf/Java8实战-22-26.pdf",
+        textureImgURL: "src/assets/img/bookCover/eBook/java实战.png",
         thickness: 1.0
     },
     {
         uuid: 3,
-        bookName: "Java编程思想",
-        bookURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_3.png",
+        bookName: "Java并发编程艺术",
+        bookURL: "src/assets/pdf/Java并发编程艺术-15-19.pdf",
+        textureImgURL: "src/assets/img/bookCover/eBook/并发编程艺术.png",
         thickness: 1.0
     },
     {
         uuid: 4,
-        bookName: "Effective Java中文版",
-        bookURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_4.png",
+        bookName: "深入理解Java虚拟机",
+        bookURL: "src/assets/pdf/深入理解Java虚拟机：（第3版)-253-257.pdf",
+        textureImgURL: "src/assets/img/bookCover/eBook/深入理解java虚拟机.png",
         thickness: 1.0
     },
     {
         uuid: 5,
         bookName: "Java编程思想",
-        bookURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_3.png",
+        bookURL: "src/assets/pdf/Java8实战-88-93.pdf",
+        textureImgURL: "src/assets/img/bookCover/eBook/java编程思想.png",
         thickness: 1.0
     },
     {
         uuid: 6,
         bookName: "Effective Java中文版",
-        bookURL: "",
-        textureImgURL: "src/assets/img/bookCover/book_2.png",
+        bookURL: "src/assets/pdf/Java8实战-88-93.pdf",
+        textureImgURL: "src/assets/img/bookCover/eBook/Effective_Java中文版.png",
         thickness: 1.0
     }
 
@@ -159,19 +159,28 @@ const fakePracticeTask: PracticeTask[] = [
     }
 ]
 
+
+
+
 export class PracticeTableUiState {
 
     eBooks: EBookDetail[] = fakeEBooks
     currentEBook: EBook | null = null //保存实例为了关闭书籍
-    currentEBookDetail: EBookDetail | null = null //书籍的信息
+    currentEBookDetail: EBookDetail = {
+        uuid: -1,
+        bookName: "Java工作室",
+        bookURL: "src/assets/pdf/Java.pdf",
+        textureImgURL: "",
+        thickness: 1.0
+    } //书籍的信息
 
     currentPractice: SubTask | null = null //保存
     currentPracticeDetail: PracticeTask | null = fakePracticeTask[0]  //练习的详细数据结构 保存了练习的所有题目等...
     practiceAnswer: PracticeAnswer[] = []
-    web3DStudio:Web3DStudio | null =null
-    practiceTable : PracticeTable | null = null
+    web3DStudio: Web3DStudio | null = null
+    practiceTable: PracticeTable | null = null
 
-    setPracticeTable(practiceTable: PracticeTable){
+    setPracticeTable(practiceTable: PracticeTable) {
         this.practiceTable = practiceTable
     }
 
@@ -207,28 +216,26 @@ export class PracticeTableUiState {
 
     eBookReaderShowing: boolean = false //电子书显示
     practiceShowing: boolean = false //练习显示
-    practiceTableShowing : boolean =false //练习台关闭按钮显示
+    practiceTableShowing: boolean = false //练习台关闭按钮显示
 
-    setPracticeTableShowing(showing:boolean){
+    setPracticeTableShowing(showing: boolean) {
         this.practiceTableShowing = showing
     }
 
     setEBookReaderShowing(showing: boolean) {
         this.eBookReaderShowing = showing
-        if (showing){
-            this.practiceTableShowing =false
-        }
-        else
-            this.practiceTableShowing =true
+        if (showing) {
+            this.practiceTableShowing = false
+        } else
+            this.practiceTableShowing = true
     }
 
     setPracticeShowing(showing: boolean) {
         this.practiceShowing = showing
-        if (showing){
-            this.practiceTableShowing =false
-        }
-        else
-            this.practiceTableShowing =true
+        if (showing) {
+            this.practiceTableShowing = false
+        } else
+            this.practiceTableShowing = true
     }
 
 
@@ -239,25 +246,26 @@ export class PracticeTableUiState {
             setEBookWithDetail: false,
             fetchPracticeTask: false,
             practiceAnswer: false,
-            submit:false,
-            unFinishedPracticeCount:false,
-            web3DStudio:false,
-            practiceTable:false,
-            setPracticeTable:false
+            submit: false,
+            unFinishedPracticeCount: false,
+            web3DStudio: false,
+            practiceTable: false,
+            setPracticeTable: false
         })
     }
 
 
     submit() {
         const playerUiState = usePlayerUiState;
-        console.log('提交的答案',this.practiceAnswer)
+        console.log('提交的答案', this.practiceAnswer)
         //更新任务进度
-        playerUiState.updateCurrentSubTaskProgress(StudyType.practice,this.currentPractice!.studyUuid,100)
+        playerUiState.updateCurrentSubTaskProgress(StudyType.practice, this.currentPractice!.studyUuid, 100)
     }
-    get unFinishedPracticeCount(){ //返回未完成的题目数量
-        let count=0
-        this.practiceAnswer.forEach(value=>{
-            if (value.answer =="")
+
+    get unFinishedPracticeCount() { //返回未完成的题目数量
+        let count = 0
+        this.practiceAnswer.forEach(value => {
+            if (value.answer == "")
                 count++
         })
         return count
