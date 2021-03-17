@@ -80,13 +80,12 @@ export class Web3DStudio implements IState {
                 }
             }
             //练习台渲染
-            if (this._practiceTableShowing){
-                if (this._practiceTable == null){
-                    this._practiceTable =new PracticeTable(this._engine)
+            if (this._practiceTableShowing) {
+                if (this._practiceTable == null) {
+                    this._practiceTable = new PracticeTable(this._engine)
                     const practiceTableUiState = usePracticeTableUiState;
                     practiceTableUiState.practiceTable = this._practiceTable
-                }
-                else{
+                } else {
                     this._practiceTable.render()
                 }
             }
@@ -138,6 +137,46 @@ export class Web3DStudio implements IState {
                 {mesh: "cameraRotate_3", rotate: Math.PI / 2},
                 {mesh: "cameraRotate_4", rotate: 0},
                 {mesh: "cameraRotate_5", rotate: Math.PI},
+            ],
+            studioAIs: [
+                {
+                    name: "黄奥",
+                    info: ["我就是个傻子", "我今天屁股疼"],
+                    title: "Java高级工程师",
+                    position: "Java高级工程师",
+                    modelURL: "src/assets/model/ai/ai_1.glb",
+                    idleAnimationGroupName:"Idle",
+                    walkAnimationGroupName:"Walk",
+                    avatarURL: "",
+                    path: [
+                        {
+                            nodeName: "aiPath-1.001",
+                            residenceTime: 1000,
+                        }, {
+                            nodeName: "aiPath-1.002",
+                            residenceTime: 1000,
+                        }
+                    ]
+                },
+                {
+                    name: "黄奥奥",
+                    info: ["我就是个傻子", "我今天屁股疼"],
+                    title: "Java高级工程师",
+                    position: "Java高级工程师",
+                    modelURL: "src/assets/model/ai/ai_2.glb",
+                    idleAnimationGroupName:"Idle",
+                    walkAnimationGroupName:"Walk",
+                    avatarURL: "",
+                    path: [
+                        {
+                            nodeName: "aiPath-2.002",
+                            residenceTime: 1000,
+                        }, {
+                            nodeName: "aiPath-2.001",
+                            residenceTime: 1000,
+                        }
+                    ]
+                }
             ]
         } as Studio
 
@@ -196,7 +235,7 @@ export class Web3DStudio implements IState {
 
     setPracticeTableShow(showing: boolean): void {
         this._practiceTableShowing = showing
-        if (this._practiceTableShowing){
+        if (this._practiceTableShowing) {
             const practiceTableUiState = usePracticeTableUiState;
             practiceTableUiState.setPracticeTableShowing(true) //显示关闭UI
         }

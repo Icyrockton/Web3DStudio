@@ -6,12 +6,12 @@ import {
     KeyboardEventTypes,
     KeyboardInfo,
     Mesh,
-    Observer,
+    Observer, RecastJSPlugin,
     RenderTargetTexture,
     Scene,
     SceneLoader,
     ShadowGenerator,
-    Sound,
+    Sound, StandardMaterial,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -24,8 +24,9 @@ import usePlayerUiState from "../../components/GUI/player/playerUiState";
 import {DistanceHelper} from "../../utils/distanceHelper";
 import {IState} from "../IState";
 import {StudyType} from "../../components/GUI/task/taskUi";
-
-
+import {Ai} from "../ai/ai";
+// @ts-ignore
+import Recast from "recast-detour"
 interface StudioSound {
     bookShelf: Sound
     practiceTable: Sound
@@ -50,6 +51,7 @@ export class StudioManager {
     private _practiceTableMesh: Mesh [] = [] //练习台
     private _sound!: StudioSound
     private _web3DStudio: IState;
+    private _navigationPlugin = new RecastJSPlugin(new Recast())
 
     constructor(scene: Scene, studio: Studio, web3DStudio: IState) {
         this._scene = scene;
@@ -74,6 +76,7 @@ export class StudioManager {
         // let arcRotateCamera = new ArcRotateCamera("arc",0,0,10,Vector3.Zero(),this._scene);
         // arcRotateCamera.attachControl()
         // this._scene.activeCamera = arcRotateCamera
+
 
     }
 
@@ -115,10 +118,14 @@ export class StudioManager {
     }
 
     private setUpCollisionBox(meshes: AbstractMesh[]) { //设置碰撞盒子
+        let collisionMeshes: Mesh[] = []
         meshes.forEach(mesh => {
             if (this._studio.collisionBox.find(collision => collision == mesh.name)) {
                 mesh.isVisible = false //不可见
                 mesh.checkCollisions = true //碰撞检测
+                if (mesh instanceof Mesh) {
+                    collisionMeshes.push(mesh) //碰撞盒子
+                }
             }
         })
 
@@ -126,7 +133,12 @@ export class StudioManager {
         let ground = meshes.find(mesh => mesh.name == this._studio.groundName);
         if (ground) {
             ground.isVisible = true
+            if (ground instanceof Mesh) {
+                collisionMeshes.push(ground) //碰撞盒子
+            }
         }
+
+        this.setUpNavMesh(collisionMeshes) //设置导航Mesh
     }
 
     private async setUpPlayer() { //设置玩家
@@ -185,6 +197,7 @@ export class StudioManager {
             position: "Java架构高级工程师",
             title: "高级工程师"
         } as ReceptionistDescription
+
         receptionistUiState.setDescription(description)
 
         //设置  如果玩家在length距离以内,触发问候事件
@@ -411,4 +424,37 @@ export class StudioManager {
 
     }
 
+    private setUpNavMesh(collisionMeshes: Mesh[]) {
+        const parameters = {
+            cs: 0.2,
+            ch: 0.01,
+            walkableSlopeAngle: 10,
+            walkableHeight: 1,
+            walkableClimb: 0.0,
+            walkableRadius: 1,
+            maxEdgeLen: 12.,
+            maxSimplificationError: 1.3,
+            minRegionArea: 8,
+            mergeRegionArea: 20,
+            maxVertsPerPoly: 6,
+            detailSampleDist: 6,
+            detailSampleMaxError: 1,
+        };
+        const navigationPlugin = this._navigationPlugin;
+        navigationPlugin.createNavMesh(collisionMeshes, parameters)
+
+        const navMeshDebug = navigationPlugin.createDebugNavMesh(this._scene);
+        const material = new StandardMaterial("navMeshMat", this._scene);
+        material.diffuseColor = Color3.Green()
+        material.alpha = 0.2
+        navMeshDebug.material = material
+        const crowd = navigationPlugin.createCrowd(this._studio.studioAIs.length,0.5,this._scene);
+
+        //创建AI
+        this._studio.studioAIs.forEach(studioAI=>{
+            console.log('创建AI')
+            new Ai(this._scene,studioAI,crowd,navigationPlugin)
+        })
+
+    }
 }

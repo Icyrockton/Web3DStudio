@@ -1,4 +1,4 @@
-import {Vector3} from "@babylonjs/core";
+import {TransformNode, Vector3} from "@babylonjs/core";
 
 
 
@@ -21,7 +21,7 @@ export interface Studio {
     directionalLightPosition:Vector3 //平行光的位置
     rotateCamera:RotateCamera[] //相机的自动旋转
     receptionistConfig:ReceptionistConfig //虚拟人员配置文件
-
+    studioAIs:StudioAI[]
 }
 
 export interface ReceptionistConfig {
@@ -31,4 +31,24 @@ export interface ReceptionistConfig {
     distanceTrigger:number //当玩家与虚拟人员在distanceTrigger这个距离以内时，触发对应的事件
     greetingSoundURL:string //玩家进入工作室后的问候语..
     introductionSoundURL:string //接任务的问候语
+}
+
+
+//路径信息
+export interface StudioAIPath {
+    nodeName:string  //点的位置
+    residenceTime:number //在该点的滞留时间
+}
+
+//工作室中的AI
+export interface StudioAI {
+    name:string //AI的名称
+    idleAnimationGroupName:string //空闲状态动画名称
+    walkAnimationGroupName:string //走路动画名称
+    modelURL:string //模型的地址
+    avatarURL: string //AI的头像
+    title: string //职务
+    position: string //岗位
+    info: string[] //显示的提示信息
+    path:StudioAIPath[]
 }

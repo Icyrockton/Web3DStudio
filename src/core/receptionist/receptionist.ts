@@ -9,7 +9,7 @@ export interface ReceptionistAsset {
     readonly receptionistMesh:AbstractMesh, //接待员Root对象
     readonly greetingAnimation:AnimationGroup //打招呼的动画
 }
-export class Receptionist  extends TransformNode{
+export class Receptionist extends TransformNode{
 
     private _greetAnimation: AnimationGroup;
     constructor(assets:ReceptionistAsset,scene:Scene) {

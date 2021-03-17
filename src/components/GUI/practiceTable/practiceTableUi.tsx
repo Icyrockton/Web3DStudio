@@ -176,7 +176,7 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
                 </div>
                 {/*电子书部分*/}
 
-                <EBookReader  eBookReaderShowing={uiState.eBookReaderShowing} eBookUUID={uiState.currentEBookDetail.uuid}
+                <EBookReader eBookReaderShowing={uiState.eBookReaderShowing} eBookUUID={uiState.currentEBookDetail.uuid}
                              eBookFile={uiState.currentEBookDetail ? uiState.currentEBookDetail.bookURL : "src/assets/pdf/Java.pdf"}/>
                 <div className={`${classes.practiceArea} ${uiState.practiceShowing ? "" : classes.none}`}>
                     <Layout style={{height: "100%"}}>
@@ -250,7 +250,7 @@ type EBookReaderProps =
     {
         eBookReaderShowing: boolean,
         eBookFile: string
-        eBookUUID:number
+        eBookUUID: number
     }
 const EBookReader = (props: EBookReaderProps) => {
     const eBookRenderLoader = (percentages: number) => {
@@ -278,9 +278,9 @@ const EBookReader = (props: EBookReaderProps) => {
         )
     }
     const eBookOnPageChange = (e: PageChangeEvent) => {  //检查是否读书完毕
-        const progress = ((e.currentPage+1) / e.doc.numPages) * 100
+        const progress = ((e.currentPage + 1) / e.doc.numPages) * 100
         const playerUiState = usePlayerUiState;
-        playerUiState.updateCurrentSubTaskProgress(StudyType.read,props.eBookUUID,progress) //更新进度
+        playerUiState.updateCurrentSubTaskProgress(StudyType.read, props.eBookUUID, progress) //更新进度
     }
 
     return (
