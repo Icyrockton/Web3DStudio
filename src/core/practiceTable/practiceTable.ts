@@ -5,7 +5,7 @@ import {
     HemisphericLight, HighlightLayer, Material, Mesh,
     MeshBuilder, Ray,
     Scene,
-    SceneLoader, Sound, StandardMaterial,
+    SceneLoader, ShadowGenerator, Sound, StandardMaterial,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -53,24 +53,32 @@ export class PracticeTable implements EBookUtil {
         this._scene.autoClear = false //关闭自动清除  作为前景
         //光源
         const hemisphericLight = new HemisphericLight("practiceTableHemisphericLight", Vector3.Up(), this._scene);
-        hemisphericLight.intensity = 1
-        this._directionalLight = new DirectionalLight("practiceTableLight", new Vector3(1, -1, 1), this._scene)
-        this._directionalLight.intensity = 0.0
+        hemisphericLight.intensity = 0.7
+        this._directionalLight = new DirectionalLight("practiceTableLight", new Vector3(1, -2, 2), this._scene)
+        this._directionalLight.position.set(0,2,-1)
+        this._directionalLight.intensity = 1.0
         //阴影
         this._shadowGenerator = new CascadedShadowGenerator(1024, this._directionalLight) //阴影贴图
-
+        this._shadowGenerator.stabilizeCascades = true;
+        this._shadowGenerator.forceBackFacesOnly = true;
+        this._shadowGenerator.shadowMaxZ = 20;
+        this._shadowGenerator.autoCalcDepthBounds = true;
+        this._shadowGenerator.lambda = 0.5;
+        this._shadowGenerator.depthClamp = true;
+        this._shadowGenerator.penumbraDarkness = 0.8;
+        this._shadowGenerator.usePercentageCloserFiltering = true;
+        this._shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH;  //高质量阴影
         this._3DGUIManager = new GUI3DManager(this._scene)
         //高亮
         this._highLightLayer = new HighlightLayer("bookShelfHighLightLayer", this._scene)
 
-        //MeshBuilder.CreateBox("box", {size: 2})
         this.setUpCamera()
         this.setUpSound()
 
 
         this.setUpPracticeTable()
 
-        // this._scene.debugLayer.show()
+         // this._scene.debugLayer.show()
     }
 
     public render() {
@@ -97,6 +105,8 @@ export class PracticeTable implements EBookUtil {
         arcRotateCamera.upperAlphaLimit = -(Math.PI / 2 + Math.PI / 4)
         arcRotateCamera.lowerBetaLimit = Math.PI / (2.0)
         arcRotateCamera.upperBetaLimit = Math.PI / (2.0)
+        arcRotateCamera.upperRadiusLimit = 2.75
+        arcRotateCamera.lowerRadiusLimit = 1.75
         arcRotateCamera.wheelPrecision = 50
         this._camera = arcRotateCamera
     }
@@ -119,6 +129,9 @@ export class PracticeTable implements EBookUtil {
 
             //制作按钮
             meshes.forEach((mesh) => {
+                //阴影
+                mesh.receiveShadows =true
+                this._shadowGenerator.addShadowCaster(mesh)
                 if ((mesh instanceof Mesh) && mesh.name == PracticeTable.COMPUTER_POWER && powerTransformNode) {
                     this.setUpComputerPower(mesh, powerTransformNode)
                 }

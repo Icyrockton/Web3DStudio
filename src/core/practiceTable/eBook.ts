@@ -62,7 +62,9 @@ export class EBook {
         meshes[0].parent = this._eBookNode
         const content = meshes[1] as Mesh;
         const cover = meshes[2] as Mesh;
-
+        //阴影
+        this._shadowGenerator.addShadowCaster(content)
+        this._shadowGenerator.addShadowCaster(cover)
 
         //高光
         const playerUiState = usePlayerUiState;
