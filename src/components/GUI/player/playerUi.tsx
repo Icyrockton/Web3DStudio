@@ -72,7 +72,7 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
             {/*自言自语对话框*/}
             <div className={`${classes.bg} ${uiState.isShowingDialog ? "" : classes.none}`}>
                 <div className={`${classes.content} ${classes.unSkew}`}>
-                    <img src={uiState.dialog.avatarURL} alt="" className={classes.image}/>
+                    <img src={uiState.dialog.avatarURL} alt="" className={classes.imageLeft}/>
                     <br/><br/>
                     <h1 style={{textAlign: "center"}}>{uiState.dialog.info}</h1>
                 </div>

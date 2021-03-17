@@ -49,6 +49,13 @@
     width: 300px;
 }
 
+.imageLeft {
+    position: absolute;
+    bottom: 80%;
+    left: -5%;
+    width: 300px;
+}
+
 .bg {
     width: 45%;
     height: 10%;

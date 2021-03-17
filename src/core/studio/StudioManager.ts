@@ -52,6 +52,7 @@ export class StudioManager {
     private _sound!: StudioSound
     private _web3DStudio: IState;
     private _navigationPlugin = new RecastJSPlugin(new Recast())
+    private _AIs:Ai[] = []
 
     constructor(scene: Scene, studio: Studio, web3DStudio: IState) {
         this._scene = scene;
@@ -112,7 +113,6 @@ export class StudioManager {
 
         })
 
-        console.log('设置碰撞盒子')
         this.setUpCollisionBox(meshes) //设置碰撞盒子
 
     }
@@ -150,6 +150,9 @@ export class StudioManager {
         } else {
             console.log('没有设置玩家的起始位置')
         }
+        this._AIs.forEach(ai=>{
+            ai.setUpWithPlayer(this._playerManager)
+        })
     }
 
     private setUpShadow() {
@@ -443,17 +446,19 @@ export class StudioManager {
         const navigationPlugin = this._navigationPlugin;
         navigationPlugin.createNavMesh(collisionMeshes, parameters)
 
-        const navMeshDebug = navigationPlugin.createDebugNavMesh(this._scene);
-        const material = new StandardMaterial("navMeshMat", this._scene);
-        material.diffuseColor = Color3.Green()
-        material.alpha = 0.2
-        navMeshDebug.material = material
+        // const navMeshDebug = navigationPlugin.createDebugNavMesh(this._scene);
+        // const material = new StandardMaterial("navMeshMat", this._scene);
+        // material.diffuseColor = Color3.Green()
+        // material.alpha = 0.2
+        // navMeshDebug.material = material
+        // debug Mesh
         const crowd = navigationPlugin.createCrowd(this._studio.studioAIs.length,0.5,this._scene);
 
         //创建AI
         this._studio.studioAIs.forEach(studioAI=>{
             console.log('创建AI')
-            new Ai(this._scene,studioAI,crowd,navigationPlugin)
+            const ai = new Ai(this._scene,studioAI,crowd,navigationPlugin);
+            this._AIs.push(ai)
         })
 
     }

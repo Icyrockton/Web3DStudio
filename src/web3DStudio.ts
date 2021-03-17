@@ -141,42 +141,91 @@ export class Web3DStudio implements IState {
             studioAIs: [
                 {
                     name: "黄奥",
-                    info: ["我就是个傻子", "我今天屁股疼"],
+                    info: ["同学，你今天Java学习的怎么样了", "JDK是JAVA的开发工具包"],
+                    infoSoundURL:["src/assets/sound/java/ai/Java学习的怎么样了.mp3","src/assets/sound/java/ai/JDK是JAVA的开发工具包.mp3"],
                     title: "Java高级工程师",
                     position: "Java高级工程师",
                     modelURL: "src/assets/model/ai/ai_1.glb",
-                    idleAnimationGroupName:"Idle",
-                    walkAnimationGroupName:"Walk",
-                    avatarURL: "",
+                    idleAnimationGroupName: "Idle",
+                    walkAnimationGroupName: "Walk",
+                    leftTurnAnimationGroupName: "LeftTurn",
+                    rightTurnAnimationGroupName: "RightTurn",
+                    avatarURL: "src/assets/img/avatar/ai_1.png",
                     path: [
                         {
                             nodeName: "aiPath-1.001",
-                            residenceTime: 1000,
+                            residenceTime: 4000,
                         }, {
                             nodeName: "aiPath-1.002",
-                            residenceTime: 1000,
+                            residenceTime: 4000,
+                        },
+                        {
+                            nodeName: "aiPath-1.003",
+                            residenceTime: 6000,
+                        },
+                        {
+                            nodeName: "aiPath-1.004",
+                            residenceTime: 4000,
                         }
                     ]
                 },
                 {
-                    name: "黄奥奥",
-                    info: ["我就是个傻子", "我今天屁股疼"],
+                    name: "余少",
+                    info: ["你还记得jvm有多少种垃圾收集器吗", "你还记得字节码是什么吗"],
+                    infoSoundURL:["src/assets/sound/java/ai/jvm有多少种垃圾收集器.mp3","src/assets/sound/java/ai/字节码是什么.mp3"],
                     title: "Java高级工程师",
                     position: "Java高级工程师",
                     modelURL: "src/assets/model/ai/ai_2.glb",
-                    idleAnimationGroupName:"Idle",
-                    walkAnimationGroupName:"Walk",
-                    avatarURL: "",
+                    idleAnimationGroupName: "Idle",
+                    walkAnimationGroupName: "Walk",
+                    leftTurnAnimationGroupName: "LeftTurn",
+                    rightTurnAnimationGroupName: "RightTurn",
+                    avatarURL: "src/assets/img/avatar/ai_2.png",
                     path: [
                         {
-                            nodeName: "aiPath-2.002",
-                            residenceTime: 1000,
-                        }, {
                             nodeName: "aiPath-2.001",
-                            residenceTime: 1000,
+                            residenceTime: 5000,
+                        }, {
+                            nodeName: "aiPath-2.002",
+                            residenceTime: 4000,
+                        }, {
+                            nodeName: "aiPath-2.003",
+                            residenceTime: 3000,
+                        }, {
+                            nodeName: "aiPath-2.004",
+                            residenceTime: 6000,
                         }
                     ]
-                }
+                },
+                {
+                    name: "黄笨蛋",
+                    info: ["for循环的lambda形式是什么呢", "生产者消费者问题"],
+                    infoSoundURL:["src/assets/sound/java/ai/for循环的lambda形式是什么呢.mp3","src/assets/sound/java/ai/生产者消费者问题.mp3"],
+                    title: "Java高级工程师",
+                    position: "Java高级工程师",
+                    modelURL: "src/assets/model/ai/ai_3.glb",
+                    idleAnimationGroupName: "Idle",
+                    walkAnimationGroupName: "Walk",
+                    leftTurnAnimationGroupName: "LeftTurn",
+                    rightTurnAnimationGroupName: "RightTurn",
+                    avatarURL: "src/assets/img/avatar/ai_3.png",
+                    path: [
+                        {
+                            nodeName: "aiPath-3.001",
+                            residenceTime: 5000,
+                        }, {
+                            nodeName: "aiPath-3.002",
+                            residenceTime: 4000,
+                        }, {
+                            nodeName: "aiPath-3.003",
+                            residenceTime: 5000,
+                        }, {
+                            nodeName: "aiPath-3.004",
+                            residenceTime: 2000,
+                        }
+                    ]
+                },
+
             ]
         } as Studio
 

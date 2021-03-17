@@ -45,10 +45,21 @@ export interface StudioAI {
     name:string //AI的名称
     idleAnimationGroupName:string //空闲状态动画名称
     walkAnimationGroupName:string //走路动画名称
+    leftTurnAnimationGroupName:string //走路动画名称
+    rightTurnAnimationGroupName:string //走路动画名称
     modelURL:string //模型的地址
     avatarURL: string //AI的头像
     title: string //职务
     position: string //岗位
     info: string[] //显示的提示信息
+    infoSoundURL: string[] //显示的提示信息的声音URL
     path:StudioAIPath[]
+}
+
+export interface StudioAIDialog {
+    avatarURL: string //AI的头像
+    title: string //职务
+    position: string //岗位
+    info:string //信息
+
 }

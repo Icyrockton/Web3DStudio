@@ -13,6 +13,8 @@ import PlayerUi from "../components/GUI/player/playerUi";
 import BookShelfUi from "../components/GUI/bookShelf/bookShelfUi";
 import PracticeTableUi from "../components/GUI/practiceTable/practiceTableUi";
 import NotePad from "../components/notepad/notePad";
+import AiUi from "../components/GUI/ai/aiUi";
+import useAiUiState from "../components/GUI/ai/aiUiState";
 
 
 export const Web3D =()=>{
@@ -27,6 +29,7 @@ export const Web3D =()=>{
     const playerUiState = usePlayerUiState;
     const bookShelfUiState = useBookShelfUiState;
     const practiceTableUiState = usePracticeTableUiState;
+    const aiUiState = useAiUiState;
     return (
         <React.Fragment>
             <canvas id="renderCanvas" ref={canvas}/>
@@ -37,6 +40,7 @@ export const Web3D =()=>{
             <BookShelfUi uiState={bookShelfUiState}/>
             <PracticeTableUi uiState={practiceTableUiState}/>
             <NotePad/>
+            <AiUi uiState={aiUiState}/>
         </React.Fragment>
     )
 }
