@@ -1,0 +1,25 @@
+.none{
+    display: none;
+}
+.selectFloor{
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    background: hsla(0,0%,100%,.3);
+    border-radius: 10px;
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, .2);
+    transform: translateY(-50%);
+
+}
+.selectFloorDiv{
+    width: 60px;
+    height: 60px;
+    margin: 10px;
+}
+.selectFloorButton{
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, .2);
+    text-align: center;
+}

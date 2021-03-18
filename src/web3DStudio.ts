@@ -6,13 +6,14 @@ import "@babylonjs/inspector";
 import {CollegeMapManager} from "./core/collegeMap/collegeMapManager";
 import {IState} from "./core/IState";
 import {College, SimpleStudio} from "./core/collegeMap/college";
-import {CollegeManager} from "./core/college/collegeManager";
+import {CollegeFloors, CollegeManager} from "./core/college/collegeManager";
 import {StudioManager} from "./core/studio/StudioManager";
 import {ReceptionistConfig, Studio} from "./core/studio/Studio";
 import {BookShelf} from "./core/bookShelf/bookShelf";
 import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 import {PracticeTable} from "./core/practiceTable/practiceTable";
 import usePracticeTableUiState from "./components/GUI/practiceTable/practiceTableUiState";
+import {fakeCollegeFloors} from "./core/college/collegeFloorApi";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -105,131 +106,132 @@ export class Web3DStudio implements IState {
 
         // await this.goToCollegeMap() //切换到地图场景
 
-        // 暂时直接
-        // await  this.goToCollege("北京三维学院")
+
+        //暂时直接
+        await  this.goToCollege(fakeCollegeFloors)
+
+        //暂时直接
+
+
+        // let fakeStudio = {
+        //     name: "java工作室",
+        //     modelURL: "src/assets/model/studio/java_studio.glb",
+        //     playerModelURL: "src/assets/model/player.glb",
+        //     description: "java工作室 一个学习高并发的工作室",
+        //     playerSpawn: "playerSpawn",
+        //     collisionBox: ["collision", "ground"],
+        //     groundName: "ground",
+        //     playerAvatarURL: "src/assets/img/avatar/playerAvatar.png",
+        //     directionalLightPosition: new Vector3(-10, 10, -10),
+        //     bookShelfStartName: "BookShelf",
+        //     practiceTableStartName: "PracticeTable",
+        //     receptionistConfig: {
+        //         receptionistModelURL: "src/assets/model/receptionist.glb",
+        //         receptionistSpawn: "receptionistSpawn",
+        //         receptionistRotateYAxis: Math.PI / 2,
+        //         distanceTrigger: 2,
+        //         greetingSoundURL: "src/assets/sound/javaGreeting.mp3",
+        //         introductionSoundURL: "src/assets/sound/javaIntroduction.mp3"
+        //     } as ReceptionistConfig,
+        //     rotateCamera: [
+        //         {mesh: "cameraRotate_1", rotate: 0},
+        //         {mesh: "cameraRotate_2", rotate: -Math.PI / 2},
+        //         {mesh: "cameraRotate_3", rotate: Math.PI / 2},
+        //         {mesh: "cameraRotate_4", rotate: 0},
+        //         {mesh: "cameraRotate_5", rotate: Math.PI},
+        //     ],
+        //     studioAIs: [
+        //         {
+        //             name: "黄奥",
+        //             info: ["同学，你今天Java学习的怎么样了", "JDK是JAVA的开发工具包"],
+        //             infoSoundURL:["src/assets/sound/java/ai/Java学习的怎么样了.mp3","src/assets/sound/java/ai/JDK是JAVA的开发工具包.mp3"],
+        //             title: "Java高级工程师",
+        //             position: "Java高级工程师",
+        //             modelURL: "src/assets/model/ai/ai_1.glb",
+        //             idleAnimationGroupName: "Idle",
+        //             walkAnimationGroupName: "Walk",
+        //             leftTurnAnimationGroupName: "LeftTurn",
+        //             rightTurnAnimationGroupName: "RightTurn",
+        //             avatarURL: "src/assets/img/avatar/ai_1.png",
+        //             path: [
+        //                 {
+        //                     nodeName: "aiPath-1.001",
+        //                     residenceTime: 4000,
+        //                 }, {
+        //                     nodeName: "aiPath-1.002",
+        //                     residenceTime: 4000,
+        //                 },
+        //                 {
+        //                     nodeName: "aiPath-1.003",
+        //                     residenceTime: 6000,
+        //                 },
+        //                 {
+        //                     nodeName: "aiPath-1.004",
+        //                     residenceTime: 4000,
+        //                 }
+        //             ]
+        //         },
+        //         {
+        //             name: "余少",
+        //             info: ["你还记得jvm有多少种垃圾收集器吗", "你还记得字节码是什么吗"],
+        //             infoSoundURL:["src/assets/sound/java/ai/jvm有多少种垃圾收集器.mp3","src/assets/sound/java/ai/字节码是什么.mp3"],
+        //             title: "Java高级工程师",
+        //             position: "Java高级工程师",
+        //             modelURL: "src/assets/model/ai/ai_2.glb",
+        //             idleAnimationGroupName: "Idle",
+        //             walkAnimationGroupName: "Walk",
+        //             leftTurnAnimationGroupName: "LeftTurn",
+        //             rightTurnAnimationGroupName: "RightTurn",
+        //             avatarURL: "src/assets/img/avatar/ai_2.png",
+        //             path: [
+        //                 {
+        //                     nodeName: "aiPath-2.001",
+        //                     residenceTime: 5000,
+        //                 }, {
+        //                     nodeName: "aiPath-2.002",
+        //                     residenceTime: 4000,
+        //                 }, {
+        //                     nodeName: "aiPath-2.003",
+        //                     residenceTime: 3000,
+        //                 }, {
+        //                     nodeName: "aiPath-2.004",
+        //                     residenceTime: 6000,
+        //                 }
+        //             ]
+        //         },
+        //         {
+        //             name: "黄笨蛋",
+        //             info: ["for循环的lambda形式是什么呢", "生产者消费者问题"],
+        //             infoSoundURL:["src/assets/sound/java/ai/for循环的lambda形式是什么呢.mp3","src/assets/sound/java/ai/生产者消费者问题.mp3"],
+        //             title: "Java高级工程师",
+        //             position: "Java高级工程师",
+        //             modelURL: "src/assets/model/ai/ai_3.glb",
+        //             idleAnimationGroupName: "Idle",
+        //             walkAnimationGroupName: "Walk",
+        //             leftTurnAnimationGroupName: "LeftTurn",
+        //             rightTurnAnimationGroupName: "RightTurn",
+        //             avatarURL: "src/assets/img/avatar/ai_3.png",
+        //             path: [
+        //                 {
+        //                     nodeName: "aiPath-3.001",
+        //                     residenceTime: 5000,
+        //                 }, {
+        //                     nodeName: "aiPath-3.002",
+        //                     residenceTime: 4000,
+        //                 }, {
+        //                     nodeName: "aiPath-3.003",
+        //                     residenceTime: 5000,
+        //                 }, {
+        //                     nodeName: "aiPath-3.004",
+        //                     residenceTime: 2000,
+        //                 }
+        //             ]
+        //         },
         //
-        // 暂时直接
+        //     ]
+        // } as Studio
 
-
-        let fakeStudio = {
-            name: "java工作室",
-            modelURL: "src/assets/model/studio/java_studio.glb",
-            playerModelURL: "src/assets/model/player.glb",
-            description: "java工作室 一个学习高并发的工作室",
-            playerSpawn: "playerSpawn",
-            collisionBox: ["collision", "ground"],
-            groundName: "ground",
-            playerAvatarURL: "src/assets/img/avatar/playerAvatar.png",
-            directionalLightPosition: new Vector3(-10, 10, -10),
-            bookShelfStartName: "BookShelf",
-            practiceTableStartName: "PracticeTable",
-            receptionistConfig: {
-                receptionistModelURL: "src/assets/model/receptionist.glb",
-                receptionistSpawn: "receptionistSpawn",
-                receptionistRotateYAxis: Math.PI / 2,
-                distanceTrigger: 2,
-                greetingSoundURL: "src/assets/sound/javaGreeting.mp3",
-                introductionSoundURL: "src/assets/sound/javaIntroduction.mp3"
-            } as ReceptionistConfig,
-            rotateCamera: [
-                {mesh: "cameraRotate_1", rotate: 0},
-                {mesh: "cameraRotate_2", rotate: -Math.PI / 2},
-                {mesh: "cameraRotate_3", rotate: Math.PI / 2},
-                {mesh: "cameraRotate_4", rotate: 0},
-                {mesh: "cameraRotate_5", rotate: Math.PI},
-            ],
-            studioAIs: [
-                {
-                    name: "黄奥",
-                    info: ["同学，你今天Java学习的怎么样了", "JDK是JAVA的开发工具包"],
-                    infoSoundURL:["src/assets/sound/java/ai/Java学习的怎么样了.mp3","src/assets/sound/java/ai/JDK是JAVA的开发工具包.mp3"],
-                    title: "Java高级工程师",
-                    position: "Java高级工程师",
-                    modelURL: "src/assets/model/ai/ai_1.glb",
-                    idleAnimationGroupName: "Idle",
-                    walkAnimationGroupName: "Walk",
-                    leftTurnAnimationGroupName: "LeftTurn",
-                    rightTurnAnimationGroupName: "RightTurn",
-                    avatarURL: "src/assets/img/avatar/ai_1.png",
-                    path: [
-                        {
-                            nodeName: "aiPath-1.001",
-                            residenceTime: 4000,
-                        }, {
-                            nodeName: "aiPath-1.002",
-                            residenceTime: 4000,
-                        },
-                        {
-                            nodeName: "aiPath-1.003",
-                            residenceTime: 6000,
-                        },
-                        {
-                            nodeName: "aiPath-1.004",
-                            residenceTime: 4000,
-                        }
-                    ]
-                },
-                {
-                    name: "余少",
-                    info: ["你还记得jvm有多少种垃圾收集器吗", "你还记得字节码是什么吗"],
-                    infoSoundURL:["src/assets/sound/java/ai/jvm有多少种垃圾收集器.mp3","src/assets/sound/java/ai/字节码是什么.mp3"],
-                    title: "Java高级工程师",
-                    position: "Java高级工程师",
-                    modelURL: "src/assets/model/ai/ai_2.glb",
-                    idleAnimationGroupName: "Idle",
-                    walkAnimationGroupName: "Walk",
-                    leftTurnAnimationGroupName: "LeftTurn",
-                    rightTurnAnimationGroupName: "RightTurn",
-                    avatarURL: "src/assets/img/avatar/ai_2.png",
-                    path: [
-                        {
-                            nodeName: "aiPath-2.001",
-                            residenceTime: 5000,
-                        }, {
-                            nodeName: "aiPath-2.002",
-                            residenceTime: 4000,
-                        }, {
-                            nodeName: "aiPath-2.003",
-                            residenceTime: 3000,
-                        }, {
-                            nodeName: "aiPath-2.004",
-                            residenceTime: 6000,
-                        }
-                    ]
-                },
-                {
-                    name: "黄笨蛋",
-                    info: ["for循环的lambda形式是什么呢", "生产者消费者问题"],
-                    infoSoundURL:["src/assets/sound/java/ai/for循环的lambda形式是什么呢.mp3","src/assets/sound/java/ai/生产者消费者问题.mp3"],
-                    title: "Java高级工程师",
-                    position: "Java高级工程师",
-                    modelURL: "src/assets/model/ai/ai_3.glb",
-                    idleAnimationGroupName: "Idle",
-                    walkAnimationGroupName: "Walk",
-                    leftTurnAnimationGroupName: "LeftTurn",
-                    rightTurnAnimationGroupName: "RightTurn",
-                    avatarURL: "src/assets/img/avatar/ai_3.png",
-                    path: [
-                        {
-                            nodeName: "aiPath-3.001",
-                            residenceTime: 5000,
-                        }, {
-                            nodeName: "aiPath-3.002",
-                            residenceTime: 4000,
-                        }, {
-                            nodeName: "aiPath-3.003",
-                            residenceTime: 5000,
-                        }, {
-                            nodeName: "aiPath-3.004",
-                            residenceTime: 2000,
-                        }
-                    ]
-                },
-
-            ]
-        } as Studio
-
-        await this.goToStudio(fakeStudio)
+        // await this.goToStudio(fakeStudio)
     }
 
 
@@ -247,9 +249,9 @@ export class Web3DStudio implements IState {
     }
 
 
-    async goToCollege(collegeName: string) {
+    async goToCollege(collegeFloors: CollegeFloors) {
         let collegeScene = new Scene(this._engine)
-        let manager = new CollegeManager(collegeScene)
+        let manager = new CollegeManager(collegeScene, this , collegeFloors)
         await manager.load()
 
         this._scene.dispose()

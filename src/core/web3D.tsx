@@ -15,6 +15,8 @@ import PracticeTableUi from "../components/GUI/practiceTable/practiceTableUi";
 import NotePad from "../components/notepad/notePad";
 import AiUi from "../components/GUI/ai/aiUi";
 import useAiUiState from "../components/GUI/ai/aiUiState";
+import FloorUi from "../components/GUI/floor/floorUi";
+import useFloorUiState from "../components/GUI/floor/floorUiState";
 
 
 export const Web3D =()=>{
@@ -30,6 +32,7 @@ export const Web3D =()=>{
     const bookShelfUiState = useBookShelfUiState;
     const practiceTableUiState = usePracticeTableUiState;
     const aiUiState = useAiUiState;
+    const floorUiState = useFloorUiState;
     return (
         <React.Fragment>
             <canvas id="renderCanvas" ref={canvas}/>
@@ -41,6 +44,7 @@ export const Web3D =()=>{
             <PracticeTableUi uiState={practiceTableUiState}/>
             <NotePad/>
             <AiUi uiState={aiUiState}/>
+            <FloorUi uiState={floorUiState}/>
         </React.Fragment>
     )
 }
