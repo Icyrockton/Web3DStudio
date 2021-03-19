@@ -21,7 +21,7 @@ const FloorUi = observer<FloorUiProps>(props => {
                 <div className={classes.selectFloorDiv}>
                     <Tooltip title={`查看所有楼层`} placement={"left"}>
                         <Button shape={"circle"}
-                                className={classes.selectFloorButton}>
+                                className={classes.selectFloorButton} onClick={()=>uiState.goToFloor(-1)}>
                             All
                         </Button>
                     </Tooltip>

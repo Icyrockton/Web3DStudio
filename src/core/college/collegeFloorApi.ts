@@ -55,39 +55,24 @@ export const fakeCollegeFloors: CollegeFloors = {
                     logoURL: "",
                     posterURL: ""
                 },
-                {
-                    uuid: 7,
-                    name: "软件测试工作室",
-                    location: 7,
-                    description: "",
-                    logoURL: "",
-                    posterURL: ""
-                },
-                {
-                    uuid: 8,
-                    name: "游戏工作室",
-                    location: 8,
-                    description: "",
-                    logoURL: "",
-                    posterURL: ""
-                },
+
             ]
         },
         {
             floorNumber: 2,
             studios: [{
                 uuid: 9,
-                name: "",
+                name: "机器人工作室",
                 location: 1,
-                description: "机器人工作室",
+                description: "",
                 logoURL: "",
                 posterURL: ""
             },
                 {
                     uuid: 10,
-                    name: "",
+                    name: "游戏工作室",
                     location: 2,
-                    description: "游戏工作室",
+                    description: "",
                     logoURL: "",
                     posterURL: ""
                 },
