@@ -546,7 +546,6 @@ export class CollegeManager {
     private hideOtherFloor() {
         for (let i = 1; i <= this._collegeFloors.totalFloor; i++) {
             if (i!=this._currentFloorNum){
-                console.log(i)
                 const floor = this._collegeFloorInstances[i - 1];
                 floor.hide()
             }

@@ -6,7 +6,7 @@ import {
     Color3,
     Engine, ExecuteCodeAction,
     HighlightLayer,
-    IAnimationKey,
+    IAnimationKey, InstancedMesh,
     Mesh, Quaternion,
     Scene,
     StandardMaterial, Texture,
@@ -141,12 +141,17 @@ export class CollegeFloor {
         const childMeshes = this._floorTransformNode.getChildMeshes();
         childMeshes.forEach(mesh => {
             mesh.isVisible = true
-            mesh.visibility = 1
+            if (!(mesh instanceof InstancedMesh)) {  //InstancedMesh不能设置visibility
+                mesh.visibility = 1
+            }
         })
     }
 
     public floorInvisible() {
-        const childMeshes = this._floorTransformNode.getChildMeshes();
+        let childMeshes = this._floorTransformNode.getChildMeshes();
+        childMeshes = childMeshes.filter(mesh => {
+            return mesh instanceof Mesh;
+        })
         childMeshes.forEach(mesh => {
             //开始动画
             this._scene.beginDirectAnimation(mesh, this.createInvisibleAnim(mesh), 0, CollegeFloor.frameRate, false)
@@ -154,7 +159,10 @@ export class CollegeFloor {
     }
 
     public floorVisible(onAnimationEnd?: () => void) {
-        const childMeshes = this._floorTransformNode.getChildMeshes();
+        let childMeshes = this._floorTransformNode.getChildMeshes();
+        childMeshes = childMeshes.filter(mesh => {
+            return mesh instanceof Mesh;
+        })
         childMeshes.forEach((mesh, index) => {
             //开始动画
             if (index != childMeshes.length - 1) {
@@ -388,6 +396,7 @@ export class CollegeFloor {
     static readonly POST_NAME = "post_" //海报
     static readonly STUDIO_NAME = "studio_name_" //工作室LOGO
     private hasLoadedTexture = false
+
     public loadTexture() { //加载贴图
         if (this.hasLoadedTexture)
             return
@@ -398,34 +407,34 @@ export class CollegeFloor {
             if (mesh instanceof Mesh) {
                 if (mesh.name.startsWith(`${this._startName}.${CollegeFloor.POST_NAME}`)) {
                     post.push(mesh)
-                } else if (mesh.name.startsWith(`${this._startName}.${CollegeFloor.STUDIO_NAME}`)){
+                } else if (mesh.name.startsWith(`${this._startName}.${CollegeFloor.STUDIO_NAME}`)) {
                     studioName.push(mesh)
                 }
             }
         })
-                    //排序
+        //排序
         post.sort((a, b) => {
             if (a.name < b.name)
                 return -1
-            return  1
+            return 1
         })
         studioName.sort((a, b) => {
             if (a.name < b.name)
                 return -1
-            return  1
+            return 1
         })
 
         for (let i = 0; i < this._floor.studios.length; i++) {
             const studio = this._floor.studios[i];
             //海报纹理
-            const postMat = new StandardMaterial(`${this._startName}.PostMat${i}`,this._scene);
-            const postTexture = new Texture(studio.posterURL,this._scene);
-            postTexture.uAng =  Math.PI
+            const postMat = new StandardMaterial(`${this._startName}.PostMat${i}`, this._scene);
+            const postTexture = new Texture(studio.posterURL, this._scene);
+            postTexture.uAng = Math.PI
             postMat.diffuseTexture = postTexture //加载贴图
             post[i].material = postMat //设置材质
             //LOGO纹理
-            const logoMat = new StandardMaterial(`${this._startName}.LogoMat${i}`,this._scene);
-            const logoTexture = new Texture(studio.logoURL,this._scene);
+            const logoMat = new StandardMaterial(`${this._startName}.LogoMat${i}`, this._scene);
+            const logoTexture = new Texture(studio.logoURL, this._scene);
             logoTexture.uAng = Math.PI
             logoMat.diffuseTexture = logoTexture //加载贴图
             studioName[i].material = logoMat //设置材质
