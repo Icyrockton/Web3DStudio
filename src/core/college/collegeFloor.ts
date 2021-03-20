@@ -7,7 +7,7 @@ import {
     Engine, ExecuteCodeAction,
     HighlightLayer,
     IAnimationKey,
-    Mesh,
+    Mesh, Quaternion,
     Scene,
     StandardMaterial,
     TransformNode
@@ -56,6 +56,7 @@ export class CollegeFloor {
                 material.diffuseColor = Color3.FromHexString(CollegeFloor.StudioBoxColor[cnt++]) //工作室盒子颜色
                 material.specularColor = Color3.Black() //防止高光
                 mesh.material = material
+                mesh.visibility = 0.2
                 studioBox.push(mesh)
             }
         })
@@ -277,5 +278,75 @@ export class CollegeFloor {
                 ))
             }
         })
+    }
+
+    static LEFT_DOOR_NAME = "studio_door_left_"
+    static RIGHT_DOOR_NAME = "studio_door_right_"
+
+    public openDoor(studioIndex: number) {  //工作室开门动画 studioIndex 为1~6
+        //找到左边的门
+        const leftDoorName = `${this._startName}.${CollegeFloor.LEFT_DOOR_NAME}${studioIndex}`
+        //找到右边的门
+        const rightDoorName = `${this._startName}.${CollegeFloor.RIGHT_DOOR_NAME}${studioIndex}`
+        const meshes = this._floorTransformNode.getChildMeshes();
+        let leftDoor: Mesh | null = null
+        let rightDoor: Mesh | null = null
+        meshes.forEach(mesh => {
+            if (mesh instanceof Mesh) {
+                if (mesh.name == leftDoorName) { //找到左边的门
+                    leftDoor = mesh
+                } else if (mesh.name == rightDoorName) { //找到右边的门
+                    rightDoor = mesh
+                }
+            }
+        })
+        if (leftDoor == null || rightDoor == null)
+            return
+
+        //开启动画
+        this._scene.beginDirectAnimation(leftDoor, this.createLeftDoorAnim(leftDoor), 0, CollegeFloor.frameRate, false)
+        this._scene.beginDirectAnimation(rightDoor, this.createRightDoorAnim(rightDoor), 0, CollegeFloor.frameRate, false)
+    }
+
+    private createLeftDoorAnim(leftDoor: Mesh) {
+        if (leftDoor.rotationQuaternion != null) {
+            const animation = new Animation(`leftDoorAnim-${this._floor.floorNumber}`, "rotationQuaternion", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_QUATERNION, Animation.ANIMATIONLOOPMODE_CONSTANT);
+            const keyFrames: IAnimationKey[] = []
+
+            keyFrames.push({
+                frame: 0,
+                value: Quaternion.FromEulerAngles(0, 0, 0)
+            })
+            keyFrames.push({
+                frame: CollegeFloor.frameRate,
+                value: Quaternion.FromEulerAngles(0, Math.PI / 2, 0)
+            })
+
+            animation.setKeys(keyFrames)
+            console.log(animation)
+            return [animation]
+        }
+        return []
+    }
+
+    private createRightDoorAnim(rightDoor: Mesh) {
+        if (rightDoor.rotationQuaternion != null) {
+            const animation = new Animation(`rightDoorAnim-${this._floor.floorNumber}`, "rotationQuaternion", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_QUATERNION, Animation.ANIMATIONLOOPMODE_CONSTANT);
+            const keyFrames: IAnimationKey[] = []
+
+            keyFrames.push({
+                frame: 0,
+                value: Quaternion.FromEulerAngles(0, 0, 0)
+
+            })
+            keyFrames.push({
+                frame: CollegeFloor.frameRate,
+                value: Quaternion.FromEulerAngles(0, -Math.PI / 2, 0)
+            })
+
+            animation.setKeys(keyFrames)
+            return [animation]
+        }
+        return []
     }
 }

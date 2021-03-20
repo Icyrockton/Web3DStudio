@@ -3,33 +3,52 @@ import {CollegeManager} from "../../../core/college/collegeManager";
 
 
 export class FloorUiState {
-    uiShowing:boolean = true
-    collegeManager:CollegeManager|null = null
+    uiShowing: boolean = true
+    visitUiShowing: boolean = false
+    collegeManager: CollegeManager | null = null
     floorTotalNumber = 0 //楼层的总数
     constructor() {
-        makeAutoObservable(this,{
-            collegeManager : false,
-            goToFloor:false
+        makeAutoObservable(this, {
+            collegeManager: false,
+            goToFloor: false,
+            onMouseEnterVisitButton:false,
+            onMouseLeaveVisitButton:false
         })
     }
 
-    setFloorUiShowing(showing:boolean){
-        this.uiShowing=showing
+    setFloorUiShowing(showing: boolean) {
+        this.uiShowing = showing
+    }
+    setVisitUiShowing(showing:boolean){
+        this.visitUiShowing = showing
     }
 
-    setFloorTotalNumber(num: number){
+    setFloorTotalNumber(num: number) {
         this.floorTotalNumber = num
     }
 
     goToFloor(i: number) { //前往楼层
-        console.log('前往楼层',i)
-        if (this.collegeManager){
+        console.log('前往楼层', i)
+        if (this.collegeManager) {
             this.collegeManager.goToFloor(i)
+        }
+    }
+
+    onMouseEnterVisitButton() {
+        if (this.collegeManager){
+            this.collegeManager.cameraSmoothOut()
+        }
+    }
+
+    onMouseLeaveVisitButton() {
+        if (this.collegeManager){
+            this.collegeManager.cameraSmoothIn()
+
         }
     }
 }
 
 
-const useFloorUiState= new FloorUiState()
+const useFloorUiState = new FloorUiState()
 
 export default useFloorUiState

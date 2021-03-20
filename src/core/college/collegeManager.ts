@@ -1,6 +1,6 @@
 import {
     Animation,
-    ArcRotateCamera, BezierCurveEase, CircleEase, Color3, CubicEase,
+    ArcRotateCamera, BackEase, BezierCurveEase, CircleEase, Color3, CubicEase,
     DynamicTexture, EasingFunction, HemisphericLight, HighlightLayer, IAnimationKey,
     Matrix,
     Mesh,
@@ -52,7 +52,7 @@ export class CollegeManager {
     private _cameraTarget: Vector3 = new Vector3()
     private _arcRotateCamera!: ArcRotateCamera
     private _ui: AdvancedDynamicTexture
-    private _highLightLayer:HighlightLayer
+    private _highLightLayer: HighlightLayer
 
     constructor(collegeScene: Scene, web3DStudio: IState, collegeFloors: CollegeFloors) {
         this._scene = collegeScene;
@@ -60,7 +60,7 @@ export class CollegeManager {
         useFloorUiState.collegeManager = this //注入this
         useFloorUiState.setFloorTotalNumber(collegeFloors.totalFloor) //设置楼层数目
         useFloorUiState.setFloorUiShowing(true) //显示UI
-        this._highLightLayer =new HighlightLayer("floorHighlightLayer",this._scene)
+        this._highLightLayer = new HighlightLayer("floorHighlightLayer", this._scene)
         this._currentFloorNum = -1 //-1代表显示所有楼层
         this._scene.collisionsEnabled = true //打开碰撞
         this._web3DStudio = web3DStudio;
@@ -155,6 +155,7 @@ export class CollegeManager {
         if (this._animating)
             return;
         this._animating = true
+        this.hideVisitUi()
         this.floorTranslucent()
         if (floorNum == -1) {  //目标是显示所有楼层
             //压入 this._currentFloorNum + 1 ~ floorNum
@@ -186,6 +187,7 @@ export class CollegeManager {
                 this.floorStudioBoxVisible(floorNum)
                 this.floorVisible(floorNum, () => {
                         this._animating = false
+                        this.showVisitUi()
                     }
                 )
                 this._currentFloorNum = floorNum
@@ -202,6 +204,7 @@ export class CollegeManager {
                     floor.popToMaxHeight(300 * (this._collegeFloors.totalFloor - i), () => {
                         this.floorVisible(floorNum, () => {
                             this._animating = false
+                            this.showVisitUi()
                         })
                         this.updateCameraTarget()
                         this.floorStudioBoxVisible(floorNum)
@@ -221,6 +224,7 @@ export class CollegeManager {
                         floor.popToMaxHeight(300 * (this._currentFloorNum - i), () => {
                             this.floorVisible(floorNum, () => {
                                 this._animating = false
+                                this.showVisitUi()
                             })
                             this.updateCameraTarget()
                             this.floorStudioBoxVisible(floorNum)
@@ -238,6 +242,7 @@ export class CollegeManager {
                         floor.pushToOrigin(300 * (i - this._currentFloorNum), () => {
                             this.floorVisible(floorNum, () => {
                                 this._animating = false
+                                this.showVisitUi()
                             })
                             this.updateCameraTarget()
                             this.floorStudioBoxVisible(floorNum)
@@ -273,6 +278,16 @@ export class CollegeManager {
             floor.translucent()
             floor.invisibleStudioBox()
         })
+    }
+
+    private hideVisitUi(){
+        const floorUiState = useFloorUiState;
+        floorUiState.setVisitUiShowing(false)
+    }
+
+    private showVisitUi(){
+        const floorUiState = useFloorUiState;
+        floorUiState.setVisitUiShowing(true)
     }
 
     private updateCameraTarget() {
@@ -346,7 +361,7 @@ export class CollegeManager {
         this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraAnim(), 0, CollegeFloor.frameRate * 2, false)
     }
 
-    private createStartCameraAnim(){
+    private createStartCameraAnim() {
         const betaAnimation = new Animation("cameraBetaAnimation", "beta", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const betaKeyFrames: IAnimationKey[] = []
         betaKeyFrames.push({
@@ -376,5 +391,60 @@ export class CollegeManager {
         alphaAnimation.setKeys(alphaKeyFrames)
 
         return [alphaAnimation, betaAnimation]
+    }
+
+    private openStudioDoor() {
+        if (this._currentFloorNum == -1)
+            return
+        const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
+        for (let i = 1; i <= 6; i++) {
+            floor.openDoor(i)
+        }
+    }
+
+    cameraSmoothOut() {
+        this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraOutAnim(), 0, CollegeFloor.frameRate, false)
+    }
+
+    private createCameraOutAnim() {
+        const radiusAnimation = new Animation("cameraRadiusAnimation", "radius", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const radiusKeyFrames: IAnimationKey[] = []
+        radiusKeyFrames.push({
+            frame: 0,
+            value: this._arcRotateCamera.radius
+        })
+        radiusKeyFrames.push({
+            frame: CollegeFloor.frameRate,
+            value: this._arcRotateCamera.radius + 2
+        })
+        const backEase = new CubicEase();
+        backEase.setEasingMode(EasingFunction.EASINGMODE_EASEOUT)
+        radiusAnimation.setEasingFunction(backEase)
+        radiusAnimation.setKeys(radiusKeyFrames)
+        return [radiusAnimation]
+    }
+
+
+    cameraSmoothIn() {
+        this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraInAnim(), 0, CollegeFloor.frameRate, false)
+
+    }
+
+    private createCameraInAnim(){
+        const radiusAnimation = new Animation("cameraRadiusAnimation", "radius", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const radiusKeyFrames: IAnimationKey[] = []
+        radiusKeyFrames.push({
+            frame: 0,
+            value: this._arcRotateCamera.radius
+        })
+        radiusKeyFrames.push({
+            frame: CollegeFloor.frameRate,
+            value: this._arcRotateCamera.radius - 2
+        })
+        const backEase = new CubicEase();
+        backEase.setEasingMode(EasingFunction.EASINGMODE_EASEOUT)
+        radiusAnimation.setEasingFunction(backEase)
+        radiusAnimation.setKeys(radiusKeyFrames)
+        return [radiusAnimation]
     }
 }

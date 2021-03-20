@@ -44,12 +44,24 @@ const FloorUi = observer<FloorUiProps>(props => {
         }
         return content
     }
+    const mouseEnter=()=>{  //相机往外增大一点
+        console.log('？？')
+        uiState.onMouseEnterVisitButton()
+    }
+    const mouseLeave=()=>{ //相机返回原来的位置
+        uiState.onMouseLeaveVisitButton()
+    }
     return (
         <>
             <div className={`${classes.selectFloor}  ${uiState.uiShowing ? "" : classes.none}`}>
                 {
                     floorButton()
                 }
+            </div>
+
+            <div className={`${classes.visitUiArea} ${uiState.visitUiShowing ? classes.visitUiShowing: ""}`}
+            onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
+                游览该层楼
             </div>
         </>
     )

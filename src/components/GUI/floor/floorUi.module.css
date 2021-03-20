@@ -1,25 +1,64 @@
-.none{
+.none {
     display: none;
 }
-.selectFloor{
+
+.selectFloor {
     position: absolute;
     right: 5%;
     top: 50%;
-    background: hsla(0,0%,100%,.3);
+    background: hsla(0, 0%, 100%, .3);
     border-radius: 10px;
     box-shadow: 10px 5px 5px rgba(0, 0, 0, .2);
     transform: translateY(-50%);
 
 }
-.selectFloorDiv{
+
+.selectFloorDiv {
     width: 60px;
     height: 60px;
     margin: 10px;
 }
-.selectFloorButton{
+
+.selectFloorButton {
     width: 100%;
     height: 100%;
     font-size: 20px;
     box-shadow: 10px 5px 5px rgba(0, 0, 0, .2);
     text-align: center;
 }
+
+.visitUiArea {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    width: 20vw;
+    height: 15vh;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 7vh;
+    font-size: xx-large;
+    transform: translateX(-50%) translateY(100%);
+    border-top-left-radius: 5vw;
+    border-top-right-radius: 5vw;
+    background: linear-gradient(15deg ,white 50%,#1FA2FF 66%,#12D8FA 82%,#A6FFCB);
+    background-size: 300% 100%;
+    background-position: left;
+    transition: transform .5s var(--ease-out-swift),
+                background-position .5s var(--ease-out-swift),
+                fill .5s var(--ease-out-swift),
+                color .5s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1)
+}
+
+.visitUiArea:hover {
+   background-position: right;
+   color: white;
+    cursor: pointer;
+}
+
+.visitUiShowing {
+    transform: translateX(-50%) translateY(50%);
+}
+
+
