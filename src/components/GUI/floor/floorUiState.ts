@@ -12,7 +12,8 @@ export class FloorUiState {
             collegeManager: false,
             goToFloor: false,
             onMouseEnterVisitButton:false,
-            onMouseLeaveVisitButton:false
+            onMouseLeaveVisitButton:false,
+            goToVisit: false
         })
     }
 
@@ -44,6 +45,12 @@ export class FloorUiState {
         if (this.collegeManager){
             this.collegeManager.cameraSmoothIn()
 
+        }
+    }
+
+    goToVisit() {
+        if (this.collegeManager){
+            this.collegeManager.visitFloor()
         }
     }
 }

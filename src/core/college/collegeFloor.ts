@@ -9,7 +9,7 @@ import {
     IAnimationKey,
     Mesh, Quaternion,
     Scene,
-    StandardMaterial,
+    StandardMaterial, Texture,
     TransformNode
 } from "@babylonjs/core";
 import {AbstractMesh} from "@babylonjs/core/Meshes/abstractMesh";
@@ -24,6 +24,7 @@ export class CollegeFloor {
     private _originYPos: number //在y轴方向的原始位置
     private _maxYPos: number //在y轴方向的最高位置
     private _studioBox!: AbstractMesh[]
+    private _unnecessaryList!: AbstractMesh[]
     static readonly HEIGHT = 8 //每层楼的高度
     static readonly STUDIO_BOX_NAME = "studio_box_"  //工作室盒子的名称 studio_box_1 ... studio_box_6
     private _startName: string //mesh的clone起始名称
@@ -37,13 +38,15 @@ export class CollegeFloor {
         const cloneFloor = floorRoot.clone(this._startName);
         cloneFloor.parent = this._floorTransformNode
         this.setUpStudioBox() //设置工作室盒子
-        this.invisibleStudioBox() //隐藏所有盒子
+        this.setUpUnnecessary() //隐藏不必要的东西
         //设置高度
         this._originYPos = (this._floor.floorNumber - 1) * CollegeFloor.HEIGHT
         this._maxYPos = maxYPos - (this._floor.floorNumber - 1) * CollegeFloor.HEIGHT
         this._floorTransformNode.position.y = this._originYPos
         this.enableDepthPrePass()
-        this.translucent()
+        this.translucent() //显示所有mesh 并且visibility = 0.2
+        this.invisibleStudioBox() //不可见工作室盒子
+        this.hideUnnecessary()
     }
 
     setUpStudioBox() {  //设置盒子
@@ -56,7 +59,7 @@ export class CollegeFloor {
                 material.diffuseColor = Color3.FromHexString(CollegeFloor.StudioBoxColor[cnt++]) //工作室盒子颜色
                 material.specularColor = Color3.Black() //防止高光
                 mesh.material = material
-                mesh.visibility = 0.2
+                mesh.visibility = 1
                 studioBox.push(mesh)
             }
         })
@@ -137,7 +140,8 @@ export class CollegeFloor {
     public translucent() { //半透明
         const childMeshes = this._floorTransformNode.getChildMeshes();
         childMeshes.forEach(mesh => {
-            mesh.visibility = 0.2
+            mesh.isVisible = true
+            mesh.visibility = 1
         })
     }
 
@@ -174,7 +178,7 @@ export class CollegeFloor {
         })
         keyFrames.push({
             frame: CollegeFloor.frameRate,
-            value: 0.2 //半透明
+            value: 1 //半透明
         })
         animation.setKeys(keyFrames)
         return [animation]
@@ -196,7 +200,6 @@ export class CollegeFloor {
     }
 
     public pushToOrigin(delay: number, onAnimationEnd?: () => void) {  //压入到原位置   延迟时间
-        console.log('开始push动画')
         const seconds = delay / 1000 //秒
         this._scene.beginDirectAnimation(this._floorTransformNode, this.createPushAnim(seconds), 0,
             CollegeFloor.frameRate * seconds + CollegeFloor.pushAnimationTime, false, undefined, () => {
@@ -207,7 +210,6 @@ export class CollegeFloor {
     }
 
     public popToMaxHeight(delay: number, onAnimationEnd?: () => void) { //弹出到最高的位置上去 延迟时间
-        console.log('开始pop动画')
         const seconds = delay / 1000 //秒
         this._scene.beginDirectAnimation(this._floorTransformNode, this.createPopAnim(seconds), 0,
             CollegeFloor.frameRate * seconds + CollegeFloor.popAnimationTime, false, undefined, () => {
@@ -323,7 +325,6 @@ export class CollegeFloor {
             })
 
             animation.setKeys(keyFrames)
-            console.log(animation)
             return [animation]
         }
         return []
@@ -349,4 +350,88 @@ export class CollegeFloor {
         }
         return []
     }
+
+    public hide() {
+        const childMeshes = this._floorTransformNode.getChildMeshes();
+        childMeshes.forEach(mesh => {
+            mesh.isVisible = false//不可见
+        })
+    }
+
+    //性能优化
+    public hideUnnecessary() { //隐藏不必要的东西
+        this._unnecessaryList.forEach(mesh => {
+            mesh.isVisible = false
+        })
+    }
+
+    private setUpUnnecessary() {
+        let list: AbstractMesh [] = []
+        // 1. SM开头的东西
+        const childMeshes = this._floorTransformNode.getChildMeshes();
+        childMeshes.forEach(mesh => {
+            if (mesh.name.startsWith(`${this._startName}.SM_`)) {
+                mesh.isVisible = false
+                list.push(mesh)
+            }
+        })
+
+        this._unnecessaryList = list
+    }
+
+    public showUnnecessary() {
+        this._unnecessaryList.forEach(mesh => {
+            mesh.isVisible = true
+        })
+    }
+
+    static readonly POST_NAME = "post_" //海报
+    static readonly STUDIO_NAME = "studio_name_" //工作室LOGO
+    private hasLoadedTexture = false
+    public loadTexture() { //加载贴图
+        if (this.hasLoadedTexture)
+            return
+        const childMeshes = this._floorTransformNode.getChildMeshes();
+        let post: Mesh[] = []
+        let studioName: Mesh[] = []
+        childMeshes.forEach(mesh => {
+            if (mesh instanceof Mesh) {
+                if (mesh.name.startsWith(`${this._startName}.${CollegeFloor.POST_NAME}`)) {
+                    post.push(mesh)
+                } else if (mesh.name.startsWith(`${this._startName}.${CollegeFloor.STUDIO_NAME}`)){
+                    studioName.push(mesh)
+                }
+            }
+        })
+                    //排序
+        post.sort((a, b) => {
+            if (a.name < b.name)
+                return -1
+            return  1
+        })
+        studioName.sort((a, b) => {
+            if (a.name < b.name)
+                return -1
+            return  1
+        })
+
+        for (let i = 0; i < this._floor.studios.length; i++) {
+            const studio = this._floor.studios[i];
+            //海报纹理
+            const postMat = new StandardMaterial(`${this._startName}.PostMat${i}`,this._scene);
+            const postTexture = new Texture(studio.posterURL,this._scene);
+            postTexture.uAng =  Math.PI
+            postMat.diffuseTexture = postTexture //加载贴图
+            post[i].material = postMat //设置材质
+            //LOGO纹理
+            const logoMat = new StandardMaterial(`${this._startName}.LogoMat${i}`,this._scene);
+            const logoTexture = new Texture(studio.logoURL,this._scene);
+            logoTexture.uAng = Math.PI
+            logoMat.diffuseTexture = logoTexture //加载贴图
+            studioName[i].material = logoMat //设置材质
+
+        }
+        this.hasLoadedTexture = true //已经加载完毕
+    }
+
 }

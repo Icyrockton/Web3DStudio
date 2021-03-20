@@ -17,6 +17,7 @@ import {CollegeFloor} from "./collegeFloor";
 import useFloorUiState from "../../components/GUI/floor/floorUiState";
 import {values} from "mobx";
 import {AdvancedDynamicTexture} from "@babylonjs/gui";
+import {VisitPlayerManager} from "../player/visitPlayerManager";
 
 
 export interface CollegeStudio { //学院的每一间工作室
@@ -43,6 +44,10 @@ export interface CollegeFloors { //学院的所有楼层
 
 //工作室的选择
 export class CollegeManager {
+    static readonly PLAYER_MODEL_URL = "src/assets/model/player.glb"
+    static readonly FLOOR_MODEL_URL = "src/assets/model/floor.glb"
+
+
     private _scene: Scene;
     private _web3DStudio: IState;
     private _collegeFloors: CollegeFloors;
@@ -51,8 +56,9 @@ export class CollegeManager {
     private _maxYPos: number
     private _cameraTarget: Vector3 = new Vector3()
     private _arcRotateCamera!: ArcRotateCamera
-    private _ui: AdvancedDynamicTexture
+    private _ui?: AdvancedDynamicTexture
     private _highLightLayer: HighlightLayer
+    private _visitPlayerManager: VisitPlayerManager
 
     constructor(collegeScene: Scene, web3DStudio: IState, collegeFloors: CollegeFloors) {
         this._scene = collegeScene;
@@ -65,17 +71,17 @@ export class CollegeManager {
         this._scene.collisionsEnabled = true //打开碰撞
         this._web3DStudio = web3DStudio;
         this._maxYPos = this._collegeFloors.totalFloor * CollegeFloor.HEIGHT + 100  //动画到达的最高位置
-        this._ui = AdvancedDynamicTexture.CreateFullscreenUI("floorUi", true, this._scene)
+        this._visitPlayerManager = new VisitPlayerManager(this._scene, CollegeManager.PLAYER_MODEL_URL)
     }
 
     async load() {
-        this.showWorldAxis(7)
         this.setUpLight()
         await this.loadModel()
+        await this._visitPlayerManager.loadPlayer()
+        this.invisiblePlayer()
         this.setUpCamera()
     }
 
-    static readonly FLOOR_MODEL_URL = "src/assets/model/floor.glb"
 
     setUpCamera() {
         const distance = this._collegeFloors.totalFloor * CollegeFloor.HEIGHT
@@ -83,8 +89,10 @@ export class CollegeManager {
         const arcRotateCamera = new ArcRotateCamera("camera", 0, 0, 60, this._cameraTarget, this._scene);
         arcRotateCamera.attachControl()
         this._arcRotateCamera = arcRotateCamera
+        this._scene.activeCamera = this._arcRotateCamera //活动摄像机
         this.beginStartCameraAnimation()
     }
+
 
     setUpLight() {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);
@@ -108,45 +116,7 @@ export class CollegeManager {
     }
 
 
-    showWorldAxis(size: number) {
-        let makeTextPlane = (text: string, color: string, size: number) => {
-            let dynamicTexture = new DynamicTexture("DynamicTexture", 50, this._scene, true);
-            dynamicTexture.hasAlpha = true;
-            dynamicTexture.drawText(text, 5, 40, "bold 36px Arial", color, "transparent", true);
-            let plane = Mesh.CreatePlane("TextPlane", size, this._scene, true);
-            plane.isPickable = false
-            let mat = new StandardMaterial("TextPlaneMaterial", this._scene);
-            mat.backFaceCulling = false;
-            mat.specularColor = new Color3(0, 0, 0);
-            mat.diffuseTexture = dynamicTexture;
-            plane.material = mat
-            return plane;
-        };
-        let axisX = Mesh.CreateLines("axisX", [
-            Vector3.Zero(), new Vector3(size, 0, 0), new Vector3(size * 0.95, 0.05 * size, 0),
-            new Vector3(size, 0, 0), new Vector3(size * 0.95, -0.05 * size, 0)
-        ], this._scene);
-        axisX.isPickable = false
-        axisX.color = new Color3(1, 0, 0);
-        let xChar = makeTextPlane("X", "red", size / 10);
-        xChar.position = new Vector3(0.9 * size, -0.05 * size, 0);
-        let axisY = Mesh.CreateLines("axisY", [
-            Vector3.Zero(), new Vector3(0, size, 0), new Vector3(-0.05 * size, size * 0.95, 0),
-            new Vector3(0, size, 0), new Vector3(0.05 * size, size * 0.95, 0)
-        ], this._scene);
-        axisY.color = new Color3(0, 1, 0);
-        axisY.isPickable = false
-        var yChar = makeTextPlane("Y", "green", size / 10);
-        yChar.position = new Vector3(0, 0.9 * size, -0.05 * size);
-        var axisZ = Mesh.CreateLines("axisZ", [
-            Vector3.Zero(), new Vector3(0, 0, size), new Vector3(0, -0.05 * size, size * 0.95),
-            new Vector3(0, 0, size), new Vector3(0, 0.05 * size, size * 0.95)
-        ], this._scene);
-        axisZ.color = new Color3(0, 0, 1);
-        axisZ.isPickable = false
-        var zChar = makeTextPlane("Z", "blue", size / 10);
-        zChar.position = new Vector3(0, 0.05 * size, 0.9 * size);
-    };
+
 
     private _animating: boolean = false //是否在动画..
     goToFloor(floorNum: number) {
@@ -155,6 +125,8 @@ export class CollegeManager {
         if (this._animating)
             return;
         this._animating = true
+        this._visiting = false //没有在游览状态
+        this.invisiblePlayer()
         this.hideVisitUi()
         this.floorTranslucent()
         if (floorNum == -1) {  //目标是显示所有楼层
@@ -266,26 +238,27 @@ export class CollegeManager {
         this._ui = AdvancedDynamicTexture.CreateFullscreenUI("floorUi", true, this._scene)
         floor.showStudioName(this._ui)
         floor.setHighLight(this._highLightLayer)  //设置highlight Layer
+        floor.showUnnecessary() //显示不必要项
     }
 
-    private floorStudioBoxNameVisible(floorNum: number) {
 
-    }
 
     private floorTranslucent() {  //将所有楼层变为半透明
-        this._ui.dispose()
+        this._ui?.dispose()
         this._collegeFloorInstances.forEach(floor => {
             floor.translucent()
             floor.invisibleStudioBox()
+            floor.hideUnnecessary() //隐藏不必要的东西
         })
     }
 
-    private hideVisitUi(){
+
+    private hideVisitUi() {
         const floorUiState = useFloorUiState;
         floorUiState.setVisitUiShowing(false)
     }
 
-    private showVisitUi(){
+    private showVisitUi() {
         const floorUiState = useFloorUiState;
         floorUiState.setVisitUiShowing(true)
     }
@@ -353,12 +326,30 @@ export class CollegeManager {
         const circleEase = new CircleEase();
         circleEase.setEasingMode(EasingFunction.EASINGMODE_EASEOUT)
         targetAnimation.setEasingFunction(circleEase)
-        return [targetAnimation, alphaAnimation, betaAnimation]
+
+        const radiusAnimation = new Animation("cameraRadiusAnimation", "radius", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const radiusKeyFrames: IAnimationKey[] = []
+        const radiusTarget= this._currentFloorNum ==-1 ? 60 : 50
+        radiusKeyFrames.push({
+            frame: 0 ,
+            value: this._arcRotateCamera.radius
+        })
+        radiusKeyFrames.push({
+            frame: CollegeFloor.frameRate * 2 ,
+            value: radiusTarget
+        })
+        radiusAnimation.setKeys(radiusKeyFrames)
+
+        return [targetAnimation, alphaAnimation, betaAnimation,radiusAnimation]
 
     }
 
     private beginStartCameraAnimation() {  //入场camera动画
         this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraAnim(), 0, CollegeFloor.frameRate * 2, false)
+    }
+
+    private disposeStudioNameUi(){
+        this._ui?.dispose()
     }
 
     private createStartCameraAnim() {
@@ -403,7 +394,8 @@ export class CollegeManager {
     }
 
     cameraSmoothOut() {
-        this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraOutAnim(), 0, CollegeFloor.frameRate, false)
+        if (!this._visiting)
+            this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraOutAnim(), 0, CollegeFloor.frameRate, false)
     }
 
     private createCameraOutAnim() {
@@ -426,11 +418,12 @@ export class CollegeManager {
 
 
     cameraSmoothIn() {
-        this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraInAnim(), 0, CollegeFloor.frameRate, false)
+        if (!this._visiting)
+            this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraInAnim(), 0, CollegeFloor.frameRate, false)
 
     }
 
-    private createCameraInAnim(){
+    private createCameraInAnim() {
         const radiusAnimation = new Animation("cameraRadiusAnimation", "radius", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const radiusKeyFrames: IAnimationKey[] = []
         radiusKeyFrames.push({
@@ -446,5 +439,117 @@ export class CollegeManager {
         radiusAnimation.setEasingFunction(backEase)
         radiusAnimation.setKeys(radiusKeyFrames)
         return [radiusAnimation]
+    }
+
+    private _visiting:boolean = false
+
+    //访问当前楼层
+    private visitFloor() {
+        if (this._currentFloorNum == -1)
+            return
+        const floor = this._collegeFloorInstances[this._currentFloorNum-1];
+        floor.loadTexture() //加载纹理
+        this._visiting =true
+        this.hideOtherFloor()
+        this.hideVisitUi()
+        this.placeVisitPlayer() //放置玩家
+        this.visiblePlayer() //显示玩家
+        this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraMoveToPlayerAnim(), 0, CollegeFloor.frameRate * 2, false, undefined, () => {
+
+        })
+        this.disposeStudioNameUi()
+    }
+
+    private cameraMoveToPlayer() {
+
+    }
+
+    private createCameraMoveToPlayerAnim() { //相机移动到玩家
+        const targetAnimation = new Animation("targetAnimation", "target", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_VECTOR3, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const targetKeyFrames: IAnimationKey[] = []
+        const distance = this._currentFloorNum * CollegeFloor.HEIGHT - ( CollegeFloor.HEIGHT / 2 + CollegeFloor.HEIGHT / 4)
+        const newTarget = new Vector3(0, distance, 15)
+
+        //暂时
+        this._arcRotateCamera.target = newTarget
+        targetKeyFrames.push({
+            frame: 0,
+            value: this._arcRotateCamera.target.clone()
+        })
+
+        targetKeyFrames.push({
+            frame: CollegeFloor.frameRate * 2,
+            value: newTarget
+        })
+        targetAnimation.setKeys(targetKeyFrames)
+        const circleEase = new CircleEase();
+        circleEase.setEasingMode(EasingFunction.EASINGMODE_EASEOUT)
+        targetAnimation.setEasingFunction(circleEase)
+
+        const betaAnimation = new Animation("cameraBetaAnimation", "beta", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const betaKeyFrames: IAnimationKey[] = []
+        betaKeyFrames.push({
+            frame: 0,
+            value: this._arcRotateCamera.beta
+        })
+        betaKeyFrames.push({
+            frame: CollegeFloor.frameRate * 2,
+            value: Math.PI / 2
+        })
+        betaAnimation.setKeys(betaKeyFrames)
+        const alphaAnimation = new Animation("cameraAlphaAnimation", "alpha", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const alphaKeyFrames: IAnimationKey[] = []
+        alphaKeyFrames.push({
+            frame: 0,
+            value: this._arcRotateCamera.alpha
+        })
+        alphaKeyFrames.push({
+            frame: CollegeFloor.frameRate * 2,
+            value: -Math.PI / 2
+        })
+        alphaAnimation.setKeys(alphaKeyFrames)
+
+
+        const radiusAnimation = new Animation("cameraXRadiusAnimation", "radius", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const radiusKeyFrames: IAnimationKey[] = []
+        radiusKeyFrames.push({
+            frame: 0 ,
+            value: this._arcRotateCamera.radius
+        })
+        radiusKeyFrames.push({
+            frame: CollegeFloor.frameRate * 2 ,
+            value:22
+        })
+        radiusAnimation.setKeys(radiusKeyFrames)
+
+
+        //有BUG 等待解决?
+        //https://forum.babylonjs.com/t/arcrotatecamera-can-not-animating-radius-and-target-simultaneously/19340
+          return [targetAnimation,radiusAnimation ,  alphaAnimation, betaAnimation, ]
+
+    }
+
+    private placeVisitPlayer() { //放置player
+        this._visitPlayerManager.placePlayerAtFloor(this._currentFloorNum)
+    }
+
+    private invisiblePlayer() {
+        console.log('不可见')
+        this._visitPlayerManager.invisible()
+    }
+
+    private visiblePlayer() {
+        this._visitPlayerManager.visible()
+    }
+
+    //隐藏其它楼层
+    private hideOtherFloor() {
+        for (let i = 1; i <= this._collegeFloors.totalFloor; i++) {
+            if (i!=this._currentFloorNum){
+                console.log(i)
+                const floor = this._collegeFloorInstances[i - 1];
+                floor.hide()
+            }
+        }
     }
 }

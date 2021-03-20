@@ -9,7 +9,7 @@ export enum CollegePosition {  //学院的位置
     E = "building_5",
 }
 
-export interface College {  
+export interface College {
     name: string
     modelUrl: string
     position: CollegePosition
@@ -24,7 +24,7 @@ export interface SimpleStudio {
 }
 
 export interface CollegeDescription{ //学院描述信息
-    name:string //学院名称 
+    name:string //学院名称
     position:string  //学院位置
     description:string //学院描述
     studios:SimpleStudio[] //学院含有的工作室

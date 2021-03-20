@@ -51,6 +51,9 @@ const FloorUi = observer<FloorUiProps>(props => {
     const mouseLeave=()=>{ //相机返回原来的位置
         uiState.onMouseLeaveVisitButton()
     }
+    const visit=()=>{ //游览
+        uiState.goToVisit()
+    }
     return (
         <>
             <div className={`${classes.selectFloor}  ${uiState.uiShowing ? "" : classes.none}`}>
@@ -60,7 +63,7 @@ const FloorUi = observer<FloorUiProps>(props => {
             </div>
 
             <div className={`${classes.visitUiArea} ${uiState.visitUiShowing ? classes.visitUiShowing: ""}`}
-            onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
+            onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} onClick={visit}>
                 游览该层楼
             </div>
         </>

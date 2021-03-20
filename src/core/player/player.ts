@@ -13,6 +13,7 @@ import {ISceneLoaderAsyncResult} from "@babylonjs/core/Loading/sceneLoader";
 import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
 import {CollegeManager} from "../college/collegeManager";
 import {InputController} from "./inputController";
+import {PlayerManager} from "./playerManager";
 
 
 export interface PlayerAssets {
@@ -84,13 +85,11 @@ export class Player extends TransformNode {
         this.camera.lockedTarget = this._cameraRoot.position
         this.camera.parent = this._yTilt
         this._scene.activeCamera = this.camera
-
-
     }
 
     private _updateCamera() {
         //player的y轴方向的中心位置
-        let centerPlayer = this.mesh.position.y + CollegeManager.CollisionBoxHeight / 2
+        let centerPlayer = this.mesh.position.y + PlayerManager.CollisionBoxHeight / 2
         //平滑移动相机 相机的最终目标是玩家Mesh的位置
         this._cameraRoot.position = Vector3.Lerp(this._cameraRoot.position, new Vector3(this.mesh.position.x, centerPlayer, this.mesh.position.z), 0.2)
     }
@@ -159,7 +158,7 @@ export class Player extends TransformNode {
     }
 
     private _rayCastToGround(offsetX: number, offsetZ: number, rayCastLength: number): Vector3 { //检查是否与地面碰撞  空中 or 地上
-        let rayCastOrigin = new Vector3(this.mesh.position.x + offsetX, this.mesh.position.y + CollegeManager.CollisionBoxHeight / 2, this.mesh.position.z + offsetZ);
+        let rayCastOrigin = new Vector3(this.mesh.position.x + offsetX, this.mesh.position.y + PlayerManager.CollisionBoxHeight / 2, this.mesh.position.z + offsetZ);
         let ray = new Ray(rayCastOrigin, Vector3.Down(), rayCastLength)
         //从player的中心 向下发出射线 检查是否在空中
         let predicate = (mesh: AbstractMesh) => {
@@ -175,7 +174,7 @@ export class Player extends TransformNode {
     }
 
     private _isGrounded(): boolean { //是否在地面上
-        if (this._rayCastToGround(0, 0, CollegeManager.CollisionBoxHeight / 2 + 0.1).equals(Vector3.Zero())) {
+        if (this._rayCastToGround(0, 0, PlayerManager.CollisionBoxHeight / 2 + 0.1).equals(Vector3.Zero())) {
             return false;
         } else {
             return true;

@@ -1,20 +1,18 @@
-import {Player, PlayerAssets} from "./player";
 import {AbstractMesh, Matrix, MeshBuilder, Quaternion, Scene, SceneLoader, Vector3} from "@babylonjs/core";
+import {Player, PlayerAssets} from "./player";
 import {InputController} from "./inputController";
-import {RotateCamera} from "../studio/Studio";
+import {PlayerManager} from "./playerManager";
+import {VisitPlayer} from "./visitPlayer";
+import {CollegeManager} from "../college/collegeManager";
+import {CollegeFloor} from "../college/collegeFloor";
 
-
-export class PlayerManager {
-    static PlayerCollisionBoxWidth = 0.7
-    static PlayerCollisionBoxHeight = 1.8
-    static PlayerCollisionBoxDepth = 0.5
+export class VisitPlayerManager {
     private _scene: Scene;
     private _playerModelURL: string;
-    public player!: Player;
+    public player!: VisitPlayer;
+
     private _collisionBox!: AbstractMesh
-    static CollisionBoxWidth = 0.7
-    static CollisionBoxHeight = 1.8
-    static CollisionBoxDepth = 0.5
+
     constructor(scene: Scene, playerModelURL: string) {
         this._scene = scene;
         this._playerModelURL = playerModelURL;
@@ -53,35 +51,27 @@ export class PlayerManager {
         playerMesh.parent = collisionBox
         playerMesh.isPickable = false
 
-        let playerController = new InputController(this._scene);
-        let player = new Player(playerAssets, this._scene, playerController);
+        let player = new VisitPlayer(playerAssets, this._scene);
         this.player = player
     }
 
+    public placePlayerAtFloor(floorNum: number) { //放置player在某层楼上
+        const y = (floorNum - 1) * CollegeFloor.HEIGHT  // y方向上的位置
 
-
-    public set playerPosition(position: Vector3){
-        this._collisionBox.position.set(-position.x, position.y, position.z)
+        this._collisionBox.position.set(0, y, 0) //设置位置
     }
 
-    public get playerPosition(): Vector3 {
-        return this._collisionBox.position
+    public invisible() { //将玩家隐藏
+        const meshes = this._collisionBox.getChildMeshes();
+        meshes.forEach(mesh=>{
+            mesh.isVisible =false
+        })
     }
 
-    setUpRotateCamera(rotateCamera: RotateCamera[]) {
-        rotateCamera.forEach(value => {
-            let mesh = this._scene.getMeshByName(value.mesh);
-            if (mesh) {
-                mesh.isVisible = false
-
-                this._scene.registerBeforeRender(() => {
-                    if (mesh!.intersectsMesh(this._collisionBox, false, false)) {
-                        this.player.rotateCameraAroundYAxis(value.rotate)
-                    }
-
-
-                })
-            }
+    public visible() { //将玩家显示
+        const meshes = this._collisionBox.getChildMeshes();
+        meshes.forEach(mesh=>{
+            mesh.isVisible =true
         })
     }
 }
