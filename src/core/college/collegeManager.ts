@@ -45,6 +45,7 @@ export interface CollegeFloors { //学院的所有楼层
 //工作室的选择
 export class CollegeManager {
     static readonly PLAYER_MODEL_URL = "src/assets/model/player.glb"
+    static readonly PLAYER_ARROW_MODEL_URL = "src/assets/model/player_arrow.glb"
     static readonly FLOOR_MODEL_URL = "src/assets/model/floor.glb"
 
 
@@ -71,7 +72,7 @@ export class CollegeManager {
         this._scene.collisionsEnabled = true //打开碰撞
         this._web3DStudio = web3DStudio;
         this._maxYPos = this._collegeFloors.totalFloor * CollegeFloor.HEIGHT + 100  //动画到达的最高位置
-        this._visitPlayerManager = new VisitPlayerManager(this._scene, CollegeManager.PLAYER_MODEL_URL)
+        this._visitPlayerManager = new VisitPlayerManager(this._scene, CollegeManager.PLAYER_MODEL_URL, CollegeManager.PLAYER_ARROW_MODEL_URL)
     }
 
     async load() {
@@ -113,9 +114,9 @@ export class CollegeManager {
             mesh.isVisible = false
             mesh.isPickable = false
         })
+
+
     }
-
-
 
 
     private _animating: boolean = false //是否在动画..
@@ -125,7 +126,10 @@ export class CollegeManager {
         if (this._animating)
             return;
         this._animating = true
-        this._visiting = false //没有在游览状态
+        if (this._visiting) {
+            this._visiting = false //没有在游览状态
+            this._scene.activeCamera = this._arcRotateCamera //摄像机活动
+        }
         this.invisiblePlayer()
         this.hideVisitUi()
         this.floorTranslucent()
@@ -242,7 +246,6 @@ export class CollegeManager {
     }
 
 
-
     private floorTranslucent() {  //将所有楼层变为半透明
         this._ui?.dispose()
         this._collegeFloorInstances.forEach(floor => {
@@ -329,18 +332,18 @@ export class CollegeManager {
 
         const radiusAnimation = new Animation("cameraRadiusAnimation", "radius", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const radiusKeyFrames: IAnimationKey[] = []
-        const radiusTarget= this._currentFloorNum ==-1 ? 60 : 50
+        const radiusTarget = this._currentFloorNum == -1 ? 60 : 50
         radiusKeyFrames.push({
-            frame: 0 ,
+            frame: 0,
             value: this._arcRotateCamera.radius
         })
         radiusKeyFrames.push({
-            frame: CollegeFloor.frameRate * 2 ,
+            frame: CollegeFloor.frameRate * 2,
             value: radiusTarget
         })
         radiusAnimation.setKeys(radiusKeyFrames)
 
-        return [targetAnimation, alphaAnimation, betaAnimation,radiusAnimation]
+        return [targetAnimation, alphaAnimation, betaAnimation, radiusAnimation]
 
     }
 
@@ -348,7 +351,7 @@ export class CollegeManager {
         this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraAnim(), 0, CollegeFloor.frameRate * 2, false)
     }
 
-    private disposeStudioNameUi(){
+    private disposeStudioNameUi() {
         this._ui?.dispose()
     }
 
@@ -441,21 +444,23 @@ export class CollegeManager {
         return [radiusAnimation]
     }
 
-    private _visiting:boolean = false
+    private _visiting: boolean = false
 
     //访问当前楼层
     private visitFloor() {
         if (this._currentFloorNum == -1)
             return
-        const floor = this._collegeFloorInstances[this._currentFloorNum-1];
+        const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
         floor.loadTexture() //加载纹理
-        this._visiting =true
+        //传递地标数据到player
+        this._visitPlayerManager.locTransformNode = floor.locTransformNode
+        this._visiting = true
         this.hideOtherFloor()
         this.hideVisitUi()
         this.placeVisitPlayer() //放置玩家
         this.visiblePlayer() //显示玩家
         this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraMoveToPlayerAnim(), 0, CollegeFloor.frameRate * 2, false, undefined, () => {
-
+            this._visitPlayerManager.turnOnCamera() //切换到玩家的摄像机
         })
         this.disposeStudioNameUi()
     }
@@ -467,7 +472,8 @@ export class CollegeManager {
     private createCameraMoveToPlayerAnim() { //相机移动到玩家
         const targetAnimation = new Animation("targetAnimation", "target", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_VECTOR3, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const targetKeyFrames: IAnimationKey[] = []
-        const distance = this._currentFloorNum * CollegeFloor.HEIGHT - ( CollegeFloor.HEIGHT / 2 + CollegeFloor.HEIGHT / 4)
+        //const distance = this._currentFloorNum * CollegeFloor.HEIGHT - ( CollegeFloor.HEIGHT / 2 + CollegeFloor.HEIGHT / 4)
+        const distance = (this._currentFloorNum - 1) * CollegeFloor.HEIGHT
         const newTarget = new Vector3(0, distance, 15)
 
         //暂时
@@ -494,7 +500,7 @@ export class CollegeManager {
         })
         betaKeyFrames.push({
             frame: CollegeFloor.frameRate * 2,
-            value: Math.PI / 2
+            value: Math.PI / 2 - Math.PI / 24.3
         })
         betaAnimation.setKeys(betaKeyFrames)
         const alphaAnimation = new Animation("cameraAlphaAnimation", "alpha", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -513,19 +519,19 @@ export class CollegeManager {
         const radiusAnimation = new Animation("cameraXRadiusAnimation", "radius", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const radiusKeyFrames: IAnimationKey[] = []
         radiusKeyFrames.push({
-            frame: 0 ,
+            frame: 0,
             value: this._arcRotateCamera.radius
         })
         radiusKeyFrames.push({
-            frame: CollegeFloor.frameRate * 2 ,
-            value:22
+            frame: CollegeFloor.frameRate * 2,
+            value: 24
         })
         radiusAnimation.setKeys(radiusKeyFrames)
 
 
         //有BUG 等待解决?
         //https://forum.babylonjs.com/t/arcrotatecamera-can-not-animating-radius-and-target-simultaneously/19340
-          return [targetAnimation,radiusAnimation ,  alphaAnimation, betaAnimation, ]
+        return [targetAnimation, radiusAnimation, alphaAnimation, betaAnimation,]
 
     }
 
@@ -545,7 +551,7 @@ export class CollegeManager {
     //隐藏其它楼层
     private hideOtherFloor() {
         for (let i = 1; i <= this._collegeFloors.totalFloor; i++) {
-            if (i!=this._currentFloorNum){
+            if (i != this._currentFloorNum) {
                 const floor = this._collegeFloorInstances[i - 1];
                 floor.hide()
             }

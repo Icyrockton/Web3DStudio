@@ -14,6 +14,7 @@ import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 import {PracticeTable} from "./core/practiceTable/practiceTable";
 import usePracticeTableUiState from "./components/GUI/practiceTable/practiceTableUiState";
 import {fakeCollegeFloors} from "./core/college/collegeFloorApi";
+import useFloorUiState from "./components/GUI/floor/floorUiState";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -104,11 +105,11 @@ export class Web3DStudio implements IState {
 
         this.loadingScene = new LoadingScene(this._scene)
 
-        // await this.goToCollegeMap() //切换到地图场景
+            //await this.goToCollegeMap() //切换到地图场景
 
 
         //暂时直接
-        await  this.goToCollege(fakeCollegeFloors)
+       await  this.goToCollege(fakeCollegeFloors)
 
         //暂时直接
 
@@ -230,7 +231,7 @@ export class Web3DStudio implements IState {
         //
         //     ]
         // } as Studio
-
+        //
         // await this.goToStudio(fakeStudio)
     }
 
@@ -262,13 +263,15 @@ export class Web3DStudio implements IState {
 
     async goToStudio(studio: Studio) {
         console.log('进入工作室')
+        // const floorUiState = useFloorUiState;
+        // floorUiState.setFloorUiShowing(false)
         let studioScene = new Scene(this._engine)
 
         let manager = new StudioManager(studioScene, studio, this)
         await manager.load()
         this._scene.dispose()
         this._scene = studioScene
-        this._scene.debugLayer.show()
+        //this._scene.debugLayer.show()
     }
 
     private setBookShelfScene() {

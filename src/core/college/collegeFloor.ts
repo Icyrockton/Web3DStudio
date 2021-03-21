@@ -25,6 +25,7 @@ export class CollegeFloor {
     private _maxYPos: number //在y轴方向的最高位置
     private _studioBox!: AbstractMesh[]
     private _unnecessaryList!: AbstractMesh[]
+    private _locNode:TransformNode[]= []
     static readonly HEIGHT = 8 //每层楼的高度
     static readonly STUDIO_BOX_NAME = "studio_box_"  //工作室盒子的名称 studio_box_1 ... studio_box_6
     private _startName: string //mesh的clone起始名称
@@ -39,6 +40,7 @@ export class CollegeFloor {
         cloneFloor.parent = this._floorTransformNode
         this.setUpStudioBox() //设置工作室盒子
         this.setUpUnnecessary() //隐藏不必要的东西
+        this.setUpLoc() //地标位置
         //设置高度
         this._originYPos = (this._floor.floorNumber - 1) * CollegeFloor.HEIGHT
         this._maxYPos = maxYPos - (this._floor.floorNumber - 1) * CollegeFloor.HEIGHT
@@ -441,6 +443,18 @@ export class CollegeFloor {
 
         }
         this.hasLoadedTexture = true //已经加载完毕
+    }
+
+    private setUpLoc() {
+        const childTransformNodes = this._floorTransformNode.getChildTransformNodes();
+        childTransformNodes.forEach(node=>{
+            if (node.name.startsWith(`${this._startName}.Loc_`)){
+                this._locNode.push(node)
+            }
+        })
+    }
+    public get locTransformNode(){
+        return this._locNode
     }
 
 }
