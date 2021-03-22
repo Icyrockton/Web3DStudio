@@ -4,7 +4,7 @@ import useTaskUiState, {TaskUiState} from "./taskUiState";
 import 'antd/dist/antd.css';
 import Layout, {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
-import {Button, Card, Col, Divider, Menu, Progress, Rate, Row, Timeline, Tooltip, Typography} from "antd";
+import {Button, Card, Col, Divider, Menu, Rate, Row, Timeline, Tooltip, Typography} from "antd";
 import {CloseOutlined, CodepenCircleOutlined, DatabaseFilled, HddOutlined} from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
 import Title from "antd/es/typography/Title";

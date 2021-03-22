@@ -1,38 +1,30 @@
 import {
-    AbstractMesh,
     ActionManager,
     ArcRotateCamera,
-    CascadedShadowGenerator,
     Color4,
     DirectionalLight,
     ExecuteCodeAction,
-    FreeCamera,
     HemisphericLight,
-    MeshBuilder,
-    NodeMaterial,
-    PickingInfo,
-    PointLight,
     Quaternion,
-    RenderTargetTexture,
     Scene,
     SceneLoader,
     ShadowGenerator,
     Sound,
-    SpotLight,
-    StandardMaterial,
-    Tools,
     TransformNode,
     Vector3,
-    Vector4
 } from "@babylonjs/core";
 import { __DEBUG__ } from "../../global";
-import { College, CollegePosition } from "./college";
+import { College } from "./college";
 import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
 import { CollegeFence } from "./collegeFence";
 import useCollegeUiState from '../../components/GUI/college/collegeUiState'
-import  {collegeMap} from "./collegeMapApi";
 import {IState} from "../IState";
 
+
+export interface CollegeMap{
+    colleges:College[]
+    mapModelURL:string
+}
 
 export class CollegeMapManager { //加载学院相关的资源
 
@@ -43,18 +35,18 @@ export class CollegeMapManager { //加载学院相关的资源
     }
 
     private _scene: Scene
-    private _canvas: HTMLCanvasElement
     private _collegeNode: TransformNode[] = [] //保存所有的建筑物根节点
     private _buildingMeshUniqueID : number[] = []
     private _clickSound:Sound
     private _iState: IState;
+    private _collegeMap: CollegeMap; //保存地图数据
 
-    constructor(scene: Scene, canvas: HTMLCanvasElement ,iState:IState) {
-        this._iState = iState; //切换状态
+    constructor(scene: Scene ,iState:IState,collegeMap: CollegeMap) {
+        this._iState = iState;
+        this._collegeMap = collegeMap; //切换状态
         this._scene = scene//学院场景
         //#5FA2E2
         this._scene.clearColor=new Color4(96 / 256,162 /256,226/256,1)
-        this._canvas = canvas
         this._clickSound=new Sound('clickSound',"src/assets/sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
     }
 
@@ -62,7 +54,6 @@ export class CollegeMapManager { //加载学院相关的资源
         this.setCamera()
         await this.loadMap()
         this.setLight()
-        this.setClick()
     }
     setLight() {
         //半球光
@@ -81,16 +72,16 @@ export class CollegeMapManager { //加载学院相关的资源
         //设置PCF软阴影
         shadowGenerator.usePercentageCloserFiltering=true
         //添加树为阴影的投射者
-         shadowGenerator.addShadowCaster(this._scene.getMeshByName("tree") !) 
+         shadowGenerator.addShadowCaster(this._scene.getMeshByName("tree") !)
          let groundMesh= this._scene.getMeshByName("ground") !
         //添加建筑物为阴影的投射者
          this._buildingMeshUniqueID.forEach((meshID)=>{
-             let mesh = this._scene.getMeshByUniqueID(meshID)   
+             let mesh = this._scene.getMeshByUniqueID(meshID)
              if(mesh){
                  shadowGenerator.addShadowCaster(mesh)
              }
          })
-        
+
         groundMesh.receiveShadows=true //设置地面为接受阴影的对象
 
     }
@@ -98,46 +89,43 @@ export class CollegeMapManager { //加载学院相关的资源
 
     //学院名字 -- 栅栏
     private _collegeToFence:Map<string,CollegeFence>= new Map()
-     setClick() { //点击事件
 
+    private setClick(node:TransformNode,college: College){
         const collegeUiState = useCollegeUiState;
+        const nodeActionManager = new ActionManager(this._scene)
+        const rootMesh = node.getChildMeshes(true)[0]! //root结点
+        const childMeshes = rootMesh.getChildMeshes(true);
+        childMeshes.forEach((mesh) => {
+            let fence=this._collegeToFence.get(node.name)! //获取栅栏
+            mesh.actionManager = nodeActionManager
+            mesh.actionManager.registerAction(new ExecuteCodeAction(
+                ActionManager.OnPointerOverTrigger, //鼠标悬浮到建筑物上(移入建筑物)
+                (event) => {
+                    fence.up() //上升
+                    this._clickSound.play()
+                    //获取学院数据
+                    collegeUiState.fetchCollegeDescriptionByName(node.name)
+                    collegeUiState.setShowing(true) //显示UI
 
-        this._collegeNode.forEach((node) => {
-            const nodeActionManager = new ActionManager(this._scene)
-            const rootMesh = node.getChildMeshes(true)[0]! //root结点
-            const childMeshes = rootMesh.getChildMeshes(true);
-            childMeshes.forEach((mesh) => {
-                let fence=this._collegeToFence.get(node.name)! //获取栅栏
-                mesh.actionManager = nodeActionManager
-                mesh.actionManager.registerAction(new ExecuteCodeAction(
-                    ActionManager.OnPointerOverTrigger, //鼠标悬浮到建筑物上(移入建筑物)
-                    (event) => {
-                       fence.up() //上升
-                       this._clickSound.play()
-                        //获取学院数据
-                        collegeUiState.fetchCollegeDescriptionByName(node.name)
-                       collegeUiState.setShowing(true) //显示UI
+                }))
 
-                    }))
-
-                mesh.actionManager.registerAction(new ExecuteCodeAction(
-                    ActionManager.OnPointerOutTrigger, //鼠标移出建筑物
-                    (event) => {
-                        fence.down() //下降
-                        collegeUiState.setShowing(false)
+            mesh.actionManager.registerAction(new ExecuteCodeAction(
+                ActionManager.OnPointerOutTrigger, //鼠标移出建筑物
+                (event) => {
+                    fence.down() //下降
+                    collegeUiState.setShowing(false)
+                }
+            ))
+            mesh.actionManager.registerAction(new ExecuteCodeAction(
+                ActionManager.OnPickDownTrigger,
+                (event)=>{
+                    if(__DEBUG__){
+                        console.log(`进入学院 ${node.name}`)
                     }
-                ))
-                mesh.actionManager.registerAction(new ExecuteCodeAction(
-                    ActionManager.OnPickDownTrigger,
-                    (event)=>{
-                        if(__DEBUG__){
-                            console.log(`进入学院 ${node.name}`)
-                        }
-                        collegeUiState.setShowing(false) //关闭UI
-                        this._iState.goToCollege(node.name)
-                    }
-                ))
-            })
+                    collegeUiState.setShowing(false) //关闭UI
+                    this._iState.goToCollege(college.uuid) // 进入到学院内部
+                }
+            ))
         })
     }
 
@@ -166,7 +154,7 @@ export class CollegeMapManager { //加载学院相关的资源
     async loadMap() {
 
         //加载地图
-        let map = await SceneLoader.ImportMeshAsync("", CollegeMapManager.map.modelUrl, undefined, this._scene)
+        let map = await SceneLoader.ImportMeshAsync("", this._collegeMap.mapModelURL, undefined, this._scene)
         map.meshes.forEach((mesh) => {
             mesh.isPickable = false //将地图的所有mesh设置为不可选取的
         })
@@ -174,9 +162,8 @@ export class CollegeMapManager { //加载学院相关的资源
         //找到建筑物的坐标位置
         let positionMap = new Map<College, Vector3>()
         this._scene.transformNodes.forEach((node) => {
-            for (let i = 0; i < collegeMap.length; i++) {
-                const college = collegeMap[i];
-
+            for (let i = 0; i < this._collegeMap.colleges.length; i++) {
+                const college = this._collegeMap.colleges[i];
                 if (college.position == node.name) {
                     positionMap.set(college, node.position)
                 }
@@ -184,11 +171,10 @@ export class CollegeMapManager { //加载学院相关的资源
         })
 
         //检查地图数据是否出错
-        if (positionMap.size != collegeMap.length) {
+        if (positionMap.size != this._collegeMap.colleges.length) {
             if (__DEBUG__) {
                 console.log('地图数据错误');
                 console.log(positionMap);
-
             }
             return
         }
@@ -198,8 +184,8 @@ export class CollegeMapManager { //加载学院相关的资源
 
 
         //加载学院建筑
-        for (let i = 0; i < collegeMap.length; i++) {
-            const college = collegeMap[i];
+        for (let i = 0; i < this._collegeMap.colleges.length; i++) {
+            const college = this._collegeMap.colleges[i];
             let node = new TransformNode(college.name, this._scene)
             this._collegeNode.push(node)
 
@@ -207,16 +193,15 @@ export class CollegeMapManager { //加载学院相关的资源
 
             let root = loadMesh.meshes[0] //模型的root结点
             this._buildingMeshUniqueID.push(root.uniqueId)
-            root.scaling = college.scale //模型的缩放
+            root.scaling = new Vector3(college.scale[0],college.scale[1],college.scale[2]) //模型的缩放
             //设置模型的旋转属性 四元数
             root.rotationQuaternion = Quaternion.FromEulerAngles(0, 0, 0)
-
 
             //设置父级
             root.parent = node
             //设置建筑物位置
             let positon = positionMap.get(college)!
-            //x坐标好像是相反数? 
+            //x坐标好像是相反数?
             node.position.set(-positon.x, positon.y, positon.z)
 
             //设置建筑物上方的Text
@@ -224,7 +209,7 @@ export class CollegeMapManager { //加载学院相关的资源
             textBlock.text = college.name
             textBlock.fontSize = 20
             textBlock.color = "white" //字体颜色
-            ui.addControl(textBlock) //注意顺序 先addControl 再linkWithMesh 
+            ui.addControl(textBlock) //注意顺序 先addControl 再linkWithMesh
             textBlock.linkWithMesh(root)
             //向上偏移
             textBlock.linkOffsetY = -100
@@ -234,16 +219,17 @@ export class CollegeMapManager { //加载学院相关的资源
             let boundingBox = buildingMesh.getBoundingInfo().boundingBox
             //maximum减去minimum得到边界盒子的大小
             let boundingBoxSize=boundingBox.maximum.subtract(boundingBox.minimum)
-            //width:size.x,height:size.y,depth:size.z 
-            
+            //width:size.x,height:size.y,depth:size.z
+
             //栅栏
             let collegeFence=new CollegeFence(boundingBoxSize.x+0.5,boundingBoxSize.z+0.5,0.6,this._scene)
-            
+
             //设置栅栏的位置
             collegeFence.position=new Vector3(node.position.x, node.position.y - 1, node.position.z)
-            
+
             this._collegeToFence.set(node.name, collegeFence) //保存 学院名称 -- 栅栏名称
-            
+
+            this.setClick(node,college)
         }
 
 

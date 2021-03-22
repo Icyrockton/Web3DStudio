@@ -1,13 +1,10 @@
 import {
     Animation,
-    ArcRotateCamera, BackEase, BezierCurveEase, CircleEase, Color3, CubicEase,
-    DynamicTexture, EasingFunction, HemisphericLight, HighlightLayer, IAnimationKey,
-    Matrix,
+    ArcRotateCamera, CircleEase, CubicEase,
+    EasingFunction, HemisphericLight, HighlightLayer, IAnimationKey,
     Mesh,
-    MeshBuilder,
-    Quaternion,
     Scene,
-    SceneLoader, StandardMaterial,
+    SceneLoader,
     Vector3
 } from "@babylonjs/core";
 import {Player, PlayerAssets} from "../player/player";
@@ -124,6 +121,7 @@ export class CollegeManager {
     goToFloor(floorNum: number) {
         if (floorNum == this._currentFloorNum)  //什么也不做
             return
+        useFloorUiState.setVisitStudioUiShowing(false)
         if (this._animating)
             return;
         this._animating = true
@@ -391,14 +389,7 @@ export class CollegeManager {
         return [alphaAnimation, betaAnimation]
     }
 
-    private openStudioDoor() {
-        if (this._currentFloorNum == -1)
-            return
-        const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
-        for (let i = 1; i <= 6; i++) {
-            floor.openDoor(i)
-        }
-    }
+
 
     cameraSmoothOut() {
         if (!this._visiting)
@@ -467,10 +458,6 @@ export class CollegeManager {
             this._visitPlayerManager.turnOnCamera() //切换到玩家的摄像机
         })
         this.disposeStudioNameUi()
-    }
-
-    private cameraMoveToPlayer() {
-
     }
 
     private createCameraMoveToPlayerAnim() { //相机移动到玩家
@@ -561,4 +548,27 @@ export class CollegeManager {
             }
         }
     }
+
+    public goToStudio() {
+        const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
+        floor.openDoor(this._visitPlayerManager._visitStudioIndex,()=>{
+            this._visitPlayerManager.goIntoStudio(this._visitPlayerManager._visitStudioIndex,()=>{
+                const studioUUid = this._collegeFloors.floors[this._currentFloorNum - 1].studios[this._visitPlayerManager._visitStudioIndex - 1].uuid;
+                //todo
+               this._web3DStudio.goToStudio(studioUUid)
+                //进入到工作室中
+            })
+            //人物往前走
+        }) //打开门
+    }
+
+    private openStudioDoor() {
+        if (this._currentFloorNum == -1)
+            return
+        const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
+        for (let i = 1; i <= 6; i++) {
+            floor.openDoor(i)
+        }
+    }
+
 }

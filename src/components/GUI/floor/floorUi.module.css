@@ -150,3 +150,39 @@
 .studio h4{
     margin-bottom: 0;
 }
+
+
+.visitStudioUiArea {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    width: 15vw;
+    height: 8vh;
+    color: #3498DB;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 8vh;
+    font-size: xx-large;
+    transform: translateX(-50%) translateY(100%)  ;
+    border-radius: 1.5vw;
+
+    background: linear-gradient(15deg ,white 48%,#1FA2FF 66%,#12D8FA 82%,#A6FFCB);
+    background-size: 300% 100%;
+    background-position: left;
+    transition: transform .5s var(--ease-out-swift),
+    background-position .5s var(--ease-out-swift),
+    fill .5s var(--ease-out-swift),
+    color .5s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+}
+
+.visitStudioUiArea:hover {
+    background-position: right;
+    color: white;
+    cursor: pointer;
+    transform: translateX(-50%)  translateY(-50%) scale(0.95) ;
+}
+
+.visitStudioUiShowing {
+    transform: translateX(-50%)  translateY(-50%) ;
+}

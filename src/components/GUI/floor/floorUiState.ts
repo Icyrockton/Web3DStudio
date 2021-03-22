@@ -6,6 +6,7 @@ export class FloorUiState {
     uiShowing: boolean = true //右侧的点击楼层
     everyFloorUiShowing: boolean = true //左侧简单的楼层介绍
     visitUiShowing: boolean = false //显示游览该层的UI
+    visitStudioUiShowing:boolean =false //显示浏览工作室的UI
     collegeManager: CollegeManager | null = null
     floorTotalNumber = 0 //楼层的总数
     collegeFloors: CollegeFloors | null = null
@@ -28,6 +29,10 @@ export class FloorUiState {
         this.visitUiShowing = showing
     }
 
+    setVisitStudioUiShowing(showing: boolean) {
+        this.visitStudioUiShowing = showing
+    }
+
     setEveryFloorUiShowing(showing: boolean) {
         this.everyFloorUiShowing = showing
     }
@@ -37,9 +42,14 @@ export class FloorUiState {
     }
 
     goToFloor(i: number) { //前往楼层
-        console.log('前往楼层', i)
         if (this.collegeManager) {
             this.collegeManager.goToFloor(i)
+        }
+    }
+
+    goToStudio(){
+        if (this.collegeManager){
+            this.collegeManager.goToStudio()
         }
     }
 

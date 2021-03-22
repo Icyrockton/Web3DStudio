@@ -2,61 +2,67 @@ import  { AbstractMesh, Animation, AnimationGroup, ArcRotateCamera, Color4, IAni
 import { AdvancedDynamicTexture, TextBlock } from "@babylonjs/gui";
 export class LoadingScene{
 
-    private scene:Scene
+    private _scene:Scene
+    private _camera: ArcRotateCamera;
 
     constructor(scene:Scene){
-        this.scene=scene
+        this._scene=scene
+        let camera = new ArcRotateCamera('camera',Math.PI/2,1.186,10,Vector3.Zero(),this._scene)
+        this._camera=camera
+        this._scene.clearColor = Color4.FromInts(72, 128, 215, 255)
         this.startLoadingAnimation()
 
 
 
     }
+    public get scene(){
+        this._scene.activeCamera = this._camera
+        return this._scene
+    }
 
-    
+
     async startLoadingAnimation() { //开启加载动画
-        let camera = new ArcRotateCamera('camera',Math.PI/2,1.186,10,Vector3.Zero(),this.scene)
-        this.scene.clearColor = Color4.FromInts(72, 128, 215, 255)
 
         //结点编辑器材质
-        let cubeLoaderMat = new NodeMaterial('cubeLoaderMat',this.scene,{ emitComments:false})
+        let cubeLoaderMat = new NodeMaterial('cubeLoaderMat',this._scene,{ emitComments:false})
 
         let guiNode = new TransformNode('guiNode') //GUI的结点
         guiNode.position.y=-1
-        
+
 
         this.setLoadingLabel(guiNode)//设置加载文本
 
         //加载 立方体 以及 结点材质
 
-        
+
         await SceneLoader.AppendAsync("src/assets/model/cubeLoading.glb")
-        
+
         await cubeLoaderMat.loadAsync("src/assets/nodeMaterial/loading.json")
-        
-        
+
+
         cubeLoaderMat.build(false)
-        
-       let meshes = [this.scene.getMeshByName("spinnerLeft"), this.scene.getMeshByName("spinnerCenter"), this.scene.getMeshByName("spinnerRight")];
+
+       let meshes = [this._scene.getMeshByName("spinnerLeft"), this._scene.getMeshByName("spinnerCenter"), this._scene.getMeshByName("spinnerRight")];
        let meshInfluence : MorphTarget[] = []
 
-        
+
         meshes.forEach((mesh,index) => { //设置材质 以及获取morph target
 
             if(mesh && mesh instanceof Mesh){ //nullable 转换成Mesh class
                mesh.material = cubeLoaderMat //设置结点材质
-               
+
                 if(mesh.morphTargetManager !== null){
                     meshInfluence.push(mesh.morphTargetManager.getTarget(0)) //获取变换的目标（tartget）
                 }
             }
         })
 
-        let loadingSpin = this.scene.getAnimationGroupByName('loadingSpin')!  //获取立方体的旋转动画
-        
+        let loadingSpin = this._scene.getAnimationGroupByName('loadingSpin')!  //获取立方体的旋转动画
+
         this.animateInfluence( meshInfluence[0],LoadingScene.morphAnimations.leftMorph,loadingSpin,false)
         this.animateInfluence( meshInfluence[1],LoadingScene.morphAnimations.centerMorph,loadingSpin,false)
         this.animateInfluence( meshInfluence[2],LoadingScene.morphAnimations.rightMorph,loadingSpin,true)
-        
+
     }
 
     private progressText?: TextBlock
@@ -87,7 +93,7 @@ export class LoadingScene{
     }
 
 
-    animateInfluence(target:MorphTarget,keys:IAnimationKey[],group:AnimationGroup,start:boolean){ 
+    animateInfluence(target:MorphTarget,keys:IAnimationKey[],group:AnimationGroup,start:boolean){
         let animation = new Animation('influenceAnimation','influence',60,Animation.ANIMATIONTYPE_FLOAT,Animation.ANIMATIONLOOPMODE_CYCLE)
         animation.setKeys(keys)
         group.addTargetedAnimation(animation, target)

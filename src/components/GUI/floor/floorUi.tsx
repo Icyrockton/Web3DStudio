@@ -94,6 +94,9 @@ const FloorUi = observer<FloorUiProps>(props => {
     const visit = () => { //游览
         uiState.goToVisit()
     }
+    const visitStudio=()=>{ //进入工作室
+        uiState.goToStudio()
+    }
     const everyFloorContent = () => {
         const floors = uiState.collegeFloors?.floors;
         return floors?.slice().reverse().map(floor => {
@@ -106,20 +109,29 @@ const FloorUi = observer<FloorUiProps>(props => {
     }
     return (
         <>
+            {/*右侧UI*/}
             <div className={`${classes.selectFloor}  ${uiState.uiShowing ? "" : classes.none}`}>
                 {
                     floorButton()
                 }
             </div>
 
+            {/*浏览该层楼*/}
             <div className={`${classes.visitUiArea} ${uiState.visitUiShowing ? classes.visitUiShowing : ""}`}
                  onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} onClick={visit}>
                 游览该层楼
             </div>
 
+            {/*左侧UI*/}
             <div
                 className={`${classes.everyFloorUi} ${uiState.everyFloorUiShowing ? classes.everyFloorUiShowing : ""}`}>
                 {everyFloorContent()}
+            </div>
+
+            {/*进入工作室*/}
+            <div className={`${classes.visitStudioUiArea} ${uiState.visitStudioUiShowing ? classes.visitStudioUiShowing : ""}`}
+                  onClick={visitStudio}>
+                进入工作室
             </div>
         </>
     )

@@ -1,4 +1,4 @@
-import {StudyType, SubTask, SubTaskState, Task, TaskState} from "./taskUi";
+import {StudyType , SubTaskState, Task, TaskState} from "./taskUi";
 import {makeAutoObservable} from "mobx";
 import usePlayerUiState from "../player/playerUiState";
 

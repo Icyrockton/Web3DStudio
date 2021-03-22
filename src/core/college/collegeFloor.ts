@@ -295,16 +295,16 @@ export class CollegeFloor {
     static LEFT_DOOR_NAME = "studio_door_left_"
     static RIGHT_DOOR_NAME = "studio_door_right_"
 
-    public openDoor(studioIndex: number) {  //工作室开门动画 studioIndex 为1~6
+    public openDoor(studioIndex: number,cb?:()=>void) {  //工作室开门动画 studioIndex 为1~6
         //找到左边的门
         const leftDoorName = `${this._startName}.${CollegeFloor.LEFT_DOOR_NAME}${studioIndex}`
         //找到右边的门
         const rightDoorName = `${this._startName}.${CollegeFloor.RIGHT_DOOR_NAME}${studioIndex}`
         const meshes = this._floorTransformNode.getChildMeshes();
-        let leftDoor: Mesh | null = null
-        let rightDoor: Mesh | null = null
+        let leftDoor: Mesh | null |InstancedMesh = null
+        let rightDoor: Mesh | null | InstancedMesh= null
         meshes.forEach(mesh => {
-            if (mesh instanceof Mesh) {
+            if ((mesh instanceof Mesh) || (mesh instanceof  InstancedMesh)) {
                 if (mesh.name == leftDoorName) { //找到左边的门
                     leftDoor = mesh
                 } else if (mesh.name == rightDoorName) { //找到右边的门
@@ -312,26 +312,41 @@ export class CollegeFloor {
                 }
             }
         })
+        console.log(leftDoor,rightDoor)
         if (leftDoor == null || rightDoor == null)
             return
 
         //开启动画
-        this._scene.beginDirectAnimation(leftDoor, this.createLeftDoorAnim(leftDoor), 0, CollegeFloor.frameRate, false)
-        this._scene.beginDirectAnimation(rightDoor, this.createRightDoorAnim(rightDoor), 0, CollegeFloor.frameRate, false)
+        if (studioIndex == 1 || studioIndex == 2 ) {
+            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor,-Math.PI /2 ), 0, CollegeFloor.frameRate, false,1,cb)
+            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor,Math.PI / 2), 0, CollegeFloor.frameRate, false)
+        }
+        else if(studioIndex == 3 || studioIndex == 4){
+            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor,Math.PI /2 ), 0, CollegeFloor.frameRate, false,1,cb)
+            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor,-Math.PI / 2), 0, CollegeFloor.frameRate, false)
+        }
+        else if(studioIndex == 5){
+            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor,Math.PI ), 0, CollegeFloor.frameRate, false,1,cb)
+            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor,0), 0, CollegeFloor.frameRate, false)
+        }
+        else {
+            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor,Math.PI ), 0, CollegeFloor.frameRate, false,1,cb)
+            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor,0), 0, CollegeFloor.frameRate, false)
+        }
     }
 
-    private createLeftDoorAnim(leftDoor: Mesh) {
-        if (leftDoor.rotationQuaternion != null) {
-            const animation = new Animation(`leftDoorAnim-${this._floor.floorNumber}`, "rotationQuaternion", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_QUATERNION, Animation.ANIMATIONLOOPMODE_CONSTANT);
+    private createDoorAnim(door: Mesh,rotateY:number) {
+        if (door.rotationQuaternion != null) {
+            const animation = new Animation(`DoorAnim-${this._floor.floorNumber}`, "rotationQuaternion", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_QUATERNION, Animation.ANIMATIONLOOPMODE_CONSTANT);
             const keyFrames: IAnimationKey[] = []
 
             keyFrames.push({
                 frame: 0,
-                value: Quaternion.FromEulerAngles(0, 0, 0)
+                value: door.rotationQuaternion
             })
             keyFrames.push({
                 frame: CollegeFloor.frameRate,
-                value: Quaternion.FromEulerAngles(0, Math.PI / 2, 0)
+                value: Quaternion.FromEulerAngles(0, rotateY, 0)
             })
 
             animation.setKeys(keyFrames)
@@ -339,28 +354,6 @@ export class CollegeFloor {
         }
         return []
     }
-
-    private createRightDoorAnim(rightDoor: Mesh) {
-        if (rightDoor.rotationQuaternion != null) {
-            const animation = new Animation(`rightDoorAnim-${this._floor.floorNumber}`, "rotationQuaternion", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_QUATERNION, Animation.ANIMATIONLOOPMODE_CONSTANT);
-            const keyFrames: IAnimationKey[] = []
-
-            keyFrames.push({
-                frame: 0,
-                value: Quaternion.FromEulerAngles(0, 0, 0)
-
-            })
-            keyFrames.push({
-                frame: CollegeFloor.frameRate,
-                value: Quaternion.FromEulerAngles(0, -Math.PI / 2, 0)
-            })
-
-            animation.setKeys(keyFrames)
-            return [animation]
-        }
-        return []
-    }
-
     public hide() {
         const childMeshes = this._floorTransformNode.getChildMeshes();
         childMeshes.forEach(mesh => {

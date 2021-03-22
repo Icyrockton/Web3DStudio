@@ -15,6 +15,7 @@ import {PlayerManager} from "./playerManager";
 import {VisitPlayer} from "./visitPlayer";
 import {CollegeManager} from "../college/collegeManager";
 import {CollegeFloor} from "../college/collegeFloor";
+import useFloorUiState from "../../components/GUI/floor/floorUiState";
 
 export class VisitPlayerManager {
     private _scene: Scene;
@@ -23,7 +24,7 @@ export class VisitPlayerManager {
 
     private _collisionBox!: AbstractMesh
     private _arrowModelURL: string;
-    private _visitStudioIndex: number = 0 //访问的工作室索引值
+    public _visitStudioIndex: number = 0 //访问的工作室索引值
     constructor(scene: Scene, playerModelURL: string, arrowModelURL: string) {
         this._scene = scene;
         this._playerModelURL = playerModelURL;
@@ -387,6 +388,7 @@ export class VisitPlayerManager {
             this._viewDetail = true
             this.cameraMove(-Math.PI / 2, -Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE, () => {
                 this.showReturnArrow()
+                useFloorUiState.setVisitStudioUiShowing(true)
             })
         } else if (this._currentLoc == 3) { //是3的话 左转
             this._currentLoc = 4
@@ -408,6 +410,8 @@ export class VisitPlayerManager {
             this.cameraMove(-Math.PI / 2, 0, -6, () => {
                 this.cameraRotateXAnim(Math.PI / 3.5, () => {
                     this.showReturnArrow()
+                    useFloorUiState.setVisitStudioUiShowing(true)
+
                 })
             })
         }
@@ -424,6 +428,7 @@ export class VisitPlayerManager {
             this._viewDetail = true
             this.cameraMove(Math.PI / 2, Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE, () => {
                 this.showReturnArrow()
+                useFloorUiState.setVisitStudioUiShowing(true)
 
             })
         } else if (this._currentLoc == 3) { //是3的话 左转
@@ -446,6 +451,7 @@ export class VisitPlayerManager {
             this.cameraMove(Math.PI / 2, 0, -6, () => {
                 this.cameraRotateXAnim(Math.PI / 3.5, () => {
                     this.showReturnArrow()
+                    useFloorUiState.setVisitStudioUiShowing(true)
 
                 })
             })
@@ -564,6 +570,36 @@ export class VisitPlayerManager {
         return [rotateAnimation]
     }
 
+    public goIntoStudio(studioIndex: number,cb?:()=>void) {
+        if (studioIndex == 1 || studioIndex == 2) {
+            this.player.startWalkAnim()
+            this._scene.beginDirectAnimation(this._collisionBox, this.createAlongXAnim(this._collisionBox.position.x - 3), 0, CollegeFloor.frameRate, false, 1,
+                () => {
+                    this.player.startIdleAnim()
+                    if (cb) {
+                        cb()
+                    }
+                })
+        } else if (studioIndex == 3 || studioIndex == 4) {
+            this.player.startWalkAnim()
+            this._scene.beginDirectAnimation(this._collisionBox, this.createAlongXAnim(this._collisionBox.position.x + 3), 0, CollegeFloor.frameRate, false, 1,
+                () => {
+                    this.player.startIdleAnim()
+                    if (cb) {
+                        cb()
+                    }
+                })
+        } else {
+            this.player.startWalkAnim()
+            this._scene.beginDirectAnimation(this._collisionBox, this.createAlongZAnim(this._collisionBox.position.z + 3), 0, CollegeFloor.frameRate, false, 1,
+                () => {
+                    this.player.startIdleAnim()
+                    if (cb) {
+                        cb()
+                    }
+                })
+        }
+    }
 
     private createAlongXAnim(targetX: number) { //前进动画
         const walkAnimation = new Animation("walkAnim", "position.x", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT)
@@ -662,18 +698,19 @@ export class VisitPlayerManager {
 
     private leftReturn() {
         this.hideReturnArrow()
+        useFloorUiState.setVisitStudioUiShowing(false)
         // 1 , 2 ,6
         if (this._visitStudioIndex == 1 || this._visitStudioIndex == 2) {
             this._viewDetail = false
             this.cameraMoveReverse(Math.PI / 2, Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE * -1, () => {
                 this.showArrow()
+
             })
         } else if (this._visitStudioIndex == 6) {
 
             this.cameraRotateXAnim(-Math.PI / 3.5, () => {
                 this.cameraMove(Math.PI / 2, 0, 6, () => {
                     this.showArrow()
-
                 })
             })
         }
@@ -681,6 +718,7 @@ export class VisitPlayerManager {
 
     private rightReturn() {
         this.hideReturnArrow()
+        useFloorUiState.setVisitStudioUiShowing(false)
         // 3 , 4 , 5
         if (this._visitStudioIndex == 3 || this._visitStudioIndex == 4) {
             this._viewDetail = false
@@ -688,10 +726,10 @@ export class VisitPlayerManager {
                 this.showArrow()
             })
         } else if (this._visitStudioIndex == 5) {
+
             this.cameraRotateXAnim(-Math.PI / 3.5, () => {
                 this.cameraMove(-Math.PI / 2, 0, 6, () => {
                     this.showArrow()
-
                 })
             })
         }
