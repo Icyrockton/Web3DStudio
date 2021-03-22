@@ -93,7 +93,7 @@ export class CollegeFence {
     async loadMat() {
         let fenceMat = new NodeMaterial('fence_Mat', this._scene)
         fenceMat.backFaceCulling = false // 关闭背面剪裁 两面都可以看见
-        await fenceMat.loadAsync("src/assets/nodeMaterial/fence.json")
+        await fenceMat.loadAsync("nodeMaterial/fence.json")
         fenceMat.build(false)
         this._fence.material = fenceMat
     }
@@ -101,7 +101,7 @@ export class CollegeFence {
     private _downAnim?: Animatable
     private _state = FenceState.init
     public up() { //上升动画
-        
+
         if (this._state == FenceState.init || this._state == FenceState.downing) { //上升...
             if(this._downAnim){
                 this._downAnim.stop()
@@ -132,7 +132,7 @@ export class CollegeFence {
         else if(this._state == FenceState.init || this._state==FenceState.downing){//什么也不做
 
         }
-        
+
     }
 
     public set position(positon: Vector3) {
@@ -164,7 +164,7 @@ export class CollegeFence {
         const keyFrames: IAnimationKey[] = []
         keyFrames.push({
             frame: 0,
-            value: this._fence.position.y 
+            value: this._fence.position.y
         })
         keyFrames.push({
             frame: 60,

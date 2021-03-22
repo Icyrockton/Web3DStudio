@@ -19,14 +19,14 @@ export class Firework {
     private _height: number
     private _started: boolean = false //是否启动烟花
     private _exploded: boolean = false //是否爆炸
-    private readonly flareImageURL = "src/assets/img/flare.png";
+    private readonly flareImageURL = "img/flare.png";
     private _rocketSound:Sound
     private _explosionSound:Sound
 
     constructor(scene: Scene, startNode: TransformNode, height: number) {
         this._scene = scene;
-        this._rocketSound=new Sound("rocketSound","src/assets/sound/firework/rocket.wav",this._scene,()=>{});
-        this._explosionSound=new Sound("rocketSound","src/assets/sound/firework/explosion.wav",this._scene,()=>{});
+        this._rocketSound=new Sound("rocketSound","sound/firework/rocket.wav",this._scene,()=>{});
+        this._explosionSound=new Sound("rocketSound","sound/firework/explosion.wav",this._scene,()=>{});
         //火箭向上发射
         const rocket = MeshBuilder.CreateSphere("rocket", {segments: 4, diameter: 1});
         this._emitter = rocket

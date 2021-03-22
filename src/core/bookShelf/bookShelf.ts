@@ -110,7 +110,7 @@ export class BookShelf implements BookSound {
     }
 
     //书架模型的位置
-    static readonly BOOK_SHELF_URL = "src/assets/model/bookShelf.glb"
+    static readonly BOOK_SHELF_URL = "model/bookShelf.glb"
 
     private setUpShelf() {
 
@@ -183,11 +183,11 @@ export class BookShelf implements BookSound {
     }
 
     private setUpSound() { //加载声音
-        this._openBookSound = new Sound("openBookSound", "src/assets/sound/book/openBook.mp3", this._scene, () => {
+        this._openBookSound = new Sound("openBookSound", "sound/book/openBook.mp3", this._scene, () => {
         }, {loop: false, autoplay: false})
-        this._closeBookSound = new Sound("closeBookSound", "src/assets/sound/book/closeBook.mp3", this._scene, () => {
+        this._closeBookSound = new Sound("closeBookSound", "sound/book/closeBook.mp3", this._scene, () => {
         }, {loop: false, autoplay: false})
-        this._clickBookSound = new Sound("clickBookSound", "src/assets/sound/book/clickBook.mp3", this._scene, () => {
+        this._clickBookSound = new Sound("clickBookSound", "sound/book/clickBook.mp3", this._scene, () => {
         }, {loop: false, autoplay: false, volume: 0.2})
     }
 

@@ -35,9 +35,9 @@ export class LoadingScene{
         //加载 立方体 以及 结点材质
 
 
-        await SceneLoader.AppendAsync("src/assets/model/cubeLoading.glb")
+        await SceneLoader.AppendAsync("model/cubeLoading.glb")
 
-        await cubeLoaderMat.loadAsync("src/assets/nodeMaterial/loading.json")
+        await cubeLoaderMat.loadAsync("nodeMaterial/loading.json")
 
 
         cubeLoaderMat.build(false)

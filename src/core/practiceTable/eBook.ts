@@ -31,7 +31,7 @@ export class EBook {
     private _shadowGenerator: CascadedShadowGenerator;
     private _highLightLayer: HighlightLayer;
 
-    static readonly EBOOK_URL = "src/assets/model/book.glb"
+    static readonly EBOOK_URL = "model/book.glb"
     private _eBookNode: TransformNode;
     private _openBookAnim?: AnimationGroup;
     private _closeBookAnim?: AnimationGroup;

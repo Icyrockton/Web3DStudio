@@ -10,43 +10,43 @@ const fakeEBooks: EBookDetail [] = [
     {
         uuid: 1,
         bookName: "Java8函数式编程",
-        bookURL: "src/assets/pdf/Java8函数式编程-22-25.pdf",
-        textureImgURL: "src/assets/img/bookCover/eBook/函数式编程.png",
+        bookURL: "pdf/Functional_programming-22-25.pdf",
+        textureImgURL: "img/bookCover/eBook/Functional_programming.png",
         thickness: 1.0
     },
     {
         uuid: 2,
         bookName: "Java8实战",
-        bookURL: "src/assets/pdf/Java8实战-22-26.pdf",
-        textureImgURL: "src/assets/img/bookCover/eBook/java实战.png",
+        bookURL: "pdf/java8practice-22-26.pdf",
+        textureImgURL: "img/bookCover/eBook/java_practice.png",
         thickness: 1.0
     },
     {
         uuid: 3,
         bookName: "Java并发编程艺术",
-        bookURL: "src/assets/pdf/Java并发编程艺术-15-19.pdf",
-        textureImgURL: "src/assets/img/bookCover/eBook/并发编程艺术.png",
+        bookURL: "pdf/Concurrent_programming_art-15-19.pdf",
+        textureImgURL: "img/bookCover/eBook/Concurrent_programming_art.png",
         thickness: 1.0
     },
     {
         uuid: 4,
         bookName: "深入理解Java虚拟机",
-        bookURL: "src/assets/pdf/深入理解Java虚拟机：（第3版)-253-257.pdf",
-        textureImgURL: "src/assets/img/bookCover/eBook/深入理解java虚拟机.png",
+        bookURL: "pdf/DeepUnderstandingOfJVM-253-257.pdf",
+        textureImgURL: "img/bookCover/eBook/DeepUnderstandingOfJVM.png",
         thickness: 1.0
     },
     {
         uuid: 5,
         bookName: "Java编程思想",
-        bookURL: "src/assets/pdf/Java8实战-88-93.pdf",
-        textureImgURL: "src/assets/img/bookCover/eBook/java编程思想.png",
+        bookURL: "pdf/java8practice-88-93.pdf",
+        textureImgURL: "img/bookCover/eBook/think_in_java.png",
         thickness: 1.0
     },
     {
         uuid: 6,
         bookName: "Effective Java中文版",
-        bookURL: "src/assets/pdf/Java8实战-88-93.pdf",
-        textureImgURL: "src/assets/img/bookCover/eBook/Effective_Java中文版.png",
+        bookURL: "pdf/java8practice-88-93.pdf",
+        textureImgURL: "img/bookCover/eBook/Effective_Java.png",
         thickness: 1.0
     }
 
@@ -169,7 +169,7 @@ export class PracticeTableUiState {
     currentEBookDetail: EBookDetail = {
         uuid: -1,
         bookName: "Java工作室",
-        bookURL: "src/assets/pdf/Java.pdf",
+        bookURL: "pdf/Java.pdf",
         textureImgURL: "",
         thickness: 1.0
     } //书籍的信息

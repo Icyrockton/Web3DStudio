@@ -41,9 +41,9 @@ export interface CollegeFloors { //学院的所有楼层
 
 //工作室的选择
 export class CollegeManager {
-    static readonly PLAYER_MODEL_URL = "src/assets/model/player.glb"
-    static readonly PLAYER_ARROW_MODEL_URL = "src/assets/model/player_arrow.glb"
-    static readonly FLOOR_MODEL_URL = "src/assets/model/floor.glb"
+    static readonly PLAYER_MODEL_URL = "model/player.glb"
+    static readonly PLAYER_ARROW_MODEL_URL = "model/player_arrow.glb"
+    static readonly FLOOR_MODEL_URL = "model/floor.glb"
 
 
     private _scene: Scene;

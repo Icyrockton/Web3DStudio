@@ -135,19 +135,19 @@ export class ReceptionistManager {
             autoplay: false,
             loop: false
         })
-        this._videoHintSound = new Sound("videoHintSound", "src/assets/sound/taskHint/videoHint.mp3", this._scene, null, {
+        this._videoHintSound = new Sound("videoHintSound", "sound/taskHint/videoHint.mp3", this._scene, null, {
             autoplay: false,
             loop: false
         })
-        this._exerciseHintSound = new Sound("exerciseHintSound", "src/assets/sound/taskHint/exerciseHint.mp3", this._scene, null, {
+        this._exerciseHintSound = new Sound("exerciseHintSound", "sound/taskHint/exerciseHint.mp3", this._scene, null, {
             autoplay: false,
             loop: false
         })
-        this._readingHintSound = new Sound("readingHintSound", "src/assets/sound/taskHint/readingHint.mp3", this._scene, null, {
+        this._readingHintSound = new Sound("readingHintSound", "sound/taskHint/readingHint.mp3", this._scene, null, {
             autoplay: false,
             loop: false
         })
-        this._taskFinishedHintSound = new Sound("taskFinishedHintSound", "src/assets/sound/taskHint/taskFinishedHint.mp3", this._scene, null, {
+        this._taskFinishedHintSound = new Sound("taskFinishedHintSound", "sound/taskHint/taskFinishedHint.mp3", this._scene, null, {
             autoplay: false,
             loop: false
         })

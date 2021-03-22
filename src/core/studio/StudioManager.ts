@@ -39,7 +39,7 @@ export class StudioManager {
     private _scene: Scene;
     private _playerSpawn ?: TransformNode //玩家的出生点
     private _receptionistSpawn  ?: TransformNode //接待员的出生点
-    static PlayerModelUrl = "src/assets/model/receptionist.glb"
+    static PlayerModelUrl = "model/receptionist.glb"
     static PlayerCollisionBoxWidth = 0.7
     static PlayerCollisionBoxHeight = 1.8
     static PlayerCollisionBoxDepth = 0.5
@@ -194,7 +194,7 @@ export class StudioManager {
         const receptionistUiState = useReceptionistUiState; //UI状态
 
         let description = {
-            avatarURL: "src/assets/img/avatar/javaReceptionistAvatar.png",
+            avatarURL: "img/avatar/javaReceptionistAvatar.png",
             info: "Hi~，欢迎来到北京三维学院Java工作室，我是你的培训师姐，我叫李丹",
             position: "Java架构高级工程师",
             title: "高级工程师"
@@ -339,10 +339,10 @@ export class StudioManager {
 
 
     private setUpSound() {
-        const bookShelf = new Sound("", "src/assets/sound/java/bookShelf.mp3", this._scene, () => {
+        const bookShelf = new Sound("", "sound/java/bookShelf.mp3", this._scene, () => {
         }, {loop: false, autoplay: false});
 
-        const practiceTable = new Sound("", "src/assets/sound/java/practiceTable.mp3", this._scene, () => {
+        const practiceTable = new Sound("", "sound/java/practiceTable.mp3", this._scene, () => {
         }, {loop: false, autoplay: false});
         this._sound = {
             bookShelf: bookShelf,

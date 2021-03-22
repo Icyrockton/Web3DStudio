@@ -9,104 +9,104 @@ const fakeBooks: BookDetail[] = [
         uuid: 1,
         area: "A_Area",
             videoName: "JVM内存模型",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/videoBook/内存模型.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/videoBook/MemoryModel.png",
         thickness:1
     },
     {
         uuid: 2,
         area: "A_Area",
         videoName: "JVM体系结构",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_2.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_2.png",
         thickness:1
     },
     {
         uuid: 3,
         area: "A_Area",
         videoName: "",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_3.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_3.png",
         thickness:0.5
     },
     {
         uuid: 4,
         area: "A_Area",
         videoName: "指令重排序",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/videoBook/指令重排序.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/videoBook/InstructionReorder.png",
         thickness:1
     },
     {
         uuid: 5,
         area: "A_Area",
         videoName: "类加载器及双亲委派机制",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_3.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_3.png",
         thickness:0.5
     },
     {
         uuid: 6,
         area: "A_Area",
         videoName: "Native，方法区",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_5.png",
         thickness:1
     },
     {
         uuid: 7,
         area: "A_Area",
         videoName: "JVM虚拟机",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_5.png",
         thickness:0.8
     },
     {
         uuid: 8,
         area: "B_Area",
         videoName: "JVM内存屏障",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/videoBook/内存屏障.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/videoBook/MemoryBarrier.png",
         thickness:0.55
     },
     {
         uuid: 9,
         area: "A_Area",
         videoName: "JVM虚拟机",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_3.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_3.png",
         thickness:0.5
     },
     {
         uuid: 10,
         area: "B_Area",
         videoName: "JVM虚拟机",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_5.png",
         thickness:0.8
     },
     {
         uuid: 11,
         area: "A_Area",
         videoName: "JVM虚拟机",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_5.png",
         thickness:0.7
     },
     {
         uuid: 12,
         area: "C_Area",
         videoName: "JAVA数组",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_4.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_4.png",
         thickness:0.6
     },
     {
         uuid: 13,
         area: "D_Area",
         videoName: "JVM虚拟机",
-        videoURL: "src/assets/video/javaVideo_1.flv",
-        textureImgURL: "src/assets/img/bookCover/book_5.png",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_5.png",
         thickness:0.5
     },
 ]

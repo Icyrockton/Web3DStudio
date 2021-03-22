@@ -89,7 +89,7 @@ export class PracticeTable implements EBookUtil {
     static readonly COMPUTER_POWER_LOC = "PracticeTableComputerPowerLoc"
     static readonly COMPUTER_SCREEN = "PracticeTableComputerScreen"
     //练习台模型的位置
-    static readonly Practice_Table_URL = "src/assets/model/practiceTable.glb"
+    static readonly Practice_Table_URL = "model/practiceTable.glb"
     //电子书籍位置的transformNode起始名称
     static readonly EBookLocStartName = "Book"
 
@@ -205,11 +205,11 @@ export class PracticeTable implements EBookUtil {
 
 
     private setUpSound() { //加载声音
-        this._openBookSound = new Sound("openBookSound", "src/assets/sound/book/openBook.mp3", this._scene, () => {
+        this._openBookSound = new Sound("openBookSound", "sound/book/openBook.mp3", this._scene, () => {
         }, {loop: false, autoplay: false})
-        this._closeBookSound = new Sound("closeBookSound", "src/assets/sound/book/closeBook.mp3", this._scene, () => {
+        this._closeBookSound = new Sound("closeBookSound", "sound/book/closeBook.mp3", this._scene, () => {
         }, {loop: false, autoplay: false})
-        this._clickBookSound = new Sound("clickBookSound", "src/assets/sound/book/clickBook.mp3", this._scene, () => {
+        this._clickBookSound = new Sound("clickBookSound", "sound/book/clickBook.mp3", this._scene, () => {
         }, {loop: false, autoplay: false, volume: 0.2})
     }
 

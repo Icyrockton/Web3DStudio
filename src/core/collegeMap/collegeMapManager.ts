@@ -31,7 +31,7 @@ export class CollegeMapManager { //加载学院相关的资源
 
     static map = {
         name: 'map',
-        modelUrl: 'src/assets/model/map.glb'
+        modelUrl: 'model/map.glb'
     }
 
     private _scene: Scene
@@ -47,7 +47,7 @@ export class CollegeMapManager { //加载学院相关的资源
         this._scene = scene//学院场景
         //#5FA2E2
         this._scene.clearColor=new Color4(96 / 256,162 /256,226/256,1)
-        this._clickSound=new Sound('clickSound',"src/assets/sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
+        this._clickSound=new Sound('clickSound',"sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
     }
 
     async load() {

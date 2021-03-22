@@ -44,7 +44,7 @@ export class Staircase {
         this._highLightLayer = new HighlightLayer("highLightLayer", this._scene)
         this._scene.autoClear=false
         //this._scene.clearColor=new Color4(0,0,0,0)
-        this._clickSound=new Sound('clickSound',"src/assets/sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
+        this._clickSound=new Sound('clickSound',"sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
         canvas.addEventListener('resize',()=>{
             this._engine.resize()
         })
@@ -156,8 +156,8 @@ export class Staircase {
         ground.position.set(x + 1.5, y, 0)
         ground.material = this._mat["ground"]
         this._flagNode.position.set(++x, y, 0)
-        SceneLoader.ImportMesh("", "src/assets/model/flag.glb", undefined, this._scene, this.flagSuccessCallBack)
-        SceneLoader.ImportMesh("", "src/assets/model/arrow.glb", undefined, this._scene, this.arrowSuccessCallBack)
+        SceneLoader.ImportMesh("", "model/flag.glb", undefined, this._scene, this.flagSuccessCallBack)
+        SceneLoader.ImportMesh("", "model/arrow.glb", undefined, this._scene, this.arrowSuccessCallBack)
 
         this._scene.registerBeforeRender(() => {
             //平滑过渡到_targerPos

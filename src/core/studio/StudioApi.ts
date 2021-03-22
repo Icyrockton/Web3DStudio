@@ -4,23 +4,23 @@ import {Vector3} from "@babylonjs/core";
 
 export const  fakeStudio:Studio = {
     name: "java工作室",
-    modelURL: "src/assets/model/studio/java_studio.glb",
-    playerModelURL: "src/assets/model/player.glb",
+    modelURL: "model/studio/java_studio.glb",
+    playerModelURL: "model/player.glb",
     description: "java工作室 一个学习高并发的工作室",
     playerSpawn: "playerSpawn",
     collisionBox: ["collision", "ground"],
     groundName: "ground",
-    playerAvatarURL: "src/assets/img/avatar/playerAvatar.png",
+    playerAvatarURL: "img/avatar/playerAvatar.png",
     directionalLightPosition: new Vector3(-10, 10, -10),
     bookShelfStartName: "BookShelf",
     practiceTableStartName: "PracticeTable",
     receptionistConfig: {
-        receptionistModelURL: "src/assets/model/receptionist.glb",
+        receptionistModelURL: "model/receptionist.glb",
         receptionistSpawn: "receptionistSpawn",
         receptionistRotateYAxis: Math.PI / 2,
         distanceTrigger: 2,
-        greetingSoundURL: "src/assets/sound/javaGreeting.mp3",
-        introductionSoundURL: "src/assets/sound/javaIntroduction.mp3"
+        greetingSoundURL: "sound/javaGreeting.mp3",
+        introductionSoundURL: "sound/javaIntroduction.mp3"
     } as ReceptionistConfig,
     rotateCamera: [
         {mesh: "cameraRotate_1", rotate: 0},
@@ -33,15 +33,15 @@ export const  fakeStudio:Studio = {
         {
             name: "黄奥",
             info: ["同学，你今天Java学习的怎么样了", "JDK是JAVA的开发工具包"],
-            infoSoundURL:["src/assets/sound/java/ai/Java学习的怎么样了.mp3","src/assets/sound/java/ai/JDK是JAVA的开发工具包.mp3"],
+            infoSoundURL:["sound/java/ai/Java学习的怎么样了.mp3","sound/java/ai/JDK是JAVA的开发工具包.mp3"],
             title: "Java高级工程师",
             position: "Java高级工程师",
-            modelURL: "src/assets/model/ai/ai_1.glb",
+            modelURL: "model/ai/ai_1.glb",
             idleAnimationGroupName: "Idle",
             walkAnimationGroupName: "Walk",
             leftTurnAnimationGroupName: "LeftTurn",
             rightTurnAnimationGroupName: "RightTurn",
-            avatarURL: "src/assets/img/avatar/ai_1.png",
+            avatarURL: "img/avatar/ai_1.png",
             path: [
                 {
                     nodeName: "aiPath-1.001",
@@ -63,15 +63,15 @@ export const  fakeStudio:Studio = {
         {
             name: "余少",
             info: ["你还记得jvm有多少种垃圾收集器吗", "你还记得字节码是什么吗"],
-            infoSoundURL:["src/assets/sound/java/ai/jvm有多少种垃圾收集器.mp3","src/assets/sound/java/ai/字节码是什么.mp3"],
+            infoSoundURL:["sound/java/ai/jvm有多少种垃圾收集器.mp3","sound/java/ai/字节码是什么.mp3"],
             title: "Java高级工程师",
             position: "Java高级工程师",
-            modelURL: "src/assets/model/ai/ai_2.glb",
+            modelURL: "model/ai/ai_2.glb",
             idleAnimationGroupName: "Idle",
             walkAnimationGroupName: "Walk",
             leftTurnAnimationGroupName: "LeftTurn",
             rightTurnAnimationGroupName: "RightTurn",
-            avatarURL: "src/assets/img/avatar/ai_2.png",
+            avatarURL: "img/avatar/ai_2.png",
             path: [
                 {
                     nodeName: "aiPath-2.001",
@@ -91,15 +91,15 @@ export const  fakeStudio:Studio = {
         {
             name: "黄笨蛋",
             info: ["for循环的lambda形式是什么呢", "生产者消费者问题"],
-            infoSoundURL:["src/assets/sound/java/ai/for循环的lambda形式是什么呢.mp3","src/assets/sound/java/ai/生产者消费者问题.mp3"],
+            infoSoundURL:["sound/java/ai/for循环的lambda形式是什么呢.mp3","sound/java/ai/生产者消费者问题.mp3"],
             title: "Java高级工程师",
             position: "Java高级工程师",
-            modelURL: "src/assets/model/ai/ai_3.glb",
+            modelURL: "model/ai/ai_3.glb",
             idleAnimationGroupName: "Idle",
             walkAnimationGroupName: "Walk",
             leftTurnAnimationGroupName: "LeftTurn",
             rightTurnAnimationGroupName: "RightTurn",
-            avatarURL: "src/assets/img/avatar/ai_3.png",
+            avatarURL: "img/avatar/ai_3.png",
             path: [
                 {
                     nodeName: "aiPath-3.001",

@@ -177,7 +177,7 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
                 {/*电子书部分*/}
 
                 <EBookReader eBookReaderShowing={uiState.eBookReaderShowing} eBookUUID={uiState.currentEBookDetail.uuid}
-                             eBookFile={uiState.currentEBookDetail ? uiState.currentEBookDetail.bookURL : "src/assets/pdf/Java.pdf"}/>
+                             eBookFile={uiState.currentEBookDetail ? uiState.currentEBookDetail.bookURL : "pdf/Java.pdf"}/>
                 <div className={`${classes.practiceArea} ${uiState.practiceShowing ? "" : classes.none}`}>
                     <Layout style={{height: "100%"}}>
                         <Sider className={classes.practiceSider} theme={"light"}>

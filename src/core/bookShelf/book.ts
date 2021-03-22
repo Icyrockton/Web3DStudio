@@ -37,7 +37,7 @@ export class Book {
     private _scene: Scene;
     private _bookDetail: BookDetail;
     public bookNode: TransformNode
-    static readonly BOOK_URL = "src/assets/model/book.glb"
+    static readonly BOOK_URL = "model/book.glb"
     private _openBookAnim?: AnimationGroup
     private _closeBookAnim?: AnimationGroup
     private _position: Vector3;
