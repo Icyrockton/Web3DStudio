@@ -1,12 +1,53 @@
 import {observer} from "mobx-react-lite";
 import React from "react";
 import classes from "./floorUi.module.css"
-import {FloorUiState} from "./floorUiState";
+import useFloorUiState, {FloorUiState} from "./floorUiState";
 import {Button, Tooltip} from "antd";
-import {FormOutlined} from "@ant-design/icons";
+import {FormOutlined, SendOutlined} from "@ant-design/icons";
+import {Floor} from "../../../core/college/collegeManager";
+import Avatar from "antd/es/avatar/avatar";
 
 type FloorUiProps = {
     uiState: FloorUiState
+}
+type SingleFloorUiProps = {
+    floor: Floor
+}
+
+const SingleFloor = (props: SingleFloorUiProps) => {
+    const floor = props.floor;
+
+    const studios=()=>{
+        return floor.studios.map(studio=>(
+            <>
+                <div className={classes.singleFloorStudio}>
+                   <div className={classes.studio}>
+                       <Avatar src={studio.logoURL} size={"large"}>
+
+                       </Avatar>
+
+                       <h4> {studio.name}</h4>
+                   </div>
+                </div>
+            </>
+        ))
+    }
+    const floorUiState = useFloorUiState;
+    return (
+        <div className={classes.singleFloor}>
+            <div className={classes.singleFloorTitle}>
+                <h2>{floor.floorNumber}楼</h2>
+                <div>
+                    <Tooltip title={`前往楼层${floor.floorNumber}`} placement={"right"} >
+                        <SendOutlined style={{fontSize:"2.0em"}} onClick={()=>floorUiState.goToFloor(floor.floorNumber)}/>
+                    </Tooltip>
+                </div>
+            </div>
+            <div className={classes.singleFloorStudios} >
+                {studios()}
+            </div>
+        </div>
+    )
 }
 
 
@@ -21,7 +62,7 @@ const FloorUi = observer<FloorUiProps>(props => {
                 <div className={classes.selectFloorDiv}>
                     <Tooltip title={`查看所有楼层`} placement={"left"}>
                         <Button shape={"circle"}
-                                className={classes.selectFloorButton} onClick={()=>uiState.goToFloor(-1)}>
+                                className={classes.selectFloorButton} onClick={() => uiState.goToFloor(-1)}>
                             All
                         </Button>
                     </Tooltip>
@@ -33,7 +74,7 @@ const FloorUi = observer<FloorUiProps>(props => {
                 (
                     <div className={classes.selectFloorDiv}>
                         <Tooltip title={`前往楼层${i}`} placement={"left"}>
-                            <Button shape={"circle"} onClick={()=>uiState.goToFloor(i)}
+                            <Button shape={"circle"} onClick={() => uiState.goToFloor(i)}
                                     className={classes.selectFloorButton}>
                                 {i}
                             </Button>
@@ -44,15 +85,24 @@ const FloorUi = observer<FloorUiProps>(props => {
         }
         return content
     }
-    const mouseEnter=()=>{  //相机往外增大一点
-        console.log('？？')
+    const mouseEnter = () => {  //相机往外增大一点
         uiState.onMouseEnterVisitButton()
     }
-    const mouseLeave=()=>{ //相机返回原来的位置
+    const mouseLeave = () => { //相机返回原来的位置
         uiState.onMouseLeaveVisitButton()
     }
-    const visit=()=>{ //游览
+    const visit = () => { //游览
         uiState.goToVisit()
+    }
+    const everyFloorContent = () => {
+        const floors = uiState.collegeFloors?.floors;
+        return floors?.slice().reverse().map(floor => {
+            return (
+                <>
+                    <SingleFloor floor={floor}/>
+                </>
+            )
+        })
     }
     return (
         <>
@@ -62,9 +112,14 @@ const FloorUi = observer<FloorUiProps>(props => {
                 }
             </div>
 
-            <div className={`${classes.visitUiArea} ${uiState.visitUiShowing ? classes.visitUiShowing: ""}`}
-            onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} onClick={visit}>
+            <div className={`${classes.visitUiArea} ${uiState.visitUiShowing ? classes.visitUiShowing : ""}`}
+                 onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} onClick={visit}>
                 游览该层楼
+            </div>
+
+            <div
+                className={`${classes.everyFloorUi} ${uiState.everyFloorUiShowing ? classes.everyFloorUiShowing : ""}`}>
+                {everyFloorContent()}
             </div>
         </>
     )

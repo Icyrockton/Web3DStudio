@@ -65,6 +65,7 @@ export class CollegeManager {
         this._scene = collegeScene;
         this._collegeFloors = collegeFloors; //所有数据
         useFloorUiState.collegeManager = this //注入this
+        useFloorUiState.setFloorInfo(collegeFloors) //设置信息
         useFloorUiState.setFloorTotalNumber(collegeFloors.totalFloor) //设置楼层数目
         useFloorUiState.setFloorUiShowing(true) //显示UI
         this._highLightLayer = new HighlightLayer("floorHighlightLayer", this._scene)
@@ -144,6 +145,8 @@ export class CollegeManager {
                         this._animating = false
                         this._currentFloorNum = -1 //值置位 -1
                         this.updateCameraTarget()
+                        useFloorUiState.setEveryFloorUiShowing(true) //显示左侧的UI
+
                     })
 
                 }
@@ -152,11 +155,12 @@ export class CollegeManager {
                 this._animating = false
                 this._currentFloorNum = -1 //值置位 -1
                 this.updateCameraTarget()
+                useFloorUiState.setEveryFloorUiShowing(true) //显示左侧的UI
             }
             return;
         }
         if (this._currentFloorNum == -1) {  //之前的状态是显示所有的楼层
-
+            useFloorUiState.setEveryFloorUiShowing(false)//显示左侧的UI
             //特判 如果此时楼层点击的是最高楼层... 那么显示最高楼层
             if (floorNum == this._collegeFloors.totalFloor) {
                 this.updateCameraTarget()
@@ -447,7 +451,7 @@ export class CollegeManager {
     private _visiting: boolean = false
 
     //访问当前楼层
-    private visitFloor() {
+    public visitFloor() {
         if (this._currentFloorNum == -1)
             return
         const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
