@@ -1,10 +1,12 @@
 {
   "name": "Web3DStudio",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "homepage": "https://icyrockton.github.io/Web3DStudio/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "deploy" : "gh-pages -d build"
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
@@ -35,6 +37,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@vitejs/plugin-react-refresh": "^1.1.0",
     "typescript": "^4.2.3",
-    "vite": "^2.0.1"
+    "vite": "^2.0.1",
+    "gh-pages": "^3.1.0"
   }
 }
