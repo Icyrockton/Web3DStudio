@@ -2,13 +2,13 @@ import usePlayerUiState, {PlayerState} from "./playerUiState";
 import {observer} from "mobx-react-lite";
 import React, {useEffect, useRef} from "react";
 import {Staircase} from "../../../core/staircase/staircase";
-import {SubTaskState, Task} from "../task/taskUi";
 import {SubTaskUi, useSubTaskUiState} from "./subTaskUi";
 import classes from './playerUi.module.css'
 import {Card, Progress, Typography} from "antd";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
 import {MiscUi} from "./miscUi";
+import {SubTaskState, Task} from "../task/taskUiState";
 
 type PlayerUiProps = {
     uiState: PlayerState

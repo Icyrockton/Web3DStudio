@@ -555,6 +555,7 @@ export class CollegeManager {
             this._visitPlayerManager.goIntoStudio(this._visitPlayerManager._visitStudioIndex,()=>{
                 const studioUUid = this._collegeFloors.floors[this._currentFloorNum - 1].studios[this._visitPlayerManager._visitStudioIndex - 1].uuid;
                 //todo
+                console.log('点击进入')
                this._web3DStudio.goToStudio(studioUUid)
                 //进入到工作室中
             })

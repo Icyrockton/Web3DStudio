@@ -16,7 +16,7 @@ import Modal from "antd/es/modal/Modal";
 import {LoadError, PageChangeEvent, Viewer, Worker} from "@react-pdf-viewer/core";
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import usePlayerUiState from "../player/playerUiState";
-import {StudyType} from "../task/taskUi";
+import {StudyType} from "../task/taskUiState";
 
 type PracticeProps = {
     task: PracticeSubTask

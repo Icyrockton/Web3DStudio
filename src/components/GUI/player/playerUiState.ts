@@ -1,10 +1,10 @@
 import {makeAutoObservable} from "mobx";
-import {StudyType, SubTask, SubTaskState, Task, TaskState} from "../task/taskUi";
 import {Staircase} from "../../../core/staircase/staircase";
 import {ReceptionistManager} from "../../../core/receptionist/receptionistManager";
 import {StudioManager} from "../../../core/studio/StudioManager";
 import {notification} from "antd";
 import usePracticeTableUiState from "../practiceTable/practiceTableUiState";
+import {StudyType, SubTask, SubTaskState, Task, TaskState} from "../task/taskUiState";
 
 export interface Player {
 

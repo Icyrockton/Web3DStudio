@@ -23,7 +23,6 @@ import useReceptionistUiState, {ReceptionistDescription} from "../../components/
 import usePlayerUiState from "../../components/GUI/player/playerUiState";
 import {DistanceHelper} from "../../utils/distanceHelper";
 import {IState} from "../IState";
-import {StudyType} from "../../components/GUI/task/taskUi";
 import {Ai} from "../ai/ai";
 // @ts-ignore
 import Recast from "recast-detour"

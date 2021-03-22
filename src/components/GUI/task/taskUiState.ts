@@ -1,7 +1,44 @@
-import {StudyType , SubTaskState, Task, TaskState} from "./taskUi";
 import {makeAutoObservable} from "mobx";
 import usePlayerUiState from "../player/playerUiState";
 
+
+export enum SubTaskState {
+    UnFinished, //未完成
+    Finished, //完成
+    OnProgress // 正在进行
+}
+export enum TaskState { //任务的状态
+    NotAccept, //还未接收任务
+    OnProgress,//正在进行中
+    Finished //已完成的任务
+}
+export interface Task {
+    uuid: number //任务的唯一id
+    name: string //任务名称
+    status: TaskState //任务的状态
+    description: string //任务总览介绍
+    goal: string //任务的目标
+    subTask: SubTask[] //子任务
+    rate?: number //总评分 1~5
+}
+
+
+export interface SubTask {
+    name: string //子任务的名称
+    status: SubTaskState //子任务的状态
+    description: string // 子任务的描述
+    progress:number //子任务的完成进度 0-100
+    type: StudyType //子任务类型
+    studyUuid: number // 要么是一本书的ID 要么是电子书的ID 要么是练习的ID
+    rate?: number //子任务评分 1-5
+
+}
+
+export enum StudyType {
+    video, //视频
+    practice, //课后练习
+    read //读书
+}
 
 export const fakeTask: Task[] = [{
     uuid: 1,

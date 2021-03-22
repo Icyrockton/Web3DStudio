@@ -3,8 +3,8 @@ import {CollegeFloors, CollegeManager} from "../../../core/college/collegeManage
 
 
 export class FloorUiState {
-    uiShowing: boolean = true //右侧的点击楼层
-    everyFloorUiShowing: boolean = true //左侧简单的楼层介绍
+    uiShowing: boolean = false //右侧的点击楼层
+    everyFloorUiShowing: boolean = false //左侧简单的楼层介绍
     visitUiShowing: boolean = false //显示游览该层的UI
     visitStudioUiShowing:boolean =false //显示浏览工作室的UI
     collegeManager: CollegeManager | null = null

@@ -5,7 +5,6 @@ import "@babylonjs/inspector";
 import {CollegeMapManager} from "./core/collegeMap/collegeMapManager";
 import {IState} from "./core/IState";
 import {CollegeManager} from "./core/college/collegeManager";
-import {StudioManager} from "./core/studio/StudioManager";
 import {BookShelf} from "./core/bookShelf/bookShelf";
 import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 import {PracticeTable} from "./core/practiceTable/practiceTable";
@@ -13,6 +12,7 @@ import usePracticeTableUiState from "./components/GUI/practiceTable/practiceTabl
 import {fakeCollegeFloors} from "./core/college/collegeFloorApi";
 import useFloorUiState from "./components/GUI/floor/floorUiState";
 import {fakeCollegeMap} from "./core/collegeMap/collegeMapApi";
+import {StudioManager} from "./core/studio/StudioManager";
 import {fakeStudio} from "./core/studio/StudioApi";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
@@ -130,12 +130,12 @@ export class Web3DStudio implements IState {
 
         const prevScene=this._scene
         this.changeToLoadingScene() //切换到加载场景
-        prevScene.dispose() //dispose
 
         let collegeScene = new Scene(this._engine)
         let manager = new CollegeManager(collegeScene, this , fakeCollegeFloors)
         await manager.load()
         this._scene = collegeScene
+        prevScene.dispose() //dispose
         //this._scene.debugLayer.show()
     }
 
@@ -154,12 +154,13 @@ export class Web3DStudio implements IState {
 
         const prevScene=this._scene
         this.changeToLoadingScene()
-        prevScene.dispose()//dispose
 
-        // let studioScene = new Scene(this._engine)
-        // let manager = new StudioManager(studioScene, fakeStudio, this)
-        // await manager.load()
-        // this._scene = studioScene
+        let studioScene = new Scene(this._engine)
+        let manager = new StudioManager(studioScene, fakeStudio, this)
+        await manager.load()
+        prevScene.dispose()//dispose
+        this._scene = studioScene
+
         //this._scene.debugLayer.show()
     }
 

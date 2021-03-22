@@ -6,7 +6,7 @@ import {Button, Tooltip} from "antd";
 import {CloseSquareOutlined} from "@ant-design/icons";
 import ReactPlayer from "react-player";
 import usePlayerUiState from "../player/playerUiState";
-import {StudyType} from "../task/taskUi";
+import {StudyType} from "../task/taskUiState";
 
 type BookShelfUiProps = {
     uiState: BookShelfUiState

@@ -12,8 +12,7 @@ import {
 } from "@babylonjs/core";
 import {Firework} from "./firework";
 import {GradientMaterial} from "@babylonjs/materials";
-import {SubTask, SubTaskState, Task} from "../../components/GUI/task/taskUi";
-import useTaskUiState from "../../components/GUI/task/taskUiState";
+import useTaskUiState, {SubTask, SubTaskState, Task} from "../../components/GUI/task/taskUiState";
 import {useSubTaskUiState} from "../../components/GUI/player/subTaskUi";
 
 export class Staircase {

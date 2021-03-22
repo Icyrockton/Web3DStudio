@@ -1,5 +1,4 @@
 import {makeAutoObservable} from "mobx";
-import {StudyType, SubTask, SubTaskState} from "../task/taskUi";
 import {observer} from "mobx-react-lite";
 import React from "react";
 import {Card, Progress, Rate, Typography} from "antd";
@@ -8,6 +7,7 @@ import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
 import Icon from "@ant-design/icons";
 import classes from './subTaskUi.module.css'
+import {StudyType, SubTask, SubTaskState} from "../task/taskUiState";
 
 export class SubTaskUiState {
 

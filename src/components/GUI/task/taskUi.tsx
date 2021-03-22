@@ -1,6 +1,6 @@
 import {observer} from "mobx-react-lite";
 import React, {useState} from "react";
-import useTaskUiState, {TaskUiState} from "./taskUiState";
+import useTaskUiState, {SubTaskState, TaskUiState,Task} from "./taskUiState";
 import 'antd/dist/antd.css';
 import Layout, {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
@@ -13,55 +13,12 @@ import classes from './taskUi.module.css'
 import {notification} from "antd/es";
 
 
-
-
-export enum TaskState { //任务的状态
-    NotAccept, //还未接收任务
-    OnProgress,//正在进行中
-    Finished //已完成的任务
-}
-
-export enum SubTaskState {
-    UnFinished, //未完成
-    Finished, //完成
-    OnProgress // 正在进行
-}
-
-export interface Task {
-    uuid: number //任务的唯一id
-    name: string //任务名称
-    status: TaskState //任务的状态
-    description: string //任务总览介绍
-    goal: string //任务的目标
-    subTask: SubTask[] //子任务
-    rate?: number //总评分 1~5
-}
-
-
-export interface SubTask {
-    name: string //子任务的名称
-    status: SubTaskState //子任务的状态
-    description: string // 子任务的描述
-    progress:number //子任务的完成进度 0-100
-    type: StudyType //子任务类型
-    studyUuid: number // 要么是一本书的ID 要么是电子书的ID 要么是练习的ID
-    rate?: number //子任务评分 1-5
-
-}
-
-export enum StudyType {
-    video, //视频
-    practice, //课后练习
-    read //读书
-
-}
-
-type TaskProps = {
+interface TaskProps  {
     task: Task
     finished: boolean
 }
 
-function Task(props: TaskProps) {
+function SingleTask(props: TaskProps) {
     const task = props.task;
     let finished = task.subTask.filter(subTask => subTask.status == SubTaskState.Finished).length
     let progress = (finished / task.subTask.length) * 100 //求得进度
@@ -248,10 +205,10 @@ const TaskUi = observer<TaskUiProps>((props: TaskUiProps) => {
     const taskList = (key: string) => {
         if (key == "unfinished") {
             //未完成的任务
-             return uiState.unAcceptTask.map(task => <Task key={task.uuid} task={task} finished={false}/>)
+             return uiState.unAcceptTask.map(task => <SingleTask key={task.uuid} task={task} finished={false}/>)
         } else {
             //已完成的任务
-            return uiState.finishedTask.map(task => <Task key={task.uuid} task={task} finished={true}/>)
+            return uiState.finishedTask.map(task => <SingleTask key={task.uuid} task={task} finished={true}/>)
         }
     }
 

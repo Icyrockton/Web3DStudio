@@ -1,9 +1,9 @@
 import {makeAutoObservable, runInAction} from "mobx";
 import {EBookDetail, PracticeTable} from "../../../core/practiceTable/practiceTable";
 import {EBook} from "../../../core/practiceTable/eBook";
-import {StudyType, SubTask} from "../task/taskUi";
 import usePlayerUiState from "../player/playerUiState";
 import {Web3DStudio} from "../../../web3DStudio";
+import {StudyType, SubTask} from "../task/taskUiState";
 
 
 const fakeEBooks: EBookDetail [] = [
