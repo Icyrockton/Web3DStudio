@@ -76,6 +76,7 @@ export class Web3DStudio implements IState {
             if (this._bookShelfShowing) {
                 if (this._bookShelf == null) {
                     this._bookShelf = new BookShelf(this._engine)
+                    this._bookShelf.render()
                 } else {
                     this._bookShelf.render()
                 }
@@ -86,6 +87,7 @@ export class Web3DStudio implements IState {
                     this._practiceTable = new PracticeTable(this._engine)
                     const practiceTableUiState = usePracticeTableUiState;
                     practiceTableUiState.practiceTable = this._practiceTable
+                    this._practiceTable.render()
                 } else {
                     this._practiceTable.render()
                 }
