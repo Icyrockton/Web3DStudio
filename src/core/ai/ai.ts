@@ -234,10 +234,12 @@ export class Ai {
             const distance = playerManager.playerPosition.subtract(this._aiTransformNode.position).length();
             if (distance < 1.5) {
                 if (!this._trigger) {
-                    this.randomDialog()
-                    this._prevState = this._state
-                    this._encounterPlayer = true
-                    this._trigger = true
+                    if (!playerManager.busy) {  //如果玩家不忙碌
+                        this.randomDialog()
+                        this._prevState = this._state
+                        this._encounterPlayer = true
+                        this._trigger = true
+                    }
                 }
             } else {
                 if (this._encounterPlayer) {
@@ -272,7 +274,7 @@ export class Ai {
         } as StudioAIDialog
         const aiUiState = useAiUiState;
         if (aiUiState.count == 0) {
-            this._infoSound.forEach(sound=>sound.stop()) //停止所有声音
+            this._infoSound.forEach(sound => sound.stop()) //停止所有声音
             this._infoSound[index].play() //播放声音
         }
         aiUiState.setDialogInfo(dialogInfo)

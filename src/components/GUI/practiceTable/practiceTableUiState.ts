@@ -4,6 +4,7 @@ import {EBook} from "../../../core/practiceTable/eBook";
 import usePlayerUiState from "../player/playerUiState";
 import {Web3DStudio} from "../../../web3DStudio";
 import {StudyType, SubTask} from "../task/taskUiState";
+import {PlayerManager} from "../../../core/player/playerManager";
 
 
 const fakeEBooks: EBookDetail [] = [
@@ -179,6 +180,7 @@ export class PracticeTableUiState {
     practiceAnswer: PracticeAnswer[] = []
     web3DStudio: Web3DStudio | null = null
     practiceTable: PracticeTable | null = null
+    playerManager: PlayerManager | null = null;
 
     setPracticeTable(practiceTable: PracticeTable) {
         this.practiceTable = practiceTable
@@ -220,6 +222,9 @@ export class PracticeTableUiState {
 
     setPracticeTableShowing(showing: boolean) {
         this.practiceTableShowing = showing
+        if (!showing && this.playerManager) {
+            this.playerManager.busy = false  //设置为非忙碌状态
+        }
     }
 
     setEBookReaderShowing(showing: boolean) {
@@ -234,8 +239,9 @@ export class PracticeTableUiState {
         this.practiceShowing = showing
         if (showing) {
             this.practiceTableShowing = false
-        } else
+        } else {
             this.practiceTableShowing = true
+        }
     }
 
 
@@ -250,7 +256,8 @@ export class PracticeTableUiState {
             unFinishedPracticeCount: false,
             web3DStudio: false,
             practiceTable: false,
-            setPracticeTable: false
+            setPracticeTable: false,
+            playerManager:false
         })
     }
 

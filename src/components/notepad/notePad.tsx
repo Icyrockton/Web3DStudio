@@ -18,6 +18,8 @@ import {
 } from "@ant-design/icons";
 import Paragraph from "antd/es/typography/Paragraph";
 import {Rnd} from "react-rnd";
+import usePlayerUiState, {PlayerState} from "../GUI/player/playerUiState";
+import {observer} from "mobx-react-lite";
 
 
 const markDownParser = new MarkdownIt(); //markdown解析器
@@ -29,7 +31,9 @@ interface NotePad {  //笔记本
     content: string  //内容
 }
 
-type NotePadProps = {}
+type NotePadProps = {
+    uiState:PlayerState
+}
 
 const fakeNotepads: NotePad[] = [
     {
@@ -51,10 +55,11 @@ const fakeNotepads: NotePad[] = [
 
 
 const useNotePads = createLocalStorageStateHook<NotePad[]>("notePadData", fakeNotepads);
-const NotePad = (props: NotePadProps) => {
+const NotePad = observer<NotePadProps>((props: NotePadProps) => {
     const [notePads, setNotePads] = useNotePads();
     const [isShowing, setShowing] = useState(false);
 
+    const playerUiState = props.uiState;
     let defaultKey = ""
     if (notePads.length >= 1) {
         defaultKey = notePads[0].key
@@ -165,17 +170,17 @@ const NotePad = (props: NotePadProps) => {
     }
     return (
         <>
-            <div className={classes.openButtonArea}>
+            <div className={`${classes.openButtonArea} ${playerUiState.isShowing ? "" : classes.none} `}>
                 <Tooltip title={hint()}>
                     <Button icon={<FormOutlined style={{fontSize: "30px"}}/>} shape={"circle"}
-                            onClick={()=>setShowing(!isShowing)}
+                            onClick={() => setShowing(!isShowing)}
                             className={classes.openButton}/>
                 </Tooltip>
             </div>
 
 
             <Rnd size={{width: size.width, height: size.height}}
-                 className={` ${isShowing ? "":classes.none}`}
+                 className={` ${isShowing ? "" : classes.none}`}
                  position={{x: xy.x, y: xy.y}}
                  onDragStop={(e, data) => setXy({x: data.x, y: data.y})}
                  onResizeStop={(e, direction, ref, delta, position) => {
@@ -190,14 +195,14 @@ const NotePad = (props: NotePadProps) => {
                  maxHeight={"80%"}
                  cancel={".no-drag"}
                  enableResizing={
-                     {bottom:true , right:true , bottomRight:true}
+                     {bottom: true, right: true, bottomRight: true}
                  }
             >
-                <div className={classes.dragArea} >
+                <div className={classes.dragArea}>
 
                 </div>
                 <div className={`${classes.notePadEditor} no-drag`}>
-                    <Layout style={{height: "100%"}} >
+                    <Layout style={{height: "100%"}}>
                         {/*侧边栏*/}
                         <Sider className={`${classes.notePadSider} `} theme={"light"}>
                             <div className={classes.newNote}>
@@ -222,6 +227,6 @@ const NotePad = (props: NotePadProps) => {
             </Rnd>
         </>
     )
-}
+})
 
 export default NotePad

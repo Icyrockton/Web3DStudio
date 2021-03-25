@@ -72,7 +72,7 @@ export class LoadingScene{
          let advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('loadingGUI')
 
          this.progressText = new TextBlock();
-         this.progressText.text = "加载中... \n 0/100 ";
+         this.progressText.text = "加载中... ";
          this.progressText.fontSize = 25;
          this.progressText.color = "white";
 
@@ -84,10 +84,11 @@ export class LoadingScene{
     updateProgress(progress:number,hintText?:string){
         if(this.progressText){
             if(hintText){
-                this.progressText.text=`加载中... \n ${hintText} \n ${progress}/100`
+                // this.progressText.text=`加载中... \n ${hintText} \n ${progress}/100`
+                this.progressText.text=`加载中... \n`
             }
             else{
-                this.progressText.text=`加载中... \n ${progress}/100`
+                this.progressText.text=`加载中... `
             }
         }
     }

@@ -42,7 +42,7 @@ export const Web3D =()=>{
             <PlayerUi uiState={playerUiState}/>
             <BookShelfUi uiState={bookShelfUiState}/>
             <PracticeTableUi uiState={practiceTableUiState}/>
-            <NotePad/>
+            <NotePad uiState={playerUiState}/>
             <AiUi uiState={aiUiState}/>
             <FloorUi uiState={floorUiState}/>
         </React.Fragment>

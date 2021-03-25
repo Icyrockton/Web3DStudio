@@ -26,6 +26,8 @@ import {IState} from "../IState";
 import {Ai} from "../ai/ai";
 // @ts-ignore
 import Recast from "recast-detour"
+import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState";
+import usePracticeTableUiState from "../../components/GUI/practiceTable/practiceTableUiState";
 interface StudioSound {
     bookShelf: Sound
     practiceTable: Sound
@@ -329,9 +331,15 @@ export class StudioManager {
                     case 'E':
                     case "e":
                         if (this._currentArea == "BookShelf") {
+                            const bookShelfUiState = useBookShelfUiState;
+                            bookShelfUiState.playerManager=this._playerManager
                             this._web3DStudio.setBookShelfShow(true)
+                            this._playerManager.busy = true //忙碌
                         } else if (this._currentArea == "PracticeTable") {
+                            const practiceTableUiState = usePracticeTableUiState;
+                            practiceTableUiState.playerManager=this._playerManager
                             this._web3DStudio.setPracticeTableShow(true)
+                            this._playerManager.busy = true //忙碌
                         }
                 }
         }

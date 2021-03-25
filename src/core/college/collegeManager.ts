@@ -449,6 +449,8 @@ export class CollegeManager {
         floor.loadTexture() //加载纹理
         //传递地标数据到player
         this._visitPlayerManager.locTransformNode = floor.locTransformNode
+        //设置工作室的总数
+        this._visitPlayerManager.floorTotalStudioNum = this._collegeFloors.floors[this._currentFloorNum - 1].studios.length
         this._visiting = true
         this.hideOtherFloor()
         this.hideVisitUi()

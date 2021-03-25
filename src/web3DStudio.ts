@@ -14,6 +14,7 @@ import useFloorUiState from "./components/GUI/floor/floorUiState";
 import {fakeCollegeMap} from "./core/collegeMap/collegeMapApi";
 import {StudioManager} from "./core/studio/StudioManager";
 import {fakeStudio} from "./core/studio/StudioApi";
+import usePlayerUiState from "./components/GUI/player/playerUiState";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -146,13 +147,16 @@ export class Web3DStudio implements IState {
     }
 
 
-    async goToStudio(studioUUid: number) {
+    async goToStudio(studioUUid: number) {   //前往工作室
         //关闭上一个场景的UI
         const floorUiState = useFloorUiState;
         floorUiState.setFloorUiShowing(false)
         floorUiState.setVisitStudioUiShowing(false)
         floorUiState.setEveryFloorUiShowing(false)
         floorUiState.setVisitUiShowing(false)
+
+        const playerUiState = usePlayerUiState;
+        playerUiState.setShowing(true) //任务栏打卡
 
         const prevScene=this._scene
         this.changeToLoadingScene()

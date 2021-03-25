@@ -33,7 +33,7 @@ export const  fakeStudio:Studio = {
         {
             name: "黄奥",
             info: ["同学，你今天Java学习的怎么样了", "JDK是JAVA的开发工具包"],
-            infoSoundURL:["sound/java/ai/Java学习的怎么样了.mp3","sound/java/ai/JDK是JAVA的开发工具包.mp3"],
+            infoSoundURL:["sound/java/ai/How's_java_learning_going.mp3","sound/java/ai/JDK.mp3"],
             title: "Java高级工程师",
             position: "Java高级工程师",
             modelURL: "model/ai/ai_1.glb",
@@ -63,7 +63,7 @@ export const  fakeStudio:Studio = {
         {
             name: "余少",
             info: ["你还记得jvm有多少种垃圾收集器吗", "你还记得字节码是什么吗"],
-            infoSoundURL:["sound/java/ai/jvm有多少种垃圾收集器.mp3","sound/java/ai/字节码是什么.mp3"],
+            infoSoundURL:["sound/java/ai/how_many_GC_in_JVM.mp3","sound/java/ai/What's_the_bytecode.mp3"],
             title: "Java高级工程师",
             position: "Java高级工程师",
             modelURL: "model/ai/ai_2.glb",
@@ -91,7 +91,7 @@ export const  fakeStudio:Studio = {
         {
             name: "黄笨蛋",
             info: ["for循环的lambda形式是什么呢", "生产者消费者问题"],
-            infoSoundURL:["sound/java/ai/for循环的lambda形式是什么呢.mp3","sound/java/ai/生产者消费者问题.mp3"],
+            infoSoundURL:["sound/java/ai/What's_the_lambda_form_of_the_for_loop.mp3","sound/java/ai/Producer_consumer.mp3"],
             title: "Java高级工程师",
             position: "Java高级工程师",
             modelURL: "model/ai/ai_3.glb",

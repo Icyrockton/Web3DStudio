@@ -21,7 +21,7 @@ export class PlayerState {
     receptionistManager: ReceptionistManager | null = null
     studioManager: StudioManager | null = null
     staircase: Staircase | null = null
-    isShowing: boolean = true
+    isShowing: boolean = false
     currentTask: Task = {
         name: "空任务",
         uuid: -1,

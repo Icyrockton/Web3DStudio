@@ -25,6 +25,8 @@ export class VisitPlayerManager {
     private _collisionBox!: AbstractMesh
     private _arrowModelURL: string;
     public _visitStudioIndex: number = 0 //访问的工作室索引值
+    public floorTotalStudioNum: number = 0;
+
     constructor(scene: Scene, playerModelURL: string, arrowModelURL: string) {
         this._scene = scene;
         this._playerModelURL = playerModelURL;
@@ -377,6 +379,11 @@ export class VisitPlayerManager {
 
     static readonly CAMERA_MOVE_IN_DISTANCE = -5
 
+    private visitStudioUiShowing(isLeft:boolean) {
+        if (this.checkCanVisitThisStudio(isLeft))
+            useFloorUiState.setVisitStudioUiShowing(true)
+    }
+
     private goLeft() { //左转
         this.hideAllArrow()
         if (this._currentLoc == 1 || this._currentLoc == 2) {
@@ -388,7 +395,7 @@ export class VisitPlayerManager {
             this._viewDetail = true
             this.cameraMove(-Math.PI / 2, -Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE, () => {
                 this.showReturnArrow()
-                useFloorUiState.setVisitStudioUiShowing(true)
+                this.visitStudioUiShowing(true)
             })
         } else if (this._currentLoc == 3) { //是3的话 左转
             this._currentLoc = 4
@@ -410,7 +417,7 @@ export class VisitPlayerManager {
             this.cameraMove(-Math.PI / 2, 0, -6, () => {
                 this.cameraRotateXAnim(Math.PI / 3.5, () => {
                     this.showReturnArrow()
-                    useFloorUiState.setVisitStudioUiShowing(true)
+                    this.visitStudioUiShowing(true)
 
                 })
             })
@@ -428,7 +435,7 @@ export class VisitPlayerManager {
             this._viewDetail = true
             this.cameraMove(Math.PI / 2, Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE, () => {
                 this.showReturnArrow()
-                useFloorUiState.setVisitStudioUiShowing(true)
+                this.visitStudioUiShowing(false)
 
             })
         } else if (this._currentLoc == 3) { //是3的话 左转
@@ -451,8 +458,7 @@ export class VisitPlayerManager {
             this.cameraMove(Math.PI / 2, 0, -6, () => {
                 this.cameraRotateXAnim(Math.PI / 3.5, () => {
                     this.showReturnArrow()
-                    useFloorUiState.setVisitStudioUiShowing(true)
-
+                    this.visitStudioUiShowing(false)
                 })
             })
 
@@ -521,6 +527,10 @@ export class VisitPlayerManager {
         this.arrowVisible(this._downArrow, true)
         this.arrowVisible(this._leftArrow, true)
         this.arrowVisible(this._rightArrow, true)
+        if (this._currentLoc == 0) { //起始位置隐藏左右箭头
+            this.arrowVisible(this._leftArrow, false)
+            this.arrowVisible(this._rightArrow, false)
+        }
         if (this._currentLoc == 0 || this._currentLoc == 1) //隐藏后退的箭头
             this.arrowVisible(this._downArrow, false)
         else if (this._currentLoc == 3)  //隐藏向前的箭头
@@ -570,7 +580,7 @@ export class VisitPlayerManager {
         return [rotateAnimation]
     }
 
-    public goIntoStudio(studioIndex: number,cb?:()=>void) {
+    public goIntoStudio(studioIndex: number, cb?: () => void) {
         if (studioIndex == 1 || studioIndex == 2) {
             this.player.startWalkAnim()
             this._scene.beginDirectAnimation(this._collisionBox, this.createAlongXAnim(this._collisionBox.position.x - 3), 0, CollegeFloor.frameRate, false, 1,
@@ -733,5 +743,24 @@ export class VisitPlayerManager {
                 })
             })
         }
+    }
+
+    private checkCanVisitThisStudio(isLeft: boolean): boolean { //检查是否可以访问这个工作室
+        if (this._currentLoc == 1) { //1 ，3 工作室是否存在
+            if (isLeft)
+                return this.floorTotalStudioNum >= 1;
+            else
+                return this.floorTotalStudioNum >= 3;
+        } else if (this._currentLoc == 2) {
+            if (isLeft)
+                return this.floorTotalStudioNum >= 2;
+            else
+                return this.floorTotalStudioNum >= 4;
+        } else if (this._currentLoc == 4) {
+            return this.floorTotalStudioNum >= 5;
+        } else if (this._currentLoc == 5) {
+            return this.floorTotalStudioNum >= 6;
+        }
+        return false
     }
 }

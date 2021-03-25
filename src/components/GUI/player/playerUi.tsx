@@ -35,7 +35,6 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
     },[uiState.isShowing,uiState.currentTask])
 
     const content = (isShowing: boolean, currentTask: Task) => {
-        console.log('进入content')
         if (isShowing) {
 
             return (

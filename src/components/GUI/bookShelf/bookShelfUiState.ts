@@ -2,6 +2,7 @@ import {BookDetail} from "../../../core/bookShelf/bookShelf";
 import {makeAutoObservable} from "mobx";
 import {Book} from "../../../core/bookShelf/book";
 import {Web3DStudio} from "../../../web3DStudio";
+import {PlayerManager} from "../../../core/player/playerManager";
 
 
 const fakeBooks: BookDetail[] = [
@@ -121,12 +122,14 @@ export class BookShelfUiState {
     videoShowing: boolean = false //视频显示?
     shelfShowing : boolean =false //书架显示?
     web3DStudio:Web3DStudio | null =null
+    playerManager: PlayerManager | null = null;
 
     constructor() {
         makeAutoObservable(this, {web3DStudio:false,
             currentBook: false,
             setBookWithDetail: false,
-            currentBookDetail: false})
+            currentBookDetail: false,
+            playerManager:false})
     }
 
     setBookWithDetail(book: Book, bookDetail: BookDetail) {
@@ -139,6 +142,9 @@ export class BookShelfUiState {
     }
     setShelfShowing(showing:boolean){
         this.shelfShowing =showing
+        if (!showing && this.playerManager){
+            this.playerManager.busy =false //设置为非忙碌状态
+        }
     }
 }
 
