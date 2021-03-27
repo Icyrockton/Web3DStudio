@@ -3,7 +3,7 @@ import {IState} from "../IState";
 import {
     ActionManager,
     Animation,
-    Color3,
+    Color3, Color4,
     Engine, ExecuteCodeAction,
     HighlightLayer,
     IAnimationKey, InstancedMesh,
@@ -32,6 +32,7 @@ export class CollegeFloor {
 
     constructor(scene: Scene, web3DStudio: IState, floor: Floor, floorRoot: Mesh, maxYPos: number) {
         this._scene = scene
+        this._scene.clearColor=new Color4(96 / 256,162 /256,226/256,1)
         this._floor = floor;
         this._web3DStudio = web3DStudio; //为了转换状态
         this._floorTransformNode = new TransformNode(`floor-${floor.floorNumber}`, this._scene)
@@ -61,6 +62,7 @@ export class CollegeFloor {
                 material.diffuseColor = Color3.FromHexString(CollegeFloor.StudioBoxColor[cnt++]) //工作室盒子颜色
                 material.specularColor = Color3.Black() //防止高光
                 mesh.material = material
+                mesh.material.needDepthPrePass = true
                 mesh.visibility = 1
                 studioBox.push(mesh)
             }
@@ -82,9 +84,13 @@ export class CollegeFloor {
 
     public visibleStudioBox() {
         for (let i = 0; i < this._floor.studios.length; i++) {
+            this._studioBox[i].visibility = 0
             this._studioBox[i].isVisible = true
+            this._scene.beginDirectAnimation(this._studioBox[i],this.createVisibleAnim(this._studioBox[i]),0,CollegeFloor.frameRate,false)
         }
     }
+
+
 
     static readonly StudioBoxColor: string[] = ["#FFDBAC", "#F6DEE4", "#C1DDF9", "#EAE2D6", "#D1F8E9", "#C6EB93"]
 
@@ -95,6 +101,7 @@ export class CollegeFloor {
             let rect1 = new Rectangle();
             rect1.width = 0.2;
             rect1.height = "40px";
+            rect1.width ="230px";
             rect1.cornerRadius = 20;
             rect1.color = "#67daff";
             rect1.thickness = 4;

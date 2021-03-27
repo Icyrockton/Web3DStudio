@@ -110,7 +110,7 @@ const FloorUi = observer<FloorUiProps>(props => {
     return (
         <>
             {/*右侧UI*/}
-            <div className={`${classes.selectFloor}  ${uiState.uiShowing ? "" : classes.none}`}>
+            <div className={`${classes.selectFloor}  ${uiState.uiShowing ? classes.selectFloorShow : ""  }`}>
                 {
                     floorButton()
                 }

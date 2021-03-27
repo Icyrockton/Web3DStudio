@@ -1,5 +1,9 @@
-import { Animatable, Animation, BackEase, EasingFunction, IAnimationKey, Mesh, MeshBuilder, NodeMaterial, Scene, Vector3, VertexData } from "@babylonjs/core";
-import { CollegeMapManager } from "./collegeMapManager";
+import { Animatable, Animation, BackEase, EasingFunction, IAnimationKey, Mesh, MeshBuilder, NodeMaterial, Scene,
+    ShadowGenerator,
+    Vector3,
+    VertexData
+} from "@babylonjs/core";
+import {CollegeMapManager} from "./collegeMapManager";
 
 
 enum FenceState {
@@ -10,6 +14,7 @@ enum FenceState {
 }
 
 export class CollegeFence {
+
     private _fence: Mesh
     private _scene: Scene
     private _position: Vector3 = new Vector3()
@@ -89,6 +94,8 @@ export class CollegeFence {
 
 
     }
+
+
 
     async loadMat() {
         let fenceMat = new NodeMaterial('fence_Mat', this._scene)
@@ -176,4 +183,9 @@ export class CollegeFence {
         downAnimation.setKeys(keyFrames)
         this._fence.animations.push(downAnimation) //添加向下动画
     }
+
+    setUpShadow(shadowGenerator: ShadowGenerator) {
+        shadowGenerator.addShadowCaster(this._fence)
+    }
+
 }

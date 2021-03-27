@@ -64,8 +64,7 @@ export class CollegeManager {
         useFloorUiState.collegeManager = this //注入this
         useFloorUiState.setFloorInfo(collegeFloors) //设置信息
         useFloorUiState.setFloorTotalNumber(collegeFloors.totalFloor) //设置楼层数目
-        useFloorUiState.setFloorUiShowing(true) //显示UI
-        useFloorUiState.setEveryFloorUiShowing(true)
+
         this._highLightLayer = new HighlightLayer("floorHighlightLayer", this._scene)
         this._currentFloorNum = -1 //-1代表显示所有楼层
         this._scene.collisionsEnabled = true //打开碰撞

@@ -55,7 +55,7 @@ const CollegeUiComponent = (props: CollegeUiProps) => {
 
 
     return (
-        <Card className={`${classes.collegeUI} ${props.uiState.isShowing ? "" : classes.none}`}>
+        <Card className={`${classes.collegeUI} ${props.uiState.isShowing ? classes.collegeUIShow : ""}`}>
             {content}
         </Card>
 

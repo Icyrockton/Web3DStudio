@@ -137,6 +137,8 @@ export class Web3DStudio implements IState {
         let collegeScene = new Scene(this._engine)
         let manager = new CollegeManager(collegeScene, this , fakeCollegeFloors)
         await manager.load()
+        useFloorUiState.setFloorUiShowing(true) //显示UI
+        useFloorUiState.setEveryFloorUiShowing(true)
         this._scene = collegeScene
         prevScene.dispose() //dispose
         //this._scene.debugLayer.show()
@@ -155,8 +157,6 @@ export class Web3DStudio implements IState {
         floorUiState.setEveryFloorUiShowing(false)
         floorUiState.setVisitUiShowing(false)
 
-        const playerUiState = usePlayerUiState;
-        playerUiState.setShowing(true) //任务栏打卡
 
         const prevScene=this._scene
         this.changeToLoadingScene()
@@ -164,6 +164,9 @@ export class Web3DStudio implements IState {
         let studioScene = new Scene(this._engine)
         let manager = new StudioManager(studioScene, fakeStudio, this)
         await manager.load()
+
+        const playerUiState = usePlayerUiState;
+        playerUiState.setShowing(true) //任务栏打卡
         prevScene.dispose()//dispose
         this._scene = studioScene
 

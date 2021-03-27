@@ -1,6 +1,6 @@
 import {
     AbstractMesh,
-    Color3,
+    Color3, Color4,
     DirectionalLight,
     HemisphericLight,
     KeyboardEventTypes,
@@ -57,6 +57,8 @@ export class StudioManager {
 
     constructor(scene: Scene, studio: Studio, web3DStudio: IState) {
         this._scene = scene;
+        this._scene.clearColor=new Color4(96 / 256,162 /256,226/256,1)
+
         this._studio = studio;
         this._web3DStudio = web3DStudio;
         this._scene.collisionsEnabled = true //打开碰撞

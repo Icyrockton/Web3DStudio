@@ -17,9 +17,6 @@ export class CollegeUiState {
 
     setShowing(isShowing:boolean){
         this.isShowing=isShowing
-        if(!isShowing){ //如果未显示
-            this.college=null //清空college
-        }
     }
 
     fetchCollegeDescriptionByName(name:string){
