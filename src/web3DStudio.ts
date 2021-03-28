@@ -57,7 +57,7 @@ export class Web3DStudio implements IState {
     setDebugUI() {
         if (__DEBUG__) {
             window.addEventListener('keydown', (event) => {
-                if (event.ctrlKey && event.keyCode === 73) {  //ALT+I 打开debug layer
+                if ((event.ctrlKey && event.keyCode === 73) || (event.shiftKey && event.keyCode === 73)) {  //CTRL+I 打开debug layer
                     if (this._scene.debugLayer.isVisible()) {
                         this._scene.debugLayer.hide()
                     } else {
