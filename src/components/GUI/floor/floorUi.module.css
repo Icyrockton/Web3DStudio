@@ -125,8 +125,9 @@
 .singleFloorTitle div{
     display: inline-block;
     color: white;
+    width: 10%;
     height: 100%;
-    margin-right: 0.5em;
+    padding-right: 0.2em;
     cursor: pointer;
 }
 .singleFloorStudios{
@@ -170,7 +171,7 @@
     border-radius: 1.5vw;
 
     background: linear-gradient(15deg ,white 48%,#1FA2FF 66%,#12D8FA 82%,#A6FFCB);
-    background-size: 300% 100%;
+    background-size: 500% 100%;
     background-position: left;
     transition: transform .5s var(--ease-out-swift),
     background-position .5s var(--ease-out-swift),

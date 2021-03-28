@@ -1,10 +1,10 @@
 import {
     Animation,
-    ArcRotateCamera, CircleEase, CubicEase,
+    ArcRotateCamera, CircleEase, Color4, CubicEase, DefaultRenderingPipeline,
     EasingFunction, HemisphericLight, HighlightLayer, IAnimationKey,
     Mesh,
     Scene,
-    SceneLoader,
+    SceneLoader, Sound,
     Vector3
 } from "@babylonjs/core";
 import {Player, PlayerAssets} from "../player/player";
@@ -39,6 +39,16 @@ export interface CollegeFloors { //学院的所有楼层
     floors: Floor[]
 }
 
+export interface CollegeManagerSound {
+    enter: Sound
+    floorSelect: Sound
+    enterFloor: Sound
+    floorPush: Sound
+    floorPop: Sound
+    floorSelectSimple: Sound
+    buttonHit: Sound
+}
+
 //工作室的选择
 export class CollegeManager {
     static readonly PLAYER_MODEL_URL = "model/player.glb"
@@ -60,6 +70,7 @@ export class CollegeManager {
 
     constructor(collegeScene: Scene, web3DStudio: IState, collegeFloors: CollegeFloors) {
         this._scene = collegeScene;
+        this._scene.clearColor =  Color4.FromHexString("#6fabffff").toLinearSpace()
         this._collegeFloors = collegeFloors; //所有数据
         useFloorUiState.collegeManager = this //注入this
         useFloorUiState.setFloorInfo(collegeFloors) //设置信息
@@ -77,8 +88,87 @@ export class CollegeManager {
         this.setUpLight()
         await this.loadModel()
         await this._visitPlayerManager.loadPlayer()
+        await this.setUpSound()
         this.invisiblePlayer()
         this.setUpCamera()
+        this.setPostProcess()
+    }
+
+
+    setPostProcess() {
+        const pipeline = new DefaultRenderingPipeline(
+            "pipeline",
+            true,
+            this._scene,
+            this._scene.cameras
+        );
+        //开启测晕的效果
+        pipeline.imageProcessingEnabled = true;
+        pipeline.imageProcessing.vignetteEnabled = true;
+        pipeline.imageProcessing.vignetteWeight = 1.7;
+        pipeline.imageProcessing.vignetteColor=Color4.FromHexString("#146eff")
+        pipeline.imageProcessing.exposure = 1.2
+
+        //开启抗锯齿
+        pipeline.samples =4
+
+    }
+
+    private _sound!: CollegeManagerSound
+
+    private async setUpSound() {
+        const enter = new Sound("enterSound", "/sound/college/enter.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const floorSelect = new Sound("floorSelectSound", "/sound/college/floorSelect.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const enterFloor = new Sound("enterFloorSound", "/sound/college/enterFloor.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const floorPush = new Sound("floorPushSound", "/sound/college/floorPush.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const floorPop = new Sound("floorPopSound", "/sound/college/floorPop.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const floorSelectSimple = new Sound("floorSelectSimpleSound", "/sound/college/floorSelectSimple.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const buttonHit = new Sound("buttonHitSound", "/sound/college/buttonHitSound.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+
+        this._sound = {
+            enter: enter,
+            floorSelect: floorSelect,
+            enterFloor: enterFloor,
+            floorPush: floorPush,
+            floorPop: floorPop,
+            floorSelectSimple: floorSelectSimple,
+            buttonHit: buttonHit
+        }
+
+    }
+
+
+    public playFloorSelectSound() {
+        this._sound.floorSelect.play()
+    }
+
+    public playFloorSelectSimpleSound() {
+        this._sound.floorSelectSimple.play()
+    }
+
+    public playButtonHitSound(){
+        this._sound.buttonHit.play()
     }
 
 
@@ -103,7 +193,7 @@ export class CollegeManager {
         const floorRoot = floorModel.meshes[0] as Mesh
 
         this._collegeFloors.floors.forEach(floorInfo => {
-            const collegeFloor = new CollegeFloor(this._scene, this._web3DStudio, floorInfo, floorRoot, this._maxYPos);
+            const collegeFloor = new CollegeFloor(this._scene, this._web3DStudio, floorInfo, floorRoot, this._maxYPos, this._sound);
             this._collegeFloorInstances.push(collegeFloor) //保存实例
         })
 
@@ -133,18 +223,26 @@ export class CollegeManager {
         this.hideVisitUi()
         this.floorTranslucent()
         if (floorNum == -1) {  //目标是显示所有楼层
+
             //压入 this._currentFloorNum + 1 ~ floorNum
             for (let i = this._currentFloorNum + 1; i <= this._collegeFloors.totalFloor; i++) {
                 const floor = this._collegeFloorInstances[i - 1];
+                const delay = 300 * (i - this._currentFloorNum)
                 if (i != this._collegeFloors.totalFloor) {
-                    floor.pushToOrigin(300 * (i - this._currentFloorNum))
+                    setTimeout(() => {
+                        this._sound.floorPush.play()
+                    }, delay + 300)
+                    floor.pushToOrigin(delay)
                 } else {
-                    floor.pushToOrigin(300 * (i - this._currentFloorNum), () => {
+                    setTimeout(() => {
+                        this._sound.floorPush.play()
+                    }, delay + 300)
+                    floor.pushToOrigin(delay, () => {
                         this._animating = false
                         this._currentFloorNum = -1 //值置位 -1
                         this.updateCameraTarget()
                         useFloorUiState.setEveryFloorUiShowing(true) //显示左侧的UI
-
+                        this._sound.enter.play()
                     })
 
                 }
@@ -154,6 +252,7 @@ export class CollegeManager {
                 this._currentFloorNum = -1 //值置位 -1
                 this.updateCameraTarget()
                 useFloorUiState.setEveryFloorUiShowing(true) //显示左侧的UI
+                this._sound.enter.play()
             }
             return;
         }
@@ -176,10 +275,19 @@ export class CollegeManager {
             //那就是弹出楼层
             for (let i = this._collegeFloors.totalFloor; i > floorNum; i--) {
                 const floor = this._collegeFloorInstances[i - 1];
+                const delay = 300 * (this._collegeFloors.totalFloor - i)
                 if (i != floorNum + 1) {
-                    floor.popToMaxHeight(300 * (this._collegeFloors.totalFloor - i))
+
+                    setTimeout(() => {
+                        this._sound.floorPop.play()
+                    }, delay)
+
+                    floor.popToMaxHeight(delay)
                 } else {
-                    floor.popToMaxHeight(300 * (this._collegeFloors.totalFloor - i), () => {
+                    setTimeout(() => {
+                        this._sound.floorPop.play()
+                    }, delay)
+                    floor.popToMaxHeight(delay, () => {
                         this.floorVisible(floorNum, () => {
                             this._animating = false
                             this.showVisitUi()
@@ -196,10 +304,17 @@ export class CollegeManager {
                 //弹出  floorNum+1 ~ this._currentFloorNum
                 for (let i = this._currentFloorNum; i > floorNum; i--) {
                     const floor = this._collegeFloorInstances[i - 1];
+                    const delay = 300 * (this._currentFloorNum - i)
                     if (i != floorNum + 1) {
-                        floor.popToMaxHeight(300 * (this._currentFloorNum - i))
+                        setTimeout(() => {
+                            this._sound.floorPop.play()
+                        }, delay)
+                        floor.popToMaxHeight(delay)
                     } else {
-                        floor.popToMaxHeight(300 * (this._currentFloorNum - i), () => {
+                        setTimeout(() => {
+                            this._sound.floorPop.play()
+                        }, delay)
+                        floor.popToMaxHeight(delay, () => {
                             this.floorVisible(floorNum, () => {
                                 this._animating = false
                                 this.showVisitUi()
@@ -213,11 +328,17 @@ export class CollegeManager {
                 //压入 this._currentFloorNum + 1 ~ floorNum
                 for (let i = this._currentFloorNum + 1; i <= floorNum; i++) {
                     const floor = this._collegeFloorInstances[i - 1];
-                    // floor.pushToOrigin(0)
+                    const delay = 300 * (i - this._currentFloorNum)
                     if (i != floorNum) {
-                        floor.pushToOrigin(300 * (i - this._currentFloorNum))
+                        setTimeout(() => {
+                            this._sound.floorPush.play()
+                        }, delay + 300)
+                        floor.pushToOrigin(delay)
                     } else {
-                        floor.pushToOrigin(300 * (i - this._currentFloorNum), () => {
+                        setTimeout(() => {
+                            this._sound.floorPush.play()
+                        }, delay + 300)
+                        floor.pushToOrigin(delay, () => {
                             this.floorVisible(floorNum, () => {
                                 this._animating = false
                                 this.showVisitUi()
@@ -350,12 +471,16 @@ export class CollegeManager {
     }
 
     private beginStartCameraAnimation() {  //入场camera动画
-        this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraAnim(), 0, CollegeFloor.frameRate * 2, false)
+        this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraAnim(), 0, CollegeFloor.frameRate * 2, false, 1.6)
+        setTimeout(() => {
+            this._sound.enter.play()
+        }, 300)
     }
 
     private disposeStudioNameUi() {
         this._ui?.dispose()
     }
+
 
     private createStartCameraAnim() {
         const betaAnimation = new Animation("cameraBetaAnimation", "beta", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
@@ -388,7 +513,6 @@ export class CollegeManager {
 
         return [alphaAnimation, betaAnimation]
     }
-
 
 
     cameraSmoothOut() {
@@ -456,9 +580,13 @@ export class CollegeManager {
         this.hideVisitUi()
         this.placeVisitPlayer() //放置玩家
         this.visiblePlayer() //显示玩家
+
         this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraMoveToPlayerAnim(), 0, CollegeFloor.frameRate * 2, false, undefined, () => {
             this._visitPlayerManager.turnOnCamera() //切换到玩家的摄像机
         })
+        setTimeout(() => {
+            this._sound.enterFloor.play()
+        }, 400)
         this.disposeStudioNameUi()
     }
 
@@ -553,12 +681,12 @@ export class CollegeManager {
 
     public goToStudio() {
         const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
-        floor.openDoor(this._visitPlayerManager._visitStudioIndex,()=>{
-            this._visitPlayerManager.goIntoStudio(this._visitPlayerManager._visitStudioIndex,()=>{
+        floor.openDoor(this._visitPlayerManager._visitStudioIndex, () => {
+            this._visitPlayerManager.goIntoStudio(this._visitPlayerManager._visitStudioIndex, () => {
                 const studioUUid = this._collegeFloors.floors[this._currentFloorNum - 1].studios[this._visitPlayerManager._visitStudioIndex - 1].uuid;
                 //todo
                 console.log('点击进入')
-               this._web3DStudio.goToStudio(studioUUid)
+                this._web3DStudio.goToStudio(studioUUid)
                 //进入到工作室中
             })
             //人物往前走
@@ -573,5 +701,6 @@ export class CollegeManager {
             floor.openDoor(i)
         }
     }
+
 
 }

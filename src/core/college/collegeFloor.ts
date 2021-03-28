@@ -1,4 +1,4 @@
-import {Floor} from "./collegeManager";
+import {CollegeManagerSound, Floor} from "./collegeManager";
 import {IState} from "../IState";
 import {
     ActionManager,
@@ -29,10 +29,11 @@ export class CollegeFloor {
     static readonly HEIGHT = 8 //每层楼的高度
     static readonly STUDIO_BOX_NAME = "studio_box_"  //工作室盒子的名称 studio_box_1 ... studio_box_6
     private _startName: string //mesh的clone起始名称
+    private _sound: CollegeManagerSound;
 
-    constructor(scene: Scene, web3DStudio: IState, floor: Floor, floorRoot: Mesh, maxYPos: number) {
+    constructor(scene: Scene, web3DStudio: IState, floor: Floor, floorRoot: Mesh, maxYPos: number, sound: CollegeManagerSound) {
         this._scene = scene
-        this._scene.clearColor=new Color4(96 / 256,162 /256,226/256,1)
+        this._sound = sound;
         this._floor = floor;
         this._web3DStudio = web3DStudio; //为了转换状态
         this._floorTransformNode = new TransformNode(`floor-${floor.floorNumber}`, this._scene)
@@ -103,30 +104,30 @@ export class CollegeFloor {
             rect1.height = "40px";
             rect1.width ="230px";
             rect1.cornerRadius = 20;
-            rect1.color = "#67daff";
+            rect1.color = "#c28300";
             rect1.thickness = 4;
-            rect1.background = "#3498DB";
+            rect1.background = "#ff5800";
             uiTexture.addControl(rect1);
             rect1.linkWithMesh(studioBox);
             rect1.linkOffsetY = -150;
 
             let label = new TextBlock();
             label.text = studio.name;
-            label.color = "white"
+            label.color = "black"
             rect1.addControl(label);
 
             let target = new Ellipse();
             target.width = "40px";
             target.height = "40px";
-            target.color = "#67daff";
+            target.color = "#c28300";
             target.thickness = 4;
-            target.background = "#3498DB";
+            target.background = "#ff5800";
             uiTexture.addControl(target);
             target.linkWithMesh(studioBox);
 
             var line = new Line();
             line.lineWidth = 4;
-            line.color = "#67daff";
+            line.color = "#c28300";
             line.y2 = 20;
             line.linkOffsetY = -20;
             uiTexture.addControl(line);
@@ -287,7 +288,7 @@ export class CollegeFloor {
                 mesh.actionManager = new ActionManager(this._scene)
                 mesh.actionManager.registerAction(new ExecuteCodeAction(  //鼠标悬浮
                     ActionManager.OnPointerOverTrigger, () => {
-                        highLightLayer.addMesh(mesh, Color3.White()) //白光
+                        highLightLayer.addMesh(mesh, Color3.FromHexString("#04D792")) //白光
                     }
                 ))
                 mesh.actionManager.registerAction(new ExecuteCodeAction(  //鼠标悬浮

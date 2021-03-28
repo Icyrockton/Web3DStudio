@@ -1,6 +1,6 @@
 import {
     AbstractMesh,
-    Color3, Color4,
+    Color3, Color4, DefaultRenderingPipeline,
     DirectionalLight,
     HemisphericLight,
     KeyboardEventTypes,
@@ -57,7 +57,7 @@ export class StudioManager {
 
     constructor(scene: Scene, studio: Studio, web3DStudio: IState) {
         this._scene = scene;
-        this._scene.clearColor=new Color4(96 / 256,162 /256,226/256,1)
+        this._scene.clearColor = Color4.FromHexString("#6fabffff").toLinearSpace()
 
         this._studio = studio;
         this._web3DStudio = web3DStudio;
@@ -80,9 +80,29 @@ export class StudioManager {
         // let arcRotateCamera = new ArcRotateCamera("arc",0,0,10,Vector3.Zero(),this._scene);
         // arcRotateCamera.attachControl()
         // this._scene.activeCamera = arcRotateCamera
-
+        this.setPostProcess()
 
     }
+
+    setPostProcess() {
+        const pipeline = new DefaultRenderingPipeline(
+            "pipeline",
+            true,
+            this._scene,
+            this._scene.cameras
+        );
+        //开启测晕的效果
+        pipeline.imageProcessingEnabled = true;
+        pipeline.imageProcessing.vignetteEnabled = true;
+        pipeline.imageProcessing.vignetteWeight = 1.5;
+        pipeline.imageProcessing.vignetteColor = Color4.FromHexString("#2e80ffff")
+        pipeline.imageProcessing.exposure = 1.4
+
+        //开启抗锯齿
+        pipeline.samples = 4
+
+    }
+
 
     private setUpLight() {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);

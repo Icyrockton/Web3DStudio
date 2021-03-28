@@ -1,6 +1,6 @@
 import {CollegeDescription} from "../../../core/collegeMap/college";
-import {action, autorun, makeObservable, observable} from "mobx";
-import {fetchCollgeDescription} from "../../../core/collegeMap/collegeMapApi";
+import {action, autorun, makeObservable, observable, runInAction} from "mobx";
+import {collegeDescription, fetchCollgeDescription} from "../../../core/collegeMap/collegeMapApi";
 
 
 export class CollegeUiState {
@@ -11,26 +11,23 @@ export class CollegeUiState {
         makeObservable(this, {
             isShowing: observable,
             college: observable,
-            setShowing : action
+            setShowing: action
         })
     }
 
-    setShowing(isShowing:boolean){
-        this.isShowing=isShowing
+    setShowing(isShowing: boolean) {
+        this.isShowing = isShowing
     }
 
-    fetchCollegeDescriptionByName(name:string){
-        if (this.college!=null)
-            return
-        fetchCollgeDescription(name).then(
-            college => {
-                if (college)
-                    this.college=college
-            }
-        )
+
+    fetchCollegeDescriptionByUUId(uuid: number) {
+        const find = collegeDescription.find(college => college.uuid == uuid);
+        if (find)
+            this.college = find
+
     }
 }
 
-const useCollegeUiState=new CollegeUiState()
+const useCollegeUiState = new CollegeUiState()
 
 export default useCollegeUiState

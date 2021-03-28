@@ -127,7 +127,7 @@ export class EBook {
                         this._state = BookState.camera
                         this.playOpenBook()
                         this.cameraOutAnim?.stop()
-                        //this._bookSound.playOpenBookSound()
+                        this._util.playOpenBookSound()
                     })
                 this._state = BookState.cameraOut
             }
@@ -154,7 +154,7 @@ export class EBook {
 
     private moveToOriginStepTwo() {
         if (this._state == BookState.camera) {
-            //this.u.playCloseBookSound() //关书的声音
+            this._util.playCloseBookSound()
 
             this.cameraInAnim = this._scene.beginDirectAnimation(this._eBookNode, this.createMoveIn(), 0, EBook.frameRate * 2, false, undefined, () => {
                 this._state = BookState.init
@@ -178,7 +178,7 @@ export class EBook {
             this.hoverOutAnim = this._scene.beginDirectAnimation(this._eBookNode, this.createHoverOutAnimation(), 0, EBook.frameRate, false, undefined, () => {
                 this._state = BookState.done
             })
-            //this._bookSound.playClickBookSound()
+            this._util.playClickBookSound()
             this._state = BookState.outing //悬浮出来
         }
     }

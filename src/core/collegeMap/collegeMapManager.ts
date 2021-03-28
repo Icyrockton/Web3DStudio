@@ -13,17 +13,17 @@ import {
     TransformNode,
     Vector3,
 } from "@babylonjs/core";
-import { __DEBUG__ } from "../../global";
-import { College } from "./college";
+import {__DEBUG__} from "../../global";
+import {College} from "./college";
 import {AdvancedDynamicTexture, Ellipse, Line, Rectangle, TextBlock} from "@babylonjs/gui";
-import { CollegeFence } from "./collegeFence";
+import {CollegeFence} from "./collegeFence";
 import useCollegeUiState from '../../components/GUI/college/collegeUiState'
 import {IState} from "../IState";
 
 
-export interface CollegeMap{
-    colleges:College[]
-    mapModelURL:string
+export interface CollegeMap {
+    colleges: College[]
+    mapModelURL: string
 }
 
 export class CollegeMapManager { //加载学院相关的资源
@@ -36,19 +36,20 @@ export class CollegeMapManager { //加载学院相关的资源
 
     private _scene: Scene
     private _collegeNode: TransformNode[] = [] //保存所有的建筑物根节点
-    private _buildingMeshUniqueID : number[] = []
-    private _clickSound:Sound
+    private _buildingMeshUniqueID: number[] = []
+    private _clickSound: Sound
     private _iState: IState;
     private _collegeMap: CollegeMap; //保存地图数据
     private _arcRotateCamera?: ArcRotateCamera;
 
-    constructor(scene: Scene ,iState:IState,collegeMap: CollegeMap) {
+    constructor(scene: Scene, iState: IState, collegeMap: CollegeMap) {
         this._iState = iState;
         this._collegeMap = collegeMap; //切换状态
         this._scene = scene//学院场景
         //#5FA2E2
-        this._scene.clearColor=new Color4(96 / 256,162 /256,226/256,1).toLinearSpace()
-        this._clickSound=new Sound('clickSound',"sound/collegeBuildingClick.mp3",this._scene,()=>{},{volume:0.3})
+        this._scene.clearColor = Color4.FromHexString("#6fabffff").toLinearSpace()
+        this._clickSound = new Sound('clickSound', "sound/collegeBuildingClick.mp3", this._scene, () => {
+        }, {volume: 0.3})
     }
 
     async load() {
@@ -68,14 +69,15 @@ export class CollegeMapManager { //加载学院相关的资源
         //开启测晕的效果
         pipeline.imageProcessingEnabled = true;
         pipeline.imageProcessing.vignetteEnabled = true;
-        pipeline.imageProcessing.vignetteWeight = 1.7;
-        pipeline.imageProcessing.vignetteColor=new Color4(34 / 256,131 /256,229/256,1)
-            pipeline.imageProcessing.exposure = 1.4
+        pipeline.imageProcessing.vignetteWeight = 1.5;
+        pipeline.imageProcessing.vignetteColor = Color4.FromHexString("#2e80ffff")
+        pipeline.imageProcessing.exposure = 1.4
 
         //开启抗锯齿
-        pipeline.samples =4
+        pipeline.samples = 4
 
     }
+
     setLight() {
         //半球光
         let light = new HemisphericLight('HemisphericLight', new Vector3(0, 1, 0), this._scene)
@@ -90,41 +92,40 @@ export class CollegeMapManager { //加载学院相关的资源
         let shadowGenerator = new ShadowGenerator(1024, directionalLight)
 
         //设置PCF软阴影
-        shadowGenerator.usePercentageCloserFiltering=true
+        shadowGenerator.usePercentageCloserFiltering = true
         //添加树为阴影的投射者
-         shadowGenerator.addShadowCaster(this._scene.getMeshByName("tree") !)
-         let groundMesh= this._scene.getMeshByName("ground") !
+        shadowGenerator.addShadowCaster(this._scene.getMeshByName("tree") !)
+        let groundMesh = this._scene.getMeshByName("ground") !
         //添加建筑物为阴影的投射者
-         this._buildingMeshUniqueID.forEach((meshID)=>{
-             let mesh = this._scene.getMeshByUniqueID(meshID)
-             if(mesh){
-                 shadowGenerator.addShadowCaster(mesh)
-             }
-         })
+        this._buildingMeshUniqueID.forEach((meshID) => {
+            let mesh = this._scene.getMeshByUniqueID(meshID)
+            if (mesh) {
+                shadowGenerator.addShadowCaster(mesh)
+            }
+        })
 
         //为栅栏添加阴影
-        this._collegeToFence.forEach((fence,college)=>{
+        this._collegeToFence.forEach((fence, college) => {
             fence.setUpShadow(shadowGenerator)
         })
-        groundMesh.receiveShadows=true //设置地面为接受阴影的对象
+        groundMesh.receiveShadows = true //设置地面为接受阴影的对象
         //只计算一次阴影
-        shadowGenerator.getShadowMap()!.refreshRate=0
+        shadowGenerator.getShadowMap()!.refreshRate = 0
 
 
     }
 
 
-
     //学院名字 -- 栅栏
-    private _collegeToFence:Map<string,CollegeFence>= new Map()
+    private _collegeToFence: Map<string, CollegeFence> = new Map()
 
-    private setClick(node:TransformNode,college: College){
+    private setClick(node: TransformNode, college: College) {
         const collegeUiState = useCollegeUiState;
         const nodeActionManager = new ActionManager(this._scene)
         const rootMesh = node.getChildMeshes(true)[0]! //root结点
         const childMeshes = rootMesh.getChildMeshes(true);
         childMeshes.forEach((mesh) => {
-            let fence=this._collegeToFence.get(node.name)! //获取栅栏
+            let fence = this._collegeToFence.get(node.name)! //获取栅栏
             mesh.actionManager = nodeActionManager
             mesh.actionManager.registerAction(new ExecuteCodeAction(
                 ActionManager.OnPointerOverTrigger, //鼠标悬浮到建筑物上(移入建筑物)
@@ -132,10 +133,10 @@ export class CollegeMapManager { //加载学院相关的资源
                     fence.up() //上升
                     this._clickSound.play()
                     //获取学院数据
-                    collegeUiState.fetchCollegeDescriptionByName(node.name)
+                    collegeUiState.fetchCollegeDescriptionByUUId(college.uuid)
                     collegeUiState.setShowing(true) //显示UI
                     if (this._arcRotateCamera)
-                        this._arcRotateCamera.useAutoRotationBehavior =false
+                        this._arcRotateCamera.useAutoRotationBehavior = false
                 }))
 
             mesh.actionManager.registerAction(new ExecuteCodeAction(
@@ -144,13 +145,13 @@ export class CollegeMapManager { //加载学院相关的资源
                     fence.down() //下降
                     collegeUiState.setShowing(false)
                     if (this._arcRotateCamera)
-                        this._arcRotateCamera.useAutoRotationBehavior =true
+                        this._arcRotateCamera.useAutoRotationBehavior = true
                 }
             ))
             mesh.actionManager.registerAction(new ExecuteCodeAction(
                 ActionManager.OnPickDownTrigger,
-                (event)=>{
-                    if(__DEBUG__){
+                (event) => {
+                    if (__DEBUG__) {
                         console.log(`进入学院 ${node.name}`)
                     }
                     collegeUiState.setShowing(false) //关闭UI
@@ -179,38 +180,38 @@ export class CollegeMapManager { //加载学院相关的资源
         camera.lowerBetaLimit = Math.PI / 3.5
         camera.upperBetaLimit = Math.PI / 3.5
 
-        this._arcRotateCamera= camera
+        this._arcRotateCamera = camera
     }
 
-    static readonly CLOUD_NAME="cloud"
-    static readonly CLOUD_MAXZ=-3
-    static readonly CLOUD_MINZ=-11
-    private _cloud_Z_flag=false
+    static readonly CLOUD_NAME = "cloud"
+    static readonly CLOUD_MAXZ = -3
+    static readonly CLOUD_MINZ = -11
+    private _cloud_Z_flag = false
     private _localTime = 0
+
     async loadMap() {
 
         //加载地图
         let map = await SceneLoader.ImportMeshAsync("", this._collegeMap.mapModelURL, undefined, this._scene)
         map.meshes.forEach((mesh) => {
             mesh.isPickable = false //将地图的所有mesh设置为不可选取的
-            if (mesh.name.startsWith(CollegeMapManager.CLOUD_NAME) && (mesh instanceof  Mesh)){
+            if (mesh.name.startsWith(CollegeMapManager.CLOUD_NAME) && (mesh instanceof Mesh)) {
                 //将云朵变为透明的
                 if (mesh.material) { //开启深度检测
                     mesh.material.needDepthPrePass = true
                 }
-                mesh.visibility=0.8
+                mesh.visibility = 0.8
                 //运动移动
-                this._scene.registerBeforeRender(()=>{  //云朵的移动
+                this._scene.registerBeforeRender(() => {  //云朵的移动
                     mesh.position.y = mesh.position.y + Math.cos(this._localTime) * 0.001
-                    if (!this._cloud_Z_flag){
+                    if (!this._cloud_Z_flag) {
                         mesh.position.z += 0.002
-                        if (mesh.position.z > CollegeMapManager.CLOUD_MAXZ){
+                        if (mesh.position.z > CollegeMapManager.CLOUD_MAXZ) {
                             this._cloud_Z_flag = true
                         }
-                    }
-                    else{
+                    } else {
                         mesh.position.z -= 0.002
-                        if (mesh.position.z < CollegeMapManager.CLOUD_MINZ){
+                        if (mesh.position.z < CollegeMapManager.CLOUD_MINZ) {
                             this._cloud_Z_flag = false
                         }
                     }
@@ -253,7 +254,7 @@ export class CollegeMapManager { //加载学院相关的资源
 
             let root = loadMesh.meshes[0] //模型的root结点
             this._buildingMeshUniqueID.push(root.uniqueId)
-            root.scaling = new Vector3(college.scale[0],college.scale[1],college.scale[2]) //模型的缩放
+            root.scaling = new Vector3(college.scale[0], college.scale[1], college.scale[2]) //模型的缩放
             //设置模型的旋转属性 四元数
             root.rotationQuaternion = Quaternion.FromEulerAngles(0, 0, 0)
 
@@ -274,10 +275,10 @@ export class CollegeMapManager { //加载学院相关的资源
             // //向上偏移
             // textBlock.linkOffsetY = -100
 
-            let buildingMesh=root.getChildMeshes()[0]! //建筑物Mesh
+            let buildingMesh = root.getChildMeshes()[0]! //建筑物Mesh
             let boundingBox = buildingMesh.getBoundingInfo().boundingBox
             //maximum减去minimum得到边界盒子的大小
-            let boundingBoxSize=boundingBox.maximum.subtract(boundingBox.minimum)
+            let boundingBoxSize = boundingBox.maximum.subtract(boundingBox.minimum)
             //width:size.x,height:size.y,depth:size.z
 
 
@@ -285,7 +286,7 @@ export class CollegeMapManager { //加载学院相关的资源
             let rect1 = new Rectangle();
             rect1.width = 0.2;
             rect1.height = "40px";
-            rect1.width ="250px";
+            rect1.width = "250px";
             rect1.cornerRadius = 20;
             rect1.color = "white";
             rect1.thickness = 4;
@@ -308,7 +309,7 @@ export class CollegeMapManager { //加载学院相关的资源
             target.background = "#00C9FF";
             ui.addControl(target);
             target.linkWithMesh(root);
-            console.log(boundingBoxSize.y/2)
+            console.log(boundingBoxSize.y / 2)
             target.linkOffsetYInPixels = -100
             var line = new Line();
             line.lineWidth = 4;
@@ -320,25 +321,22 @@ export class CollegeMapManager { //加载学院相关的资源
             line.connectedControl = rect1;
 
 
-
             //设置建筑物的栅栏
 
 
             //栅栏
-            let collegeFence=new CollegeFence(boundingBoxSize.x+0.5,boundingBoxSize.z+0.5,0.6,this._scene)
+            let collegeFence = new CollegeFence(boundingBoxSize.x + 0.5, boundingBoxSize.z + 0.5, 0.6, this._scene)
 
             //设置栅栏的位置
-            collegeFence.position=new Vector3(node.position.x, node.position.y - 1, node.position.z)
+            collegeFence.position = new Vector3(node.position.x, node.position.y - 1, node.position.z)
 
             this._collegeToFence.set(node.name, collegeFence) //保存 学院名称 -- 栅栏名称
 
-            this.setClick(node,college)
+            this.setClick(node, college)
         }
 
 
-
     }
-
 
 
 }
