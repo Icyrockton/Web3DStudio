@@ -1,12 +1,12 @@
 import {
     AdvancedTimer, Angle,
     ICrowd,
-    Matrix,
+    Matrix, Mesh,
     MeshBuilder,
     Quaternion,
     RecastJSPlugin,
     Scene,
-    SceneLoader, setAndStartTimer, Sound,
+    SceneLoader, setAndStartTimer, ShadowGenerator, Sound,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -76,6 +76,7 @@ export class Ai {
         SceneLoader.ImportMesh("", this._aiInfo.modelURL, undefined, this._scene, this.modelLoaded)
     }
 
+    private _collisionBox? : Mesh
     private modelLoaded = (meshes: AbstractMesh[], particleSystems: IParticleSystem[], skeletons: Skeleton[], animationGroups: AnimationGroup[], transformNodes: TransformNode[], geometries: Geometry[], lights: Light[]) => {
         //设置父级关系
         const root = meshes[0];
@@ -101,6 +102,7 @@ export class Ai {
         ////////////////设置父级关系
         root.parent = collisionBox
         collisionBox.parent = this._aiTransformNode
+        this._collisionBox = collisionBox
         ////////////////
 
         //动画
@@ -288,5 +290,14 @@ export class Ai {
                 }, {loop: false, autoplay: false})
             )
         })
+    }
+
+    setUpShadow(_shadowGenerator: ShadowGenerator ) {
+        if (this._collisionBox){
+            const childMeshes = this._collisionBox.getChildMeshes();
+            childMeshes.forEach(mesh=>{
+                _shadowGenerator.addShadowCaster(mesh)
+            })
+        }
     }
 }

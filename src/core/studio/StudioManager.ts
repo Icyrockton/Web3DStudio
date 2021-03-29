@@ -6,12 +6,12 @@ import {
     KeyboardEventTypes,
     KeyboardInfo,
     Mesh,
-    Observer, RecastJSPlugin,
+    Observer, PBRMaterial, RecastJSPlugin,
     RenderTargetTexture,
     Scene,
     SceneLoader,
     ShadowGenerator,
-    Sound, StandardMaterial,
+    Sound, StandardMaterial, Texture,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -28,6 +28,8 @@ import {Ai} from "../ai/ai";
 import Recast from "recast-detour"
 import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState";
 import usePracticeTableUiState from "../../components/GUI/practiceTable/practiceTableUiState";
+import {Light} from "@babylonjs/core/Lights/light";
+
 interface StudioSound {
     bookShelf: Sound
     practiceTable: Sound
@@ -53,7 +55,7 @@ export class StudioManager {
     private _sound!: StudioSound
     private _web3DStudio: IState;
     private _navigationPlugin = new RecastJSPlugin(new Recast())
-    private _AIs:Ai[] = []
+    private _AIs: Ai[] = []
 
     constructor(scene: Scene, studio: Studio, web3DStudio: IState) {
         this._scene = scene;
@@ -109,6 +111,8 @@ export class StudioManager {
         hemisphericLight.intensity = 0.5
         this._directionalLight = new DirectionalLight("directionalLight", new Vector3(1, -2, 1), this._scene)
         this._directionalLight.position = this._studio.directionalLightPosition
+        this._directionalLight.intensity = 0.15
+        this._directionalLight.lightmapMode=Light.LIGHTMAP_SHADOWSONLY
     }
 
     private setUpCamera() {
@@ -167,33 +171,40 @@ export class StudioManager {
     private async setUpPlayer() { //设置玩家
         this._playerManager = new PlayerManager(this._scene, this._studio.playerModelURL);
         await this._playerManager.loadPlayer()
+        if (this._shadowGenerator){
+            this._playerManager.setUpShadow(this._shadowGenerator)
+            this._AIs.forEach(ai => {
+                ai.setUpShadow(this._shadowGenerator!)
+            })
+        }
         //设置玩家的位置
         if (this._playerSpawn) {
             this._playerManager.playerPosition = this._playerSpawn.position
         } else {
             console.log('没有设置玩家的起始位置')
         }
-        this._AIs.forEach(ai=>{
+        this._AIs.forEach(ai => {
             ai.setUpWithPlayer(this._playerManager)
         })
     }
+
+    private _shadowGenerator?: ShadowGenerator  // 阴影
 
     private setUpShadow() {
         const shadowGenerator = new ShadowGenerator(1024, this._directionalLight);
         shadowGenerator.usePercentageCloserFiltering = true //使用PCF阴影
         shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH //高质量
-        shadowGenerator.getShadowMap()!.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONCE //只计算一次light map
-        this._scene.meshes.forEach(mesh => {
-            if (mesh.name == this._studio.groundName) {
-                return
-            }
-            shadowGenerator.addShadowCaster(mesh, false) //添加到shadowGenerator
-        })
-
+        this._shadowGenerator = shadowGenerator
         let ground = this._scene.getMeshByName(this._studio.groundName); //地面
         if (ground) {
+            if ((ground.material instanceof PBRMaterial) || (ground.material instanceof StandardMaterial)) {
+                const lightMapTexture = new Texture("model/studio/ground_light_map.png", this._scene);
+                lightMapTexture.uAng = Math.PI   // u轴旋转180°
+                ground.material.lightmapTexture = lightMapTexture
+            }
             ground.receiveShadows = true //地面接受阴影
         }
+
     }
 
     private setUpRotateCamera() {
@@ -241,6 +252,10 @@ export class StudioManager {
         this._scene.registerBeforeRender(() => {
             this._receptionManager.receptionist.lookAt(this._playerManager.playerPosition)
         })
+
+        if (this._shadowGenerator){
+            this._receptionManager.setUpShadow(this._shadowGenerator)
+        }
 
     }
 
@@ -354,12 +369,12 @@ export class StudioManager {
                     case "e":
                         if (this._currentArea == "BookShelf") {
                             const bookShelfUiState = useBookShelfUiState;
-                            bookShelfUiState.playerManager=this._playerManager
+                            bookShelfUiState.playerManager = this._playerManager
                             this._web3DStudio.setBookShelfShow(true)
                             this._playerManager.busy = true //忙碌
                         } else if (this._currentArea == "PracticeTable") {
                             const practiceTableUiState = usePracticeTableUiState;
-                            practiceTableUiState.playerManager=this._playerManager
+                            practiceTableUiState.playerManager = this._playerManager
                             this._web3DStudio.setPracticeTableShow(true)
                             this._playerManager.busy = true //忙碌
                         }
@@ -481,12 +496,12 @@ export class StudioManager {
         // material.alpha = 0.2
         // navMeshDebug.material = material
         // debug Mesh
-        const crowd = navigationPlugin.createCrowd(this._studio.studioAIs.length,0.5,this._scene);
+        const crowd = navigationPlugin.createCrowd(this._studio.studioAIs.length, 0.5, this._scene);
 
         //创建AI
-        this._studio.studioAIs.forEach(studioAI=>{
+        this._studio.studioAIs.forEach(studioAI => {
             console.log('创建AI')
-            const ai = new Ai(this._scene,studioAI,crowd,navigationPlugin);
+            const ai = new Ai(this._scene, studioAI, crowd, navigationPlugin);
             this._AIs.push(ai)
         })
 

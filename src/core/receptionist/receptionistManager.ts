@@ -1,10 +1,20 @@
-import {KeyboardEventTypes, KeyboardInfo, Observer, Scene, SceneLoader, Sound, Vector3} from "@babylonjs/core";
+import {
+    KeyboardEventTypes,
+    KeyboardInfo,
+    Observer,
+    Scene,
+    SceneLoader,
+    ShadowGenerator,
+    Sound,
+    Vector3
+} from "@babylonjs/core";
 import {Receptionist, ReceptionistAsset} from "./receptionist";
 import {Player} from "../player/player";
 import {PlayerManager} from "../player/playerManager";
 import {AdvancedDynamicTexture, TextBlock, Rectangle} from "@babylonjs/gui";
 import {ReceptionistConfig} from "../studio/Studio";
 import useTaskUiState from "../../components/GUI/task/taskUiState";
+import {AbstractMesh} from "@babylonjs/core/Meshes/abstractMesh";
 
 
 export class ReceptionistManager {
@@ -19,7 +29,7 @@ export class ReceptionistManager {
     private _readingHintSound?: Sound
     private _taskFinishedHintSound?: Sound
     private _firstGreetingSoundHasPlayed: boolean = false
-
+    private _mesh?:AbstractMesh
     constructor(scene: Scene, receptionistConfig: ReceptionistConfig) {
         this._scene = scene;
         this._receptionistModelURL = receptionistConfig.receptionistModelURL;
@@ -34,6 +44,7 @@ export class ReceptionistManager {
             receptionistMesh: meshes[0],
             greetingAnimation: animationGroup[0]
         } as ReceptionistAsset
+        this._mesh = meshes[0]  //虚拟人员的Mesh
         this.receptionist = new Receptionist(assets, this._scene);
         this.setUpSound()
         this.setUpReceptionistUI() //设置UI
@@ -197,6 +208,15 @@ export class ReceptionistManager {
                     case "e":
                         taskUiState.setShowing(true) //显示UI界面
                 }
+        }
+    }
+
+    setUpShadow(_shadowGenerator: ShadowGenerator) {
+        if (this._mesh){
+            const childMeshes = this._mesh.getChildMeshes();
+            childMeshes.forEach(mesh=>{
+                _shadowGenerator.addShadowCaster(mesh)
+            })
         }
     }
 }

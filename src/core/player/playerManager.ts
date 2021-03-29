@@ -1,5 +1,14 @@
 import {Player, PlayerAssets} from "./player";
-import {AbstractMesh, Matrix, MeshBuilder, Quaternion, Scene, SceneLoader, Vector3} from "@babylonjs/core";
+import {
+    AbstractMesh,
+    Matrix,
+    MeshBuilder,
+    Quaternion,
+    Scene,
+    SceneLoader,
+    ShadowGenerator,
+    Vector3
+} from "@babylonjs/core";
 import {InputController} from "./inputController";
 import {RotateCamera} from "../studio/Studio";
 
@@ -94,4 +103,10 @@ export class PlayerManager {
         this._busy = value;
     }
 
+    setUpShadow(_shadowGenerator: ShadowGenerator) {
+        const meshes = this._collisionBox.getChildMeshes();
+        meshes.forEach(mesh=>{
+            _shadowGenerator.addShadowCaster(mesh)
+        })
+    }
 }
