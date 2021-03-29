@@ -16,6 +16,7 @@ export interface Studio {
     playerSpawn:string //玩家的出生点的transformNode名称
     collisionBox:string[] //碰撞盒子的Mesh名称
     groundName:string //地面Mesh名称
+    groundLightMapUrl:string //lightmap 贴图地址
     bookShelfStartName:string //所有书架的统一起始的Mesh名称
     practiceTableStartName:string //练习台的统一起始的Mesh名称
     directionalLightPosition:Vector3 //平行光的位置

@@ -22,6 +22,7 @@ export class PlayerState {
     studioManager: StudioManager | null = null
     staircase: Staircase | null = null
     isShowing: boolean = false
+    keyBoardHintShowing:boolean = false
     currentTask: Task = {
         name: "空任务",
         uuid: -1,
@@ -245,6 +246,9 @@ export class PlayerState {
         //return fakeTask
     }
 
+    setKeyBoardHintShow(showing: boolean) {
+        this.keyBoardHintShowing = showing
+    }
 }
 
 const usePlayerUiState = new PlayerState()

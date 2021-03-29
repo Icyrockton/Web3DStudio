@@ -1,16 +1,16 @@
 
-
-.clock{
+.clock {
     color: white;
     text-align: center;
 }
 
-.miscTab{
+.miscTab {
     margin-left: 40%;
-   opacity: 0.9;
+    opacity: 0.9;
+    font-size: 0.8em;
 }
 
-.version{
+.version {
     text-align: center;
     color: white;
 }

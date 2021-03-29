@@ -10,6 +10,7 @@ export const  fakeStudio:Studio = {
     playerSpawn: "playerSpawn",
     collisionBox: ["collision", "ground"],
     groundName: "ground",
+    groundLightMapUrl:"model/studio/ground_light_map.png",
     playerAvatarURL: "img/avatar/playerAvatar.png",
     directionalLightPosition: new Vector3(-10, 10, -10),
     bookShelfStartName: "BookShelf",

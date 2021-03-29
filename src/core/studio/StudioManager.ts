@@ -72,7 +72,7 @@ export class StudioManager {
         this.setUpLight()
         this.setUpCamera()
         await this.loadModel() //加载地图模型
-        this.setUpShadow() //设置阴影
+        await this.setUpShadow() //设置阴影
         await this.setUpPlayer() //加载玩家模型
         await this.setUpReceptionist() //加载虚拟人员模型
         this.setUpRotateCamera() //设置自动旋转相机
@@ -112,7 +112,7 @@ export class StudioManager {
         this._directionalLight = new DirectionalLight("directionalLight", new Vector3(1, -2, 1), this._scene)
         this._directionalLight.position = this._studio.directionalLightPosition
         this._directionalLight.intensity = 0.15
-        this._directionalLight.lightmapMode=Light.LIGHTMAP_SHADOWSONLY
+        this._directionalLight.lightmapMode = Light.LIGHTMAP_SHADOWSONLY
     }
 
     private setUpCamera() {
@@ -171,7 +171,7 @@ export class StudioManager {
     private async setUpPlayer() { //设置玩家
         this._playerManager = new PlayerManager(this._scene, this._studio.playerModelURL);
         await this._playerManager.loadPlayer()
-        if (this._shadowGenerator){
+        if (this._shadowGenerator) {
             this._playerManager.setUpShadow(this._shadowGenerator)
             this._AIs.forEach(ai => {
                 ai.setUpShadow(this._shadowGenerator!)
@@ -190,7 +190,17 @@ export class StudioManager {
 
     private _shadowGenerator?: ShadowGenerator  // 阴影
 
-    private setUpShadow() {
+    //异步->转换成promise
+    private _loadLightMapTexture=()=>{
+        return new Promise<Texture>((resolve,reject) => {
+            const lightMapTexture = new Texture(this._studio.groundLightMapUrl, this._scene);
+            lightMapTexture.onLoadObservable.addOnce(()=>{
+                resolve(lightMapTexture)
+            })
+        })
+    }
+
+    private async setUpShadow() {
         const shadowGenerator = new ShadowGenerator(1024, this._directionalLight);
         shadowGenerator.usePercentageCloserFiltering = true //使用PCF阴影
         shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH //高质量
@@ -198,7 +208,7 @@ export class StudioManager {
         let ground = this._scene.getMeshByName(this._studio.groundName); //地面
         if (ground) {
             if ((ground.material instanceof PBRMaterial) || (ground.material instanceof StandardMaterial)) {
-                const lightMapTexture = new Texture("model/studio/ground_light_map.png", this._scene);
+                const lightMapTexture = await this._loadLightMapTexture();  //等待加载lightmap
                 lightMapTexture.uAng = Math.PI   // u轴旋转180°
                 ground.material.lightmapTexture = lightMapTexture
             }
@@ -253,7 +263,7 @@ export class StudioManager {
             this._receptionManager.receptionist.lookAt(this._playerManager.playerPosition)
         })
 
-        if (this._shadowGenerator){
+        if (this._shadowGenerator) {
             this._receptionManager.setUpShadow(this._shadowGenerator)
         }
 

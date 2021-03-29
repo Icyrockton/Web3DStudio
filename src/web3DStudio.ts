@@ -100,21 +100,18 @@ export class Web3DStudio implements IState {
     }
 
 
-
-
     async setLoadingAnimation() { //设置加载动画
 
         //await this.goToCollegeMap() //切换到地图场景
 
 
         //暂时直接
-       //await  this.goToCollege(fakeCollegeFloors)
+        //await  this.goToCollege(fakeCollegeFloors)
 
         //暂时直接
 
 
-
-         await this.goToStudio(1)
+        await this.goToStudio(1)
     }
 
 
@@ -122,7 +119,7 @@ export class Web3DStudio implements IState {
         let mapScene = new Scene(this._engine)
         //网络获取学院地图
         const collegeMap = fakeCollegeMap;
-        let manager = new CollegeMapManager(mapScene, this,collegeMap)
+        let manager = new CollegeMapManager(mapScene, this, collegeMap)
         await manager.load()
         this._scene = mapScene
         //this._scene.debugLayer.show()
@@ -131,11 +128,11 @@ export class Web3DStudio implements IState {
 
     async goToCollege(collegeUUid: number) {  //传递进来collegeUUid
 
-        const prevScene=this._scene
+        const prevScene = this._scene
         this.changeToLoadingScene() //切换到加载场景
 
         let collegeScene = new Scene(this._engine)
-        let manager = new CollegeManager(collegeScene, this , fakeCollegeFloors)
+        let manager = new CollegeManager(collegeScene, this, fakeCollegeFloors)
         await manager.load()
         useFloorUiState.setFloorUiShowing(true) //显示UI
         useFloorUiState.setEveryFloorUiShowing(true)
@@ -144,10 +141,11 @@ export class Web3DStudio implements IState {
         //this._scene.debugLayer.show()
     }
 
-    private changeToLoadingScene(){
+    private changeToLoadingScene() {
         this._scene = this.loadingScene.scene
     }
 
+    static NEED_HINT = true //需要按键提示
 
     async goToStudio(studioUUid: number) {   //前往工作室
         //关闭上一个场景的UI
@@ -158,7 +156,7 @@ export class Web3DStudio implements IState {
         floorUiState.setVisitUiShowing(false)
 
 
-        const prevScene=this._scene
+        const prevScene = this._scene
         this.changeToLoadingScene()
 
         let studioScene = new Scene(this._engine)
@@ -167,6 +165,10 @@ export class Web3DStudio implements IState {
 
         const playerUiState = usePlayerUiState;
         playerUiState.setShowing(true) //任务栏打卡
+        if (Web3DStudio.NEED_HINT) {
+            playerUiState.setKeyBoardHintShow(true) //打开键盘提示
+            Web3DStudio.NEED_HINT=false
+        }
         prevScene.dispose()//dispose
         this._scene = studioScene
 

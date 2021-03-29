@@ -1,20 +1,19 @@
 .taskState {
     width: 100%;
-    height: 20%;
     margin-top: 5%;
 }
 
 .stairCase {
     width: 100%;
-    height: 50%;
-    margin-top: 30%;
+    height: 45%;
     background: transparent;
 }
 
 .misc {
-    width: 100%;
-    height: 10%;
-    margin-top: 20%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    text-align: center;
 }
 
 .playerUi {
@@ -68,7 +67,7 @@
     animation-name: slideFromBottom;
     animation-duration: 3000ms;
     animation-timing-function: ease-out;
-    box-shadow: 20px 20px rgba(0,0,0,.15);
+    box-shadow: 20px 20px rgba(0, 0, 0, .15);
 }
 
 .unSkew {
@@ -90,7 +89,7 @@
     80% {
         bottom: 0%;
     }
-    100%{
+    100% {
         bottom: -40%;
 
     }

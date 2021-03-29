@@ -93,7 +93,7 @@
     overflow: auto;
 }
 .singleFloor:last-child{
-    margin-bottom: 0vh;
+    margin-bottom: 0;
 }
 .singleFloorTitle{
     border-top-left-radius: 1.5vh;

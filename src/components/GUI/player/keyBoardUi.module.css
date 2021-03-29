@@ -1,0 +1,64 @@
+
+.keyboardArea{
+    width: 60vw;
+    position: absolute;
+    background: hsla(0, 0%, 100%, .7);
+    border-radius: 1vw;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    text-align: center;
+    transition: transform .5s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+
+}
+
+.keyboardAreaShow{
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.keyboardImg{
+    border-radius: 8px;
+    width: 80%;
+    height: auto;
+    margin: auto;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 0  10px rgba(0, 0, 0, .4);
+}
+
+
+.title{
+    font-size: 2em;
+    background: linear-gradient(to right,#5433FF,#20BDFF,#A5FECB);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.button{
+    width: 30%;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    margin: auto;
+    border-radius: 1vh;
+    margin-bottom: 1vh;
+    background: linear-gradient(to right ,#20BDFF , #00C9FF 50% ,#A5FECB);
+    background-size: 300% 100%;
+    background-position: left;
+    color: white;
+
+    transition: transform .5s var(--ease-out-swift),
+    background-position .5s var(--ease-out-swift),
+    fill .5s var(--ease-out-swift),
+    color .5s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+    box-shadow: 2px 2px  2px rgba(0, 0, 0, .4);
+
+}
+.button:hover{
+    background-position: right;
+    cursor: pointer;
+    color: white;
+    transform: scale(0.95);
+}

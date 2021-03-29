@@ -17,7 +17,7 @@ export const MiscUi = () => {
                 {__VERSION__}
             </h1>
             <h1 className={classes.clock}>
-                系统时间: {date.toLocaleTimeString("chinese", {hour12: false})}
+                系统时间 {date.toLocaleTimeString("chinese", {hour12: false})}
             </h1>
 
         </div>

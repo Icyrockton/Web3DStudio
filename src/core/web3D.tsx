@@ -17,6 +17,7 @@ import AiUi from "../components/GUI/ai/aiUi";
 import useAiUiState from "../components/GUI/ai/aiUiState";
 import FloorUi from "../components/GUI/floor/floorUi";
 import useFloorUiState from "../components/GUI/floor/floorUiState";
+import {KeyBoardUi} from "../components/GUI/player/keyBoardUi";
 
 
 export const Web3D =()=>{
@@ -45,6 +46,7 @@ export const Web3D =()=>{
             <NotePad uiState={playerUiState}/>
             <AiUi uiState={aiUiState}/>
             <FloorUi uiState={floorUiState}/>
+            <KeyBoardUi  uiState={playerUiState}/>
         </React.Fragment>
     )
 }
