@@ -40,6 +40,12 @@ export class CollegeFloor {
         this._startName = `floor-${floor.floorNumber}-meshes`
         const cloneFloor = floorRoot.clone(this._startName);
         cloneFloor.parent = this._floorTransformNode
+        // //找到地面 地面接受阴影
+        // cloneFloor.getChildMeshes().forEach(mesh=>{
+        //     if (mesh.name == `${this._startName}.ground`){
+        //         mesh.receiveShadows = true
+        //     }
+        // })
         this.setUpStudioBox() //设置工作室盒子
         this.setUpUnnecessary() //隐藏不必要的东西
         this.setUpLoc() //地标位置
@@ -61,7 +67,7 @@ export class CollegeFloor {
             if (mesh.name.startsWith(`${this._startName}.${CollegeFloor.STUDIO_BOX_NAME}`)) {
                 const material = new StandardMaterial(`${mesh.name}Mat`, this._scene);
                 material.diffuseColor = Color3.FromHexString(CollegeFloor.StudioBoxColor[cnt++]) //工作室盒子颜色
-                material.specularColor = Color3.Black() //防止高光
+                //material.specularColor = Color3.Black() //防止高光
                 mesh.material = material
                 mesh.material.needDepthPrePass = true
                 mesh.visibility = 1

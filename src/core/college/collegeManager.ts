@@ -1,10 +1,10 @@
 import {
     Animation,
-    ArcRotateCamera, CircleEase, Color4, CubicEase, DefaultRenderingPipeline,
+    ArcRotateCamera, CircleEase, Color4, CubicEase, DefaultRenderingPipeline, DirectionalLight,
     EasingFunction, HemisphericLight, HighlightLayer, IAnimationKey,
     Mesh,
     Scene,
-    SceneLoader, Sound,
+    SceneLoader, ShadowGenerator, Sound,
     Vector3
 } from "@babylonjs/core";
 import {Player, PlayerAssets} from "../player/player";
@@ -91,6 +91,7 @@ export class CollegeManager {
         await this.setUpSound()
         this.invisiblePlayer()
         this.setUpCamera()
+        this.setUpShadow()
         this.setPostProcess()
     }
 
@@ -182,10 +183,15 @@ export class CollegeManager {
         this.beginStartCameraAnimation()
     }
 
+    private _light?:DirectionalLight
 
     setUpLight() {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);
-        hemisphericLight.intensity = 1
+        hemisphericLight.intensity = 0.9
+        //const directionalLight = new DirectionalLight("directionalLight",new Vector3(0,-0.5,1),this._scene);
+        //  directionalLight.setEnabled(false)
+        // directionalLight.intensity=0.1
+        // this._light = directionalLight
     }
 
     private async loadModel() { //加载模型
@@ -222,6 +228,7 @@ export class CollegeManager {
         this.invisiblePlayer()
         this.hideVisitUi()
         this.floorTranslucent()
+        // this._light?.setEnabled(false)
         if (floorNum == -1) {  //目标是显示所有楼层
 
             //压入 this._currentFloorNum + 1 ~ floorNum
@@ -564,6 +571,7 @@ export class CollegeManager {
     }
 
     private _visiting: boolean = false
+    private _shadowGenerator? : ShadowGenerator
 
     //访问当前楼层
     public visitFloor() {
@@ -571,6 +579,7 @@ export class CollegeManager {
             return
         const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
         floor.loadTexture() //加载纹理
+        // this._light?.setEnabled(true)
         //传递地标数据到player
         this._visitPlayerManager.locTransformNode = floor.locTransformNode
         //设置工作室的总数
@@ -703,4 +712,13 @@ export class CollegeManager {
     }
 
 
+    private setUpShadow() {
+        if (this._light) {
+            console.log('？')
+            this._shadowGenerator = new ShadowGenerator(1024, this._light)
+            this._shadowGenerator.usePercentageCloserFiltering = true //使用PCF阴影
+            this._shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH //高质量
+            this._visitPlayerManager.setUpShadow(this._shadowGenerator)
+        }
+    }
 }

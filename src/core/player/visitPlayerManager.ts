@@ -6,7 +6,7 @@ import {
     MeshBuilder,
     Quaternion,
     Scene,
-    SceneLoader, TransformNode,
+    SceneLoader, ShadowGenerator, TransformNode,
     Vector3
 } from "@babylonjs/core";
 import {Player, PlayerAssets} from "./player";
@@ -762,5 +762,11 @@ export class VisitPlayerManager {
             return this.floorTotalStudioNum >= 6;
         }
         return false
+    }
+
+    setUpShadow(_shadowGenerator: ShadowGenerator) {
+        this._collisionBox.getChildMeshes().forEach(mesh=>{
+            _shadowGenerator.addShadowCaster(mesh)
+        })
     }
 }

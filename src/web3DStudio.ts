@@ -102,16 +102,16 @@ export class Web3DStudio implements IState {
 
     async setLoadingAnimation() { //设置加载动画
 
-        //await this.goToCollegeMap() //切换到地图场景
+        await this.goToCollegeMap() //切换到地图场景
 
 
         //暂时直接
-        //await  this.goToCollege(fakeCollegeFloors)
+        // await  this.goToCollege(1)
 
         //暂时直接
 
 
-        await this.goToStudio(1)
+       //await this.goToStudio(1)
     }
 
 
