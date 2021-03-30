@@ -22,8 +22,9 @@ export interface CollegeStudio { //学院的每一间工作室
     location: number //工作室位置    1~8
     name: string //工作室的名称
     description: string //工作室描述
-    logoURL: string //工作室的LOGO图片地址
-    posterURL: string //工作室的海报地址
+    logoURL:string //工作室的LOGO地址
+    logoTextureURL: string //工作室的LOGO纹理图片地址
+    posterTextureURL: string //工作室的海报地址
 }
 
 
@@ -187,11 +188,16 @@ export class CollegeManager {
 
     setUpLight() {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);
-        hemisphericLight.intensity = 0.9
-        //const directionalLight = new DirectionalLight("directionalLight",new Vector3(0,-0.5,1),this._scene);
-        //  directionalLight.setEnabled(false)
-        // directionalLight.intensity=0.1
-        // this._light = directionalLight
+        hemisphericLight.intensity = 0.5
+        const directionalLight1 = new DirectionalLight("directionalLight1",new Vector3(-1,-0.5,1),this._scene);
+
+        directionalLight1.intensity=0.5
+        this._light = directionalLight1
+
+        const directionalLight2 = new DirectionalLight("directionalLight2",new Vector3(1,-0.5,1),this._scene);
+
+        directionalLight2.intensity=0.5
+        this._light = directionalLight2
     }
 
     private async loadModel() { //加载模型

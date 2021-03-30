@@ -143,6 +143,8 @@
     min-width: 50%;
     max-width: 50%;
     text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 .studio{
     display: flex;
@@ -153,6 +155,7 @@
 
 .studio h4{
     margin-bottom: 0;
+    margin-left: 0.8vw;
 }
 
 

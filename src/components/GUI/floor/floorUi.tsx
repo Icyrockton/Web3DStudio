@@ -23,9 +23,7 @@ const SingleFloor = (props: SingleFloorUiProps) => {
                 <div className={classes.singleFloorStudio}>
                     <div className={classes.studio}>
                         <Avatar src={studio.logoURL} size={"large"}>
-
                         </Avatar>
-
                         <h4> {studio.name}</h4>
                     </div>
                 </div>

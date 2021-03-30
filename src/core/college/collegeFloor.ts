@@ -437,13 +437,13 @@ export class CollegeFloor {
             const studio = this._floor.studios[i];
             //海报纹理
             const postMat = new StandardMaterial(`${this._startName}.PostMat${i}`, this._scene);
-            const postTexture = new Texture(studio.posterURL, this._scene);
+            const postTexture = new Texture(studio.posterTextureURL, this._scene);
             postTexture.uAng = Math.PI
             postMat.diffuseTexture = postTexture //加载贴图
             post[i].material = postMat //设置材质
             //LOGO纹理
             const logoMat = new StandardMaterial(`${this._startName}.LogoMat${i}`, this._scene);
-            const logoTexture = new Texture(studio.logoURL, this._scene);
+            const logoTexture = new Texture(studio.logoTextureURL, this._scene);
             logoTexture.uAng = Math.PI
             logoMat.diffuseTexture = logoTexture //加载贴图
             studioName[i].material = logoMat //设置材质

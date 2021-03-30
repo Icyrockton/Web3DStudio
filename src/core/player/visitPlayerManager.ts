@@ -6,7 +6,7 @@ import {
     MeshBuilder,
     Quaternion,
     Scene,
-    SceneLoader, ShadowGenerator, TransformNode,
+    SceneLoader, ShadowGenerator, StandardMaterial, Texture, TransformNode,
     Vector3
 } from "@babylonjs/core";
 import {Player, PlayerAssets} from "./player";
@@ -17,6 +17,11 @@ import {CollegeManager} from "../college/collegeManager";
 import {CollegeFloor} from "../college/collegeFloor";
 import useFloorUiState from "../../components/GUI/floor/floorUiState";
 
+export interface BillBoard {
+    playingBillBoard: Mesh
+    infoBillBoard: Mesh
+}
+
 export class VisitPlayerManager {
     private _scene: Scene;
     private _playerModelURL: string;
@@ -26,6 +31,7 @@ export class VisitPlayerManager {
     private _arrowModelURL: string;
     public _visitStudioIndex: number = 0 //访问的工作室索引值
     public floorTotalStudioNum: number = 0;
+    private _billBoard?: BillBoard
 
     constructor(scene: Scene, playerModelURL: string, arrowModelURL: string) {
         this._scene = scene;
@@ -106,8 +112,47 @@ export class VisitPlayerManager {
             this.player.insertArrow(this._upArrow, this._downArrow, this._leftArrow, this._rightArrow, this._leftReturnArrow, this._rightReturnArrow)
         }
 
+        this.setUpHint()
         //设置箭头的点击事件
         this.setUpArrowAction()
+    }
+
+    setUpHint() {
+        const node = new TransformNode("billboard", this._scene);
+        node.parent = this._collisionBox
+        const playingBillBoard = MeshBuilder.CreatePlane("playingBillBoard", {size: 0.5}, this._scene)
+        const infoBillBoard = MeshBuilder.CreatePlane("infoBillBoard", {size: 0.5}, this._scene)
+
+        playingBillBoard.billboardMode = AbstractMesh.BILLBOARDMODE_ALL
+        infoBillBoard.billboardMode = AbstractMesh.BILLBOARDMODE_ALL
+
+        playingBillBoard.parent = node
+        infoBillBoard.parent = node
+
+        playingBillBoard.position.set(1, 0.5, 2)
+        infoBillBoard.position.set(-1, 0.5, 2)
+
+        const playingMat = new StandardMaterial("playingBillBoardMat", this._scene);
+        playingMat.diffuseTexture = new Texture("img/sprite/play.png", this._scene)
+        playingMat.backFaceCulling = false
+        playingMat.diffuseTexture.hasAlpha = true
+        playingBillBoard.material = playingMat
+
+        const infoMat = new StandardMaterial("infoBillBoardMat", this._scene);
+        infoMat.diffuseTexture = new Texture("img/sprite/info.png", this._scene)
+        infoMat.backFaceCulling = false
+        infoMat.diffuseTexture.hasAlpha = true
+        infoBillBoard.material = infoMat
+
+        playingBillBoard.isVisible = false
+        infoBillBoard.isVisible = false
+
+        this._billBoard = {
+            playingBillBoard: playingBillBoard,
+            infoBillBoard: infoBillBoard
+        } as BillBoard
+
+
     }
 
     private _upArrow?: Mesh
@@ -136,13 +181,16 @@ export class VisitPlayerManager {
     public invisible() { //将玩家隐藏
         const meshes = this._collisionBox.getChildMeshes();
         meshes.forEach(mesh => {
-            mesh.isVisible = false
+            mesh.isVisible = false //包括billboard也不显示...
         })
     }
 
     public visible() { //将玩家显示
         const meshes = this._collisionBox.getChildMeshes();
         meshes.forEach(mesh => {
+            if (mesh.name.endsWith("BillBoard")) { //billboard不显示
+                return
+            }
             mesh.isVisible = true
         })
         this.hideAllArrow()
@@ -220,6 +268,7 @@ export class VisitPlayerManager {
             this._leftReturnArrow.actionManager.registerAction(new ExecuteCodeAction(
                 ActionManager.OnPickDownTrigger, () => {
                     this.leftReturn()
+                    this.hideBillBoard()
                 }
             ))
             this._leftReturnArrow.actionManager.registerAction(new ExecuteCodeAction(
@@ -232,6 +281,7 @@ export class VisitPlayerManager {
             this._rightReturnArrow.actionManager.registerAction(new ExecuteCodeAction(
                 ActionManager.OnPickDownTrigger, () => {
                     this.rightReturn()
+                    this.hideBillBoard()
                 }
             ))
             this._rightReturnArrow.actionManager.registerAction(new ExecuteCodeAction(
@@ -379,7 +429,7 @@ export class VisitPlayerManager {
 
     static readonly CAMERA_MOVE_IN_DISTANCE = -5
 
-    private visitStudioUiShowing(isLeft:boolean) {
+    private visitStudioUiShowing(isLeft: boolean) {
         if (this.checkCanVisitThisStudio(isLeft))
             useFloorUiState.setVisitStudioUiShowing(true)
     }
@@ -396,6 +446,7 @@ export class VisitPlayerManager {
             this.cameraMove(-Math.PI / 2, -Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE, () => {
                 this.showReturnArrow()
                 this.visitStudioUiShowing(true)
+                this.updateBillBoard() //更新billboard
             })
         } else if (this._currentLoc == 3) { //是3的话 左转
             this._currentLoc = 4
@@ -418,6 +469,7 @@ export class VisitPlayerManager {
                 this.cameraRotateXAnim(Math.PI / 3.5, () => {
                     this.showReturnArrow()
                     this.visitStudioUiShowing(true)
+                    this.updateBillBoard() //更新billboard
 
                 })
             })
@@ -436,6 +488,7 @@ export class VisitPlayerManager {
             this.cameraMove(Math.PI / 2, Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE, () => {
                 this.showReturnArrow()
                 this.visitStudioUiShowing(false)
+                this.updateBillBoard() //更新billboard
 
             })
         } else if (this._currentLoc == 3) { //是3的话 左转
@@ -459,6 +512,7 @@ export class VisitPlayerManager {
                 this.cameraRotateXAnim(Math.PI / 3.5, () => {
                     this.showReturnArrow()
                     this.visitStudioUiShowing(false)
+                    this.updateBillBoard() //更新billboard
                 })
             })
 
@@ -765,8 +819,36 @@ export class VisitPlayerManager {
     }
 
     setUpShadow(_shadowGenerator: ShadowGenerator) {
-        this._collisionBox.getChildMeshes().forEach(mesh=>{
+        this._collisionBox.getChildMeshes().forEach(mesh => {
             _shadowGenerator.addShadowCaster(mesh)
         })
+    }
+
+    private updateBillBoard() {
+        if (this._billBoard) {
+            console.log(this._currentLoc)
+            this._billBoard.infoBillBoard.isVisible = true
+            this._billBoard.playingBillBoard.isVisible = true
+            if (this._visitStudioIndex == 1 || this._visitStudioIndex == 2) {
+                this._billBoard.infoBillBoard.position.set(-1,1,-1)
+                this._billBoard.playingBillBoard.position.set(-1,1,1)
+            } else if (this._visitStudioIndex == 3 || this._visitStudioIndex == 4) {
+                this._billBoard.infoBillBoard.position.set(1,1,1)
+                this._billBoard.playingBillBoard.position.set(1,1,-1)
+            } else if (this._visitStudioIndex == 5) {
+                this._billBoard.infoBillBoard.position.set(1,1,1)
+                this._billBoard.playingBillBoard.position.set(-1,1,1)
+            } else {
+                this._billBoard.infoBillBoard.position.set(-1,1,1)
+                this._billBoard.playingBillBoard.position.set(1,1,1)
+            }
+        }
+    }
+
+    private hideBillBoard() {
+        if (this._billBoard){
+            this._billBoard.playingBillBoard.isVisible =false
+            this._billBoard.infoBillBoard.isVisible =false
+        }
     }
 }
