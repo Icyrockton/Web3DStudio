@@ -14,7 +14,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                 description: "",
                 logoTextureURL: "img/studio/java_logo_texture.png",
                 posterTextureURL: "img/studio/java_poster.png",
-                logoURL:"img/studio/java_logo.png"
+                logoURL:"img/studio/java_logo.png",
+                videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
             },
                 {
                     uuid: 2,
@@ -23,7 +24,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                     description: "",
                     logoTextureURL: "img/studio/python_logo_texture.png",
                     posterTextureURL: "img/studio/python_poster.png",
-                    logoURL:"img/studio/python_logo.png"
+                    logoURL:"img/studio/python_logo.png",
+                    videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
                 },
                 {
                     uuid: 3,
@@ -32,7 +34,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                     description: "",
                     logoTextureURL: "img/studio/ui_logo_texture.png",
                     posterTextureURL: "img/studio/ui_poster.png",
-                    logoURL:"img/studio/ui_logo.png"
+                    logoURL:"img/studio/ui_logo.png",
+                    videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
                 },
                 {
                     uuid: 4,
@@ -41,7 +44,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                     description: "",
                     logoTextureURL: "img/studio/bigdata_logo_texture.png",
                     posterTextureURL: "img/studio/bigdata_poster.png",
-                    logoURL:"img/studio/bigdata_logo.png"
+                    logoURL:"img/studio/bigdata_logo.png",
+                    videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
                 },
                 {
                     uuid: 5,
@@ -50,16 +54,18 @@ export const fakeCollegeFloors: CollegeFloors = {
                     description: "",
                     logoTextureURL: "img/studio/robot_logo_texture.png",
                     posterTextureURL: "img/studio/robot_poster.png",
-                    logoURL:"img/studio/robot_logo.png"
+                    logoURL:"img/studio/robot_logo.png",
+                    videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
                 },
                 {
                     uuid: 6,
                     name: "人工智能工作室",
                     location: 6,
-                    description: "",
+                    description: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
                     logoTextureURL: "img/studio/AI_logo_texture.png",
                     posterTextureURL: "img/studio/AI_poster.jpg",
-                    logoURL:"img/studio/AI_logo.png"
+                    logoURL:"img/studio/AI_logo.png",
+                    videoURL:""
                 },
 
             ]
@@ -73,7 +79,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                 description: "",
                 logoTextureURL: "img/studio/robot_logo_texture.png",
                 posterTextureURL: "img/studio/robot_poster.png",
-                logoURL:"img/studio/robot_logo.png"
+                logoURL:"img/studio/robot_logo.png",
+                videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4"
             },
                 {
                     uuid: 10,
@@ -82,7 +89,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                     description: "",
                     logoTextureURL: "img/studio/game_logo_texture.png",
                     posterTextureURL: "img/studio/game_poster.png",
-                    logoURL:"img/studio/game_logo.png"
+                    logoURL:"img/studio/game_logo.png",
+                    videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
                 },
 
             ]
@@ -96,7 +104,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                 description: "",
                 logoTextureURL: "img/studio/robot_logo_texture.png",
                 posterTextureURL: "img/studio/robot_poster.png",
-                logoURL:"img/studio/robot_logo.png"
+                logoURL:"img/studio/robot_logo.png",
+                videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
             },
                 {
                     uuid: 12,
@@ -105,7 +114,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                     description: "",
                     logoTextureURL: "img/studio/bigdata_logo_texture.png",
                     posterTextureURL: "img/studio/bigdata_poster.png",
-                    logoURL:"img/studio/bigdata_logo.png"
+                    logoURL:"img/studio/bigdata_logo.png",
+                    videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
                 },
 
             ]
@@ -119,7 +129,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                 description: "",
                 logoTextureURL: "img/studio/ui_logo_texture.png",
                 posterTextureURL: "img/studio/ui_poster.png",
-                logoURL:"img/studio/ui_logo.png"
+                logoURL:"img/studio/ui_logo.png",
+                videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
             },
                 {
                     uuid: 14,
@@ -128,7 +139,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                     description: "",
                     logoTextureURL: "img/studio/bigdata_logo_texture.png",
                     posterTextureURL: "img/studio/bigdata_poster.png",
-                    logoURL:"img/studio/bigdata_logo.png"
+                    logoURL:"img/studio/bigdata_logo.png",
+                    videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                 },
 
             ]
@@ -142,7 +154,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                 description: "",
                 logoTextureURL: "img/studio/python_logo_texture.png",
                 posterTextureURL: "img/studio/python_poster.png",
-                logoURL:"img/studio/python_logo.png"
+                logoURL:"img/studio/python_logo.png",
+                videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"
             },
                 {
                     uuid: 16,
@@ -151,7 +164,8 @@ export const fakeCollegeFloors: CollegeFloors = {
                     description: "",
                     logoTextureURL: "img/studio/test_logo_texture.png",
                     posterTextureURL: "img/studio/test_poster.png",
-                    logoURL:"img/studio/test_logo.png"
+                    logoURL:"img/studio/test_logo.png",
+                    videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
                 },
 
             ]

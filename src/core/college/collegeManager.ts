@@ -7,12 +7,10 @@ import {
     SceneLoader, ShadowGenerator, Sound,
     Vector3
 } from "@babylonjs/core";
-import {Player, PlayerAssets} from "../player/player";
-import {InputController} from "../player/inputController";
+
 import {IState} from "../IState";
 import {CollegeFloor} from "./collegeFloor";
 import useFloorUiState from "../../components/GUI/floor/floorUiState";
-import {values} from "mobx";
 import {AdvancedDynamicTexture} from "@babylonjs/gui";
 import {VisitPlayerManager} from "../player/visitPlayerManager";
 
@@ -22,9 +20,10 @@ export interface CollegeStudio { //学院的每一间工作室
     location: number //工作室位置    1~8
     name: string //工作室的名称
     description: string //工作室描述
-    logoURL:string //工作室的LOGO地址
+    logoURL: string //工作室的LOGO地址
     logoTextureURL: string //工作室的LOGO纹理图片地址
     posterTextureURL: string //工作室的海报地址
+    videoURL: string //视频地址
 }
 
 
@@ -50,12 +49,15 @@ export interface CollegeManagerSound {
     buttonHit: Sound
 }
 
+export interface Update {
+    updateVideoURL(): void
+}
+
 //工作室的选择
-export class CollegeManager {
+export class CollegeManager implements Update {
     static readonly PLAYER_MODEL_URL = "model/player.glb"
     static readonly PLAYER_ARROW_MODEL_URL = "model/player_arrow.glb"
     static readonly FLOOR_MODEL_URL = "model/floor.glb"
-
 
     private _scene: Scene;
     private _web3DStudio: IState;
@@ -69,9 +71,10 @@ export class CollegeManager {
     private _highLightLayer: HighlightLayer
     private _visitPlayerManager: VisitPlayerManager
 
+
     constructor(collegeScene: Scene, web3DStudio: IState, collegeFloors: CollegeFloors) {
         this._scene = collegeScene;
-        this._scene.clearColor =  Color4.FromHexString("#6fabffff").toLinearSpace()
+        this._scene.clearColor = Color4.FromHexString("#6fabffff").toLinearSpace()
         this._collegeFloors = collegeFloors; //所有数据
         useFloorUiState.collegeManager = this //注入this
         useFloorUiState.setFloorInfo(collegeFloors) //设置信息
@@ -82,7 +85,7 @@ export class CollegeManager {
         this._scene.collisionsEnabled = true //打开碰撞
         this._web3DStudio = web3DStudio;
         this._maxYPos = this._collegeFloors.totalFloor * CollegeFloor.HEIGHT + 100  //动画到达的最高位置
-        this._visitPlayerManager = new VisitPlayerManager(this._scene, CollegeManager.PLAYER_MODEL_URL, CollegeManager.PLAYER_ARROW_MODEL_URL)
+        this._visitPlayerManager = new VisitPlayerManager(this._scene, this, CollegeManager.PLAYER_MODEL_URL, CollegeManager.PLAYER_ARROW_MODEL_URL)
     }
 
     async load() {
@@ -108,11 +111,11 @@ export class CollegeManager {
         pipeline.imageProcessingEnabled = true;
         pipeline.imageProcessing.vignetteEnabled = true;
         pipeline.imageProcessing.vignetteWeight = 1.7;
-        pipeline.imageProcessing.vignetteColor=Color4.FromHexString("#146eff")
+        pipeline.imageProcessing.vignetteColor = Color4.FromHexString("#146eff")
         pipeline.imageProcessing.exposure = 1.2
 
         //开启抗锯齿
-        pipeline.samples =4
+        pipeline.samples = 4
 
     }
 
@@ -169,7 +172,7 @@ export class CollegeManager {
         this._sound.floorSelectSimple.play()
     }
 
-    public playButtonHitSound(){
+    public playButtonHitSound() {
         this._sound.buttonHit.play()
     }
 
@@ -184,19 +187,19 @@ export class CollegeManager {
         this.beginStartCameraAnimation()
     }
 
-    private _light?:DirectionalLight
+    private _light?: DirectionalLight
 
     setUpLight() {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);
         hemisphericLight.intensity = 0.5
-        const directionalLight1 = new DirectionalLight("directionalLight1",new Vector3(-1,-0.5,1),this._scene);
+        const directionalLight1 = new DirectionalLight("directionalLight1", new Vector3(-1, -0.5, 1), this._scene);
 
-        directionalLight1.intensity=0.5
+        directionalLight1.intensity = 0.5
         this._light = directionalLight1
 
-        const directionalLight2 = new DirectionalLight("directionalLight2",new Vector3(1,-0.5,1),this._scene);
+        const directionalLight2 = new DirectionalLight("directionalLight2", new Vector3(1, -0.5, 1), this._scene);
 
-        directionalLight2.intensity=0.5
+        directionalLight2.intensity = 0.5
         this._light = directionalLight2
     }
 
@@ -495,37 +498,7 @@ export class CollegeManager {
     }
 
 
-    private createStartCameraAnim() {
-        const betaAnimation = new Animation("cameraBetaAnimation", "beta", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
-        const betaKeyFrames: IAnimationKey[] = []
-        betaKeyFrames.push({
-            frame: 0,
-            value: this._arcRotateCamera.beta
-        })
 
-        betaKeyFrames.push({
-            frame: CollegeFloor.frameRate * 2,
-            value: Math.PI / 3
-        })
-
-        betaAnimation.setKeys(betaKeyFrames)
-        const alphaAnimation = new Animation("cameraAlphaAnimation", "alpha", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
-        const alphaKeyFrames: IAnimationKey[] = []
-        alphaKeyFrames.push({
-            frame: 0,
-            value: this._arcRotateCamera.alpha
-        })
-
-        alphaKeyFrames.push({
-            frame: CollegeFloor.frameRate * 2,
-            value: -(Math.PI / 2 + Math.PI / 4)
-        })
-
-
-        alphaAnimation.setKeys(alphaKeyFrames)
-
-        return [alphaAnimation, betaAnimation]
-    }
 
 
     cameraSmoothOut() {
@@ -577,7 +550,7 @@ export class CollegeManager {
     }
 
     private _visiting: boolean = false
-    private _shadowGenerator? : ShadowGenerator
+    private _shadowGenerator?: ShadowGenerator
 
     //访问当前楼层
     public visitFloor() {
@@ -594,6 +567,7 @@ export class CollegeManager {
         this.hideOtherFloor()
         this.hideVisitUi()
         this.placeVisitPlayer() //放置玩家
+
         this.visiblePlayer() //显示玩家
 
         this._scene.beginDirectAnimation(this._arcRotateCamera, this.createCameraMoveToPlayerAnim(), 0, CollegeFloor.frameRate * 2, false, undefined, () => {
@@ -708,12 +682,10 @@ export class CollegeManager {
         }) //打开门
     }
 
-    private openStudioDoor() {
-        if (this._currentFloorNum == -1)
-            return
-        const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
-        for (let i = 1; i <= 6; i++) {
-            floor.openDoor(i)
+    public updateVideoURL(): void {
+        const studio = this._collegeFloors.floors[this._currentFloorNum - 1].studios[this._visitPlayerManager._visitStudioIndex - 1]
+        if (studio) {
+            this._visitPlayerManager.updateTvVideoURL(studio.videoURL)
         }
     }
 
