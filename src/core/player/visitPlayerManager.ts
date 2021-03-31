@@ -4,16 +4,14 @@ import {
     Matrix,
     Mesh,
     MeshBuilder,
-    Quaternion,
     Scene,
     SceneLoader, ShadowGenerator, StandardMaterial, Texture, TransformNode,
     Vector3, VideoTexture
 } from "@babylonjs/core";
-import {Player, PlayerAssets} from "./player";
-import {InputController} from "./inputController";
+import { PlayerAssets} from "./player";
 import {PlayerManager} from "./playerManager";
 import {VisitPlayer} from "./visitPlayer";
-import {CollegeManager, Update} from "../college/collegeManager";
+import { Update} from "../college/collegeManager";
 import {CollegeFloor} from "../college/collegeFloor";
 import useFloorUiState from "../../components/GUI/floor/floorUiState";
 
@@ -853,13 +851,7 @@ export class VisitPlayerManager {
     }
 
 
-    private backToPath(isLeft: boolean) { //回到道路上来
-        if (isLeft) { //如果在左边的工作室
-            this.cameraMove(Math.PI / 2, Math.PI / 2, 5)
-        } else { //右边的工作室
-            this.cameraMove(-Math.PI / 2, -Math.PI / 2, 5)
-        }
-    }
+
 
     private showReturnArrow() {
         if (this._visitStudioIndex == 1 || this._visitStudioIndex == 2 || this._visitStudioIndex == 6)
