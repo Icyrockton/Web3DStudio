@@ -51,6 +51,7 @@ export interface CollegeManagerSound {
 
 export interface Update {
     updateVideoURL(): void
+    updateStudioInfo():void
 }
 
 //工作室的选择
@@ -688,6 +689,14 @@ export class CollegeManager implements Update {
             this._visitPlayerManager.updateTvVideoURL(studio.videoURL)
         }
     }
+
+    updateStudioInfo(): void {
+        const studio = this._collegeFloors.floors[this._currentFloorNum - 1].studios[this._visitPlayerManager._visitStudioIndex - 1]
+        if (studio){
+            useFloorUiState.setStudioInfo(studio)
+        }
+    }
+
 
 
     private setUpShadow() {

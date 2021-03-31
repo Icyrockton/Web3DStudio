@@ -1,5 +1,5 @@
 import {makeAutoObservable} from "mobx";
-import {CollegeFloors, CollegeManager} from "../../../core/college/collegeManager";
+import {CollegeFloors, CollegeManager, CollegeStudio} from "../../../core/college/collegeManager";
 
 
 export class FloorUiState {
@@ -10,6 +10,14 @@ export class FloorUiState {
     collegeManager: CollegeManager | null = null
     floorTotalNumber = 0 //楼层的总数
     collegeFloors: CollegeFloors | null = null
+    studioInfoShowing:boolean =false
+    studio:CollegeStudio | null = null
+    setStudioInfoShowing(showing: boolean) {
+        this.studioInfoShowing = showing
+    }
+    setStudioInfo(studio:CollegeStudio){
+        this.studio = studio
+    }
 
     constructor() {
         makeAutoObservable(this, {

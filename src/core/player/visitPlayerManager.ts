@@ -355,9 +355,11 @@ export class VisitPlayerManager {
         infoBillBoard.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, () => {
             this.billboardAnim(infoBillBoard, true)
             useFloorUiState.collegeManager?.playFloorSelectSound()
+            useFloorUiState.setStudioInfoShowing(true) //显示UI
         }))
         infoBillBoard.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, () => {
             this.billboardAnim(infoBillBoard, false)
+            useFloorUiState.setStudioInfoShowing(false) //隐藏UI
         }))
 
 
@@ -727,6 +729,7 @@ export class VisitPlayerManager {
         if (this.checkCanVisitThisStudio(isLeft)) {
             useFloorUiState.setVisitStudioUiShowing(true)
             this.updateBillBoard() //更新billboard
+
         }
     }
 
@@ -739,6 +742,7 @@ export class VisitPlayerManager {
                 this._visitStudioIndex = 2
             //查看左边的工作室
             this._update.updateVideoURL()
+            this._update.updateStudioInfo()
             this._viewDetail = true
             this.cameraMove(-Math.PI / 2, -Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE, () => {
                 this.showReturnArrow()
@@ -762,6 +766,7 @@ export class VisitPlayerManager {
         } else if (this._currentLoc == 5) {
             this._visitStudioIndex = 6
             this._update.updateVideoURL()
+            this._update.updateStudioInfo()
             this.cameraMove(-Math.PI / 2, 0, -6, () => {
                 this.cameraRotateXAnim(Math.PI / 3.5, () => {
                     this.showReturnArrow()
@@ -780,6 +785,7 @@ export class VisitPlayerManager {
             else
                 this._visitStudioIndex = 4
             this._update.updateVideoURL()
+            this._update.updateStudioInfo()
             //查看左边的工作室
             this._viewDetail = true
             this.cameraMove(Math.PI / 2, Math.PI / 2, VisitPlayerManager.CAMERA_MOVE_IN_DISTANCE, () => {
@@ -805,6 +811,7 @@ export class VisitPlayerManager {
         } else if (this._currentLoc == 4) {
             this._visitStudioIndex = 5
             this._update.updateVideoURL()
+            this._update.updateStudioInfo()
             this.cameraMove(Math.PI / 2, 0, -6, () => {
                 this.cameraRotateXAnim(Math.PI / 3.5, () => {
                     this.showReturnArrow()

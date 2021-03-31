@@ -4,7 +4,7 @@ import classes from "./floorUi.module.css"
 import useFloorUiState, {FloorUiState} from "./floorUiState";
 import {Button, Tooltip} from "antd";
 import {FormOutlined, SendOutlined} from "@ant-design/icons";
-import {Floor} from "../../../core/college/collegeManager";
+import {CollegeStudio, Floor} from "../../../core/college/collegeManager";
 import Avatar from "antd/es/avatar/avatar";
 
 type FloorUiProps = {
@@ -53,6 +53,27 @@ const SingleFloor = (props: SingleFloorUiProps) => {
     )
 }
 
+type StudioInfoUiProps = {
+    info: CollegeStudio | null
+}
+const StudioInfoUi = (props: StudioInfoUiProps) => {
+    const info = props.info;
+    if (!info) {
+        return (
+            <>
+                空
+            </>
+        )
+    }
+    return (
+        <>
+            <img src={info.logoURL} className={classes.studioInfoImage} />
+            <h1 className={classes.studioInfoTitle}>{info.name}</h1>
+            <br/>
+            <h2 className={classes.studioInfoDescription}>{info.description}</h2>
+        </>
+    )
+}
 
 const FloorUi = observer<FloorUiProps>(props => {
     const uiState = props.uiState;
@@ -141,9 +162,15 @@ const FloorUi = observer<FloorUiProps>(props => {
             {/*进入工作室*/}
             <div
                 className={`${classes.visitStudioUiArea} ${uiState.visitStudioUiShowing ? classes.visitStudioUiShowing : ""}`}
-                onMouseEnter={()=>useFloorUiState.collegeManager?.playFloorSelectSound()}
+                onMouseEnter={() => useFloorUiState.collegeManager?.playFloorSelectSound()}
                 onClick={visitStudio}>
                 进入工作室
+            </div>
+
+            {/*   工作室简介*/}
+            <div
+                className={`${classes.studioInfoUiArea} ${uiState.studioInfoShowing ? classes.studioInfoUiShowing : ""}`}>
+                <StudioInfoUi info={uiState.studio}/>
             </div>
         </>
     )
