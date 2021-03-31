@@ -14,6 +14,13 @@ import {RotateCamera} from "../studio/Studio";
 
 
 export class PlayerManager {
+    get currentAIName(): string {
+        return this._currentAIName;
+    }
+
+    set currentAIName(value: string) {
+        this._currentAIName = value;
+    }
 
     static PlayerCollisionBoxWidth = 0.7
     static PlayerCollisionBoxHeight = 1.8
@@ -26,6 +33,7 @@ export class PlayerManager {
     static CollisionBoxHeight = 1.8
     static CollisionBoxDepth = 0.5
     private _busy:boolean = false  //忙碌   打开工作台.. 图书... 不允许AI产生对话
+    private _currentAIName:string ="" //和交谈的AI
     constructor(scene: Scene, playerModelURL: string) {
         this._scene = scene;
         this._playerModelURL = playerModelURL;

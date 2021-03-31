@@ -118,7 +118,7 @@ export class Staircase {
         camera.orthoBottom = camera.orthoLeft * aspect;
         camera.orthoTop = camera.orthoRight * aspect;
 
-        camera.attachControl()
+        //camera.attachControl()
 
         this._scene.createDefaultLight()
 

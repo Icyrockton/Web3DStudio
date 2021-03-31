@@ -15,6 +15,7 @@ import {fakeCollegeMap} from "./core/collegeMap/collegeMapApi";
 import {StudioManager} from "./core/studio/StudioManager";
 import {fakeStudio} from "./core/studio/StudioApi";
 import usePlayerUiState from "./components/GUI/player/playerUiState";
+import useNavUiState from "./components/GUI/nav/navUiState";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -42,7 +43,7 @@ export class Web3DStudio implements IState {
         this._engine = new Engine(this._canvas, true, {stencil: true})  //开启抗锯齿
         this._scene = new Scene(this._engine);//初始化场景
         this.loadingScene = new LoadingScene(this._scene)
-
+        useNavUiState.navController =this //注入controller
         this.setBookShelfScene()
         this.setPracticeTableScene()
 
@@ -102,11 +103,11 @@ export class Web3DStudio implements IState {
 
     async setLoadingAnimation() { //设置加载动画
 
-        //await this.goToCollegeMap() //切换到地图场景
+        await this.goToCollegeMap() //切换到地图场景
 
 
         //暂时直接
-         await  this.goToCollege(1)
+         // await  this.goToCollege(1)
 
         //暂时直接
 
@@ -118,16 +119,25 @@ export class Web3DStudio implements IState {
     async goToCollegeMap() {
         let mapScene = new Scene(this._engine)
         //网络获取学院地图
+        useNavUiState.setNavShowing(false) //关闭导航UI
+        const floorUiState = useFloorUiState;
+        floorUiState.setFloorUiShowing(false)
+        floorUiState.setVisitStudioUiShowing(false)
+        floorUiState.setEveryFloorUiShowing(false)
+        floorUiState.setVisitUiShowing(false)
+
         const collegeMap = fakeCollegeMap;
         let manager = new CollegeMapManager(mapScene, this, collegeMap)
         await manager.load()
+
         this._scene = mapScene
         //this._scene.debugLayer.show()
     }
 
 
     async goToCollege(collegeUUid: number) {  //传递进来collegeUUid
-
+        useNavUiState.setNavShowing(false) //关闭导航UI
+        useNavUiState.currentCollegeId = collegeUUid //当前的ID
         const prevScene = this._scene
         this.changeToLoadingScene() //切换到加载场景
 
@@ -136,6 +146,9 @@ export class Web3DStudio implements IState {
         await manager.load()
         useFloorUiState.setFloorUiShowing(true) //显示UI
         useFloorUiState.setEveryFloorUiShowing(true)
+        useNavUiState.setNavShowing(true) //打开导航UI
+        useNavUiState.setNavToMapShowing(true)
+        useNavUiState.setNavToCollegeShowing(false)
         this._scene = collegeScene
         prevScene.dispose() //dispose
         //this._scene.debugLayer.show()
@@ -158,6 +171,7 @@ export class Web3DStudio implements IState {
 
         const prevScene = this._scene
         this.changeToLoadingScene()
+        useNavUiState.setNavShowing(false) //关闭导航UI
 
         let studioScene = new Scene(this._engine)
         let manager = new StudioManager(studioScene, fakeStudio, this)
@@ -171,7 +185,9 @@ export class Web3DStudio implements IState {
         }
         prevScene.dispose()//dispose
         this._scene = studioScene
-
+        useNavUiState.setNavShowing(true) //打开导航UI
+        useNavUiState.setNavToMapShowing(true)
+        useNavUiState.setNavToCollegeShowing(true)
         //this._scene.debugLayer.show()
     }
 

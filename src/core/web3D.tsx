@@ -18,6 +18,8 @@ import useAiUiState from "../components/GUI/ai/aiUiState";
 import FloorUi from "../components/GUI/floor/floorUi";
 import useFloorUiState from "../components/GUI/floor/floorUiState";
 import {KeyBoardUi} from "../components/GUI/player/keyBoardUi";
+import {NavUi} from "../components/GUI/nav/navUi";
+import useNavUiState from "../components/GUI/nav/navUiState";
 
 
 export const Web3D =()=>{
@@ -34,6 +36,7 @@ export const Web3D =()=>{
     const practiceTableUiState = usePracticeTableUiState;
     const aiUiState = useAiUiState;
     const floorUiState = useFloorUiState;
+    const navUiState = useNavUiState;
     return (
         <React.Fragment>
             <canvas id="renderCanvas" ref={canvas}/>
@@ -47,6 +50,7 @@ export const Web3D =()=>{
             <AiUi uiState={aiUiState}/>
             <FloorUi uiState={floorUiState}/>
             <KeyBoardUi  uiState={playerUiState}/>
+            <NavUi uiState={navUiState}/>
         </React.Fragment>
     )
 }

@@ -237,6 +237,8 @@ export class Ai {
             if (distance < 1.5) {
                 if (!this._trigger) {
                     if (!playerManager.busy) {  //如果玩家不忙碌
+                        playerManager.currentAIName = this._aiInfo.name
+                        playerManager.busy = true
                         this.randomDialog()
                         this._prevState = this._state
                         this._encounterPlayer = true
@@ -245,6 +247,9 @@ export class Ai {
                 }
             } else {
                 if (this._encounterPlayer) {
+                    if (playerManager.currentAIName = this._aiInfo.name){
+                        playerManager.busy = false
+                    }
                     console.log('状态变回', this._prevState)
                     this._state = this._prevState
                     if (this._state == AIState.moving || this._state == AIState.wait) { //继续之前没走的路
