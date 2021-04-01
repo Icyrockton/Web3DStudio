@@ -1,7 +1,7 @@
 import {
-    AbstractMesh,
+    AbstractMesh, Camera,
     Color3, Color4, DefaultRenderingPipeline,
-    DirectionalLight,
+    DirectionalLight, FreeCamera,
     HemisphericLight,
     KeyboardEventTypes,
     KeyboardInfo,
@@ -13,7 +13,7 @@ import {
     ShadowGenerator,
     Sound, StandardMaterial, Texture,
     TransformNode,
-    Vector3
+    Vector3, Viewport
 } from "@babylonjs/core";
 import {Studio} from "./Studio";
 import {PlayerManager} from "../player/playerManager";
@@ -29,6 +29,7 @@ import Recast from "recast-detour"
 import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState";
 import usePracticeTableUiState from "../../components/GUI/practiceTable/practiceTableUiState";
 import {Light} from "@babylonjs/core/Lights/light";
+import {MINI_MAP_LAYER_MASK} from "./miniMap";
 
 interface StudioSound {
     bookShelf: Sound
@@ -75,6 +76,7 @@ export class StudioManager {
         await this.setUpShadow() //设置阴影
         await this.setUpPlayer() //加载玩家模型
         await this.setUpReceptionist() //加载虚拟人员模型
+        this.setUpMiniMapCamera()
         this.setUpRotateCamera() //设置自动旋转相机
         this.setUpSound() //设置声音
         this.setUpBookShelf() //设置书架
@@ -117,6 +119,9 @@ export class StudioManager {
 
     private setUpCamera() {
         this._scene.createDefaultCamera()
+
+
+
     }
 
     private async loadModel() {
@@ -136,11 +141,16 @@ export class StudioManager {
                     this._practiceTableMesh.push(mesh)
                 }
             }
-
-
         })
 
         this.setUpCollisionBox(meshes) //设置碰撞盒子
+
+        //小地图
+        const miniMapMesh = meshes.find(mesh=>mesh.name == this._studio.miniMap);
+        if (miniMapMesh){
+            miniMapMesh.layerMask = MINI_MAP_LAYER_MASK
+            console.log(miniMapMesh)
+        }
 
     }
 
@@ -534,4 +544,25 @@ export class StudioManager {
             ai.clearAIState()
         })
     }
+
+    private _miniMapCamera?:FreeCamera
+    private setUpMiniMapCamera() {
+        const miniMapCamera = new FreeCamera("miniMapCamera",new Vector3(0,10,0),this._scene);
+        miniMapCamera.target = new Vector3(0,0,0)
+        miniMapCamera.viewport =new Viewport(0.01,0.79,0.1,0.2)
+        miniMapCamera.layerMask = MINI_MAP_LAYER_MASK
+        miniMapCamera.mode = Camera.ORTHOGRAPHIC_CAMERA;
+        miniMapCamera.orthoBottom = -7.5;
+        miniMapCamera.orthoTop = 7.5;
+        miniMapCamera.orthoLeft = -7.5;
+        miniMapCamera.orthoRight = 7.5;
+        this._miniMapCamera = miniMapCamera
+        this._scene.registerBeforeRender(()=>{
+            miniMapCamera.position.set(this._playerManager.playerPosition.x,10,this._playerManager.playerPosition.z)
+        })
+        this._scene.activeCameras?.push(miniMapCamera)
+
+    }
+
+
 }

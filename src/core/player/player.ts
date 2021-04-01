@@ -1,24 +1,26 @@
 import {
     AbstractMesh,
-    Axis,
-    Mesh,
+    Axis, Color3,
+    Mesh, MeshBuilder,
     Quaternion,
     Ray, Scalar,
-    Scene,
+    Scene, ShadowGenerator, StandardMaterial, Texture,
     TransformNode,
     UniversalCamera,
-    Vector3
+    Vector3, Viewport
 } from "@babylonjs/core";
 import {ISceneLoaderAsyncResult} from "@babylonjs/core/Loading/sceneLoader";
 import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
 import {CollegeManager} from "../college/collegeManager";
 import {InputController} from "./inputController";
 import {PlayerManager} from "./playerManager";
+import {MINI_MAP_LAYER_MASK} from "../studio/miniMap";
 
 
 export interface PlayerAssets {
     readonly collisionBox: Mesh //碰撞盒子
     readonly animationGroups: AnimationGroup[] //动画集合
+    readonly avatarMiniMapURL:string //小地图
 }
 
 export interface PlayerAnimation {
@@ -45,12 +47,16 @@ export class Player extends TransformNode {
     private _gravity: Vector3 = new Vector3(0, 0, 0)
     private _grounded: boolean = true
     private _animation:PlayerAnimation
+    private _assets : PlayerAssets;
 
     constructor(assets: PlayerAssets, scene: Scene, controller: InputController) {
         super("playerRoot", scene);
+        this._assets=assets
         this._inputController = controller;
         this._setUpPlayerCamera()
         this.mesh = assets.collisionBox //碰撞检测盒子
+        this._setUpMiniMap()
+
         this._animation={
             idle:assets.animationGroups[0],
             leftTurn:assets.animationGroups[1],
@@ -84,7 +90,8 @@ export class Player extends TransformNode {
 
         this.camera.lockedTarget = this._cameraRoot.position
         this.camera.parent = this._yTilt
-        this._scene.activeCamera = this.camera
+        this.camera.viewport= new Viewport(0,0,1,1)
+        this._scene.activeCameras?.push(this.camera)
     }
 
     private _updateCamera() {
@@ -258,6 +265,37 @@ export class Player extends TransformNode {
     public rotateCameraAroundYAxis(target:number){ //目标角度
         this._scene.registerBeforeRender(()=>{
             this._cameraRoot.rotation.y=Scalar.Lerp(this._cameraRoot.rotation.y,target,0.01)
+        })
+    }
+
+    private _miniMapMesh?:Mesh
+
+    private _setUpMiniMap() {
+        //小地图
+
+        const miniMap = MeshBuilder.CreateGround(`playerMiniMap`,{width:2,height:2});
+        miniMap.billboardMode = AbstractMesh.BILLBOARDMODE_Z
+        miniMap.isPickable=false
+        const material = new StandardMaterial("player-miniMap-Mat",this._scene);
+        const avatarTexture = new Texture(this._assets.avatarMiniMapURL,this._scene);
+        avatarTexture.hasAlpha = true
+        avatarTexture.uAng = Math.PI
+        material.specularColor = Color3.Black()
+        material.emissiveColor = Color3.White() //自发光 亮一些
+        material.diffuseTexture = avatarTexture
+        miniMap.material = material
+        miniMap.parent = this.mesh
+        miniMap.layerMask = MINI_MAP_LAYER_MASK
+        this._miniMapMesh = miniMap
+
+    }
+
+    public setUpShadow(_shadowGenerator: ShadowGenerator){
+        const meshes = this.mesh.getChildMeshes();
+        meshes.forEach(mesh=>{
+            if (mesh == this._miniMapMesh)
+                return
+            _shadowGenerator.addShadowCaster(mesh)
         })
     }
 }

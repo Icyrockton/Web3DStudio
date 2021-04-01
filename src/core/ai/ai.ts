@@ -1,12 +1,12 @@
 import {
-    AdvancedTimer, Angle,
+    AdvancedTimer, Angle, Color3,
     ICrowd,
     Matrix, Mesh,
     MeshBuilder,
     Quaternion,
     RecastJSPlugin,
     Scene,
-    SceneLoader, setAndStartTimer, ShadowGenerator, Sound,
+    SceneLoader, setAndStartTimer, ShadowGenerator, Sound, StandardMaterial, Texture,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -21,6 +21,7 @@ import {Light} from "@babylonjs/core/Lights/light";
 import {PlayerManager} from "../player/playerManager";
 import useAiUiState from "../../components/GUI/ai/aiUiState";
 import aiUiState from "../../components/GUI/ai/aiUiState";
+import {MINI_MAP_LAYER_MASK} from "../studio/miniMap";
 
 interface PathDetail {
     desPos: Vector3, // 要走到的点的位置
@@ -37,6 +38,7 @@ enum AIState {
 
 export class Ai {
 
+
     private _aiInfo: StudioAI;
     private _scene: Scene;
     private _path: PathDetail[] = []
@@ -50,6 +52,7 @@ export class Ai {
     private rightTurnAnimation!: AnimationGroup;
     private _playerManager?: PlayerManager;
     private _infoSound: Sound[] = []
+    private _miniMapMesh? : Mesh
 
     constructor(scene: Scene, aiInfo: StudioAI, crowd: ICrowd, navigationPlugin: RecastJSPlugin) {
         this._scene = scene;
@@ -104,6 +107,9 @@ export class Ai {
         collisionBox.parent = this._aiTransformNode
         this._collisionBox = collisionBox
         ////////////////
+
+        this.setUpMiniMap()
+
 
         //动画
         this.idleAnimation = animationGroups.find(animationGroup => animationGroup.name == this._aiInfo.idleAnimationGroupName)!
@@ -302,6 +308,8 @@ export class Ai {
         if (this._collisionBox){
             const childMeshes = this._collisionBox.getChildMeshes();
             childMeshes.forEach(mesh=>{
+                if (mesh == this._miniMapMesh)
+                    return
                 _shadowGenerator.addShadowCaster(mesh)
             })
         }
@@ -333,5 +341,24 @@ export class Ai {
         }
         this._encounterPlayer = false
         this._trigger = false
+    }
+
+    setUpMiniMap() {
+        //小地图
+        const miniMap = MeshBuilder.CreateGround(`${this._aiInfo.name}-miniMap`,{width:2,height:2});
+        miniMap.isPickable=false
+        miniMap.billboardMode = AbstractMesh.BILLBOARDMODE_Z
+        const material = new StandardMaterial(`${this._aiInfo.name}-miniMap-Mat`,this._scene);
+        const avatarTexture = new Texture(this._aiInfo.miniMapAvatarURL,this._scene);
+        avatarTexture.hasAlpha = true
+        avatarTexture.uAng = Math.PI
+
+        material.specularColor = Color3.Black()
+        material.emissiveColor = Color3.White() //自发光 亮一些
+        material.diffuseTexture = avatarTexture
+        miniMap.material = material
+        miniMap.parent = this._collisionBox!
+        miniMap.layerMask = MINI_MAP_LAYER_MASK
+        this._miniMapMesh = miniMap
     }
 }

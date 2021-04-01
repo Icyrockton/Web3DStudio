@@ -16,6 +16,7 @@ import {StudioManager} from "./core/studio/StudioManager";
 import {fakeStudio} from "./core/studio/StudioApi";
 import usePlayerUiState from "./components/GUI/player/playerUiState";
 import useNavUiState from "./components/GUI/nav/navUiState";
+import useReceptionistUiState from "./components/GUI/receptionist/receptionistUiState";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -124,6 +125,11 @@ export class Web3DStudio implements IState {
         let mapScene = new Scene(this._engine)
         //网络获取学院地图
         useNavUiState.setNavShowing(false) //关闭导航UI
+        usePlayerUiState.setMiniMapShowing(false)
+        usePlayerUiState.setShowing(false)
+        usePlayerUiState.setDialogShowing(false)
+        useReceptionistUiState.setDescriptionShow(false)
+
         const floorUiState = useFloorUiState;
         floorUiState.setFloorUiShowing(false)
         floorUiState.setVisitStudioUiShowing(false)
@@ -142,6 +148,10 @@ export class Web3DStudio implements IState {
     async goToCollege(collegeUUid: number) {  //传递进来collegeUUid
         useNavUiState.setNavShowing(false) //关闭导航UI
         useNavUiState.currentCollegeId = collegeUUid //当前的ID
+        usePlayerUiState.setMiniMapShowing(false)
+        usePlayerUiState.setShowing(false)
+        usePlayerUiState.setDialogShowing(false)
+        useReceptionistUiState.setDescriptionShow(false)
         const prevScene = this._scene
         this.changeToLoadingScene() //切换到加载场景
 
@@ -192,6 +202,7 @@ export class Web3DStudio implements IState {
         useNavUiState.setNavShowing(true) //打开导航UI
         useNavUiState.setNavToMapShowing(true)
         useNavUiState.setNavToCollegeShowing(true)
+        usePlayerUiState.setMiniMapShowing(true)
         //this._scene.debugLayer.show()
     }
 

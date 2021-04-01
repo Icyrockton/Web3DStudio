@@ -65,7 +65,8 @@ export class PlayerManager {
         this._collisionBox = collisionBox
         let playerAssets = {
             collisionBox: collisionBox,
-            animationGroups: playerImport.animationGroups
+            animationGroups: playerImport.animationGroups,
+            avatarMiniMapURL : "img/miniMap/player.png"
         } as PlayerAssets
 
         let playerMesh = playerImport.meshes[0]; //Player的模型对象
@@ -112,9 +113,6 @@ export class PlayerManager {
     }
 
     setUpShadow(_shadowGenerator: ShadowGenerator) {
-        const meshes = this._collisionBox.getChildMeshes();
-        meshes.forEach(mesh=>{
-            _shadowGenerator.addShadowCaster(mesh)
-        })
+        this.player.setUpShadow(_shadowGenerator)
     }
 }

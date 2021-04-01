@@ -1,0 +1,3 @@
+
+
+export const MINI_MAP_LAYER_MASK  = 0x20000000

@@ -77,6 +77,10 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
                 </div>
             </div>
 
+
+            <div className={`${classes.miniMap} ${uiState.isMiniMapShowing ? "" : classes.none}`}>
+
+            </div>
         </>
     )
 

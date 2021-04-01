@@ -39,6 +39,11 @@ export class PlayerState {
         title: "", //对话框标题
         info: "" //显示的信息
     }
+    isMiniMapShowing: boolean = false;
+
+    public setMiniMapShowing(showing:boolean){
+        this.isMiniMapShowing = showing
+    }
 
     public setDialogShowing(showing: boolean) {
         this.isShowingDialog = showing

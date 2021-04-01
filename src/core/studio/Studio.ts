@@ -14,6 +14,7 @@ export interface Studio {
     playerAvatarURL:string //玩家头像位置
     description:string //模型的描述
     playerSpawn:string //玩家的出生点的transformNode名称
+    miniMap:string  //小地图的mesh名称
     collisionBox:string[] //碰撞盒子的Mesh名称
     groundName:string //地面Mesh名称
     groundLightMapUrl:string //lightmap 贴图地址
@@ -50,6 +51,7 @@ export interface StudioAI {
     rightTurnAnimationGroupName:string //走路动画名称
     modelURL:string //模型的地址
     avatarURL: string //AI的头像
+    miniMapAvatarURL:string //小地图的头像
     title: string //职务
     position: string //岗位
     info: string[] //显示的提示信息

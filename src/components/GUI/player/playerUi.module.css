@@ -95,3 +95,17 @@
 
     }
 }
+
+.miniMap{
+    position: absolute;
+    background: transparent;
+    width: 10vw;
+    height: 20vh;
+    top: 1vh;
+    left: 1vw;
+    border: 5px solid transparent;
+    border-image: linear-gradient(to bottom right, #FEAC5E 33%, #C779D0 66%, #f64f59 99%);
+    border-image-slice: 1;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
+
+}

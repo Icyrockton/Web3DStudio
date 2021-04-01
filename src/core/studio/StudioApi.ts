@@ -15,6 +15,7 @@ export const  fakeStudio:Studio = {
     directionalLightPosition: new Vector3(-10, 10, -10),
     bookShelfStartName: "BookShelf",
     practiceTableStartName: "PracticeTable",
+    miniMap :"miniMap",
     receptionistConfig: {
         receptionistModelURL: "model/receptionist.glb",
         receptionistSpawn: "receptionistSpawn",
@@ -43,6 +44,7 @@ export const  fakeStudio:Studio = {
             leftTurnAnimationGroupName: "LeftTurn",
             rightTurnAnimationGroupName: "RightTurn",
             avatarURL: "img/avatar/ai_1.png",
+            miniMapAvatarURL:"img/miniMap/ai_1.png",
             path: [
                 {
                     nodeName: "aiPath-1.001",
@@ -73,6 +75,7 @@ export const  fakeStudio:Studio = {
             leftTurnAnimationGroupName: "LeftTurn",
             rightTurnAnimationGroupName: "RightTurn",
             avatarURL: "img/avatar/ai_2.png",
+            miniMapAvatarURL:"img/miniMap/ai_2.png",
             path: [
                 {
                     nodeName: "aiPath-2.001",
@@ -101,6 +104,7 @@ export const  fakeStudio:Studio = {
             leftTurnAnimationGroupName: "LeftTurn",
             rightTurnAnimationGroupName: "RightTurn",
             avatarURL: "img/avatar/ai_3.png",
+            miniMapAvatarURL:"img/miniMap/ai_3.png",
             path: [
                 {
                     nodeName: "aiPath-3.001",
