@@ -1132,8 +1132,8 @@ export class VisitPlayerManager {
                 this._billBoard.infoBillBoard.position.set(2, 1, 1)
                 this._billBoard.playingBillBoard.position.set(2, 1, -1)
             } else if (this._visitStudioIndex == 5) {
-                this._billBoard.infoBillBoard.position.set(1, 1, 2)
-                this._billBoard.playingBillBoard.position.set(-1, 1, 2)
+                this._billBoard.infoBillBoard.position.set(-1, 1, 2)
+                this._billBoard.playingBillBoard.position.set(1, 1, 2)
             } else {
                 this._billBoard.infoBillBoard.position.set(-1, 1, 2)
                 this._billBoard.playingBillBoard.position.set(1, 1, 2)

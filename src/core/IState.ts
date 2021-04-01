@@ -8,4 +8,5 @@ export interface IState {
     goToStudio(studioUUid: number):void//进入工作室 传过来工作室的ID
     setBookShelfShow(showing:boolean) : void //打开书架
     setPracticeTableShow(showing:boolean) : void //打开练习台
+    focusCanvas():void //focuse
 }

@@ -1,5 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import usePlayerUiState from "../player/playerUiState";
+import useNavUiState from "../nav/navUiState";
 
 
 export enum SubTaskState {
@@ -242,6 +243,9 @@ export class TaskUiState {
 
     setShowing(showing: boolean) {
         this.isShowing = showing
+        if (!this.isShowing){
+            useNavUiState.navController?.focusCanvas() //聚焦canvas
+        }
     }
 
     //接受任务 将任务的状态改为 --> OnProgress

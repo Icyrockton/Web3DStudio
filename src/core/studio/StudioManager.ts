@@ -338,10 +338,15 @@ export class StudioManager {
 
             distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
                 this._currentArea = "BookShelf" //当前所在位置为 图书架
-                if (this._bookShelfAreaHint) {
+                if ( !this._playerManager.busy  && this._bookShelfAreaHint) {
                     playerUiState.setDialogShowing(true) //打开对话框
-                    if (!this._sound.bookShelf.isPlaying)
+                    this._playerManager.busy =true
+                    if (!this._sound.bookShelf.isPlaying) {
                         this._sound.bookShelf.play()//播放一次
+                        this._sound.bookShelf.onEndedObservable.add(()=>{
+                            this._playerManager.busy =false
+                        })
+                    }
                     playerUiState.setDialogInfo({
                         avatarURL: this._studio.playerAvatarURL,
                         title: "视频图书架",
@@ -382,11 +387,13 @@ export class StudioManager {
                             bookShelfUiState.playerManager = this._playerManager
                             this._web3DStudio.setBookShelfShow(true)
                             this._playerManager.busy = true //忙碌
+                            this.clearAIState()
                         } else if (this._currentArea == "PracticeTable") {
                             const practiceTableUiState = usePracticeTableUiState;
                             practiceTableUiState.playerManager = this._playerManager
                             this._web3DStudio.setPracticeTableShow(true)
                             this._playerManager.busy = true //忙碌
+                            this.clearAIState()
                         }
                 }
         }
@@ -450,10 +457,15 @@ export class StudioManager {
 
             distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
                 this._currentArea = "PracticeTable" //当前所在位置为 练习台
-                if (this._practiceTableAreaHint) {
+                if (!this._playerManager.busy &&  this._practiceTableAreaHint) {
+                    this._playerManager.busy =true
                     playerUiState.setDialogShowing(true) //打开对话框
-                    if (!this._sound.practiceTable.isPlaying)
+                    if (!this._sound.practiceTable.isPlaying) {
                         this._sound.practiceTable.play()//播放一次
+                        this._sound.practiceTable.onEndedObservable.add(()=>{
+                            this._playerManager.busy =false
+                        })
+                    }
                     playerUiState.setDialogInfo({
                         avatarURL: this._studio.playerAvatarURL,
                         title: "课后练习台",
@@ -515,5 +527,11 @@ export class StudioManager {
             this._AIs.push(ai)
         })
 
+    }
+
+    private clearAIState(){
+        this._AIs.forEach(ai=>{
+            ai.clearAIState()
+        })
     }
 }

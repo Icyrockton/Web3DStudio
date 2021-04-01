@@ -5,6 +5,7 @@ import usePlayerUiState from "../player/playerUiState";
 import {Web3DStudio} from "../../../web3DStudio";
 import {StudyType, SubTask} from "../task/taskUiState";
 import {PlayerManager} from "../../../core/player/playerManager";
+import useNavUiState from "../nav/navUiState";
 
 
 const fakeEBooks: EBookDetail [] = [
@@ -224,6 +225,7 @@ export class PracticeTableUiState {
         this.practiceTableShowing = showing
         if (!showing && this.playerManager) {
             this.playerManager.busy = false  //设置为非忙碌状态
+            useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
     }
 

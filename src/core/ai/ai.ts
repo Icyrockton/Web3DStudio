@@ -251,6 +251,7 @@ export class Ai {
                         playerManager.busy = false
                     }
                     console.log('状态变回', this._prevState)
+                    this.stopAllSound()
                     this._state = this._prevState
                     if (this._state == AIState.moving || this._state == AIState.wait) { //继续之前没走的路
                         let nextIndex = (this._currentIndex + 1) % this._path.length //需要走到的下一个点
@@ -304,5 +305,33 @@ export class Ai {
                 _shadowGenerator.addShadowCaster(mesh)
             })
         }
+    }
+
+    private stopAllSound() {
+        this._infoSound.forEach(sound=>{
+            sound.stop()
+        })
+    }
+
+    public clearAIState(){ //当玩家打开书架/练习台时 清除与AI的对话
+        if (this._encounterPlayer) {
+            if (this._playerManager) {
+                this._playerManager.currentAIName = ""
+            }
+            this.stopAllSound()
+            this._state = this._prevState
+            if (this._state == AIState.moving || this._state == AIState.wait) { //继续之前没走的路
+                let nextIndex = (this._currentIndex + 1) % this._path.length //需要走到的下一个点
+                const nextPath = this._path[nextIndex];
+                this._aiCrowd.agentGoto(this._aiIndex, nextPath.desPos)
+                this._state = AIState.moving
+                this.idleAnimation.stop()
+                this.walkAnimation.play(true)
+            }
+            aiUiState.setDialogShowing(false)
+
+        }
+        this._encounterPlayer = false
+        this._trigger = false
     }
 }

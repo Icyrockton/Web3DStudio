@@ -19,7 +19,7 @@ export const KeyBoardUi =observer<KeyBoardUiProps>((props)=>{
                 <img src={"/img/keyboardHint.png"} className={classes.keyboardImg}/>
                 <h3>1.控制人物的左右移动</h3>
                 <h3>2.使用书架/练习台</h3>
-                <h3>3.控制人物的左右移动</h3>
+                <h3>3.跑步</h3>
                 <div className={classes.button} onClick={()=>uiState.setKeyBoardHintShow(false)}>
                     我知道了
                 </div>
