@@ -3,7 +3,7 @@ import {IState} from "../IState";
 import {
     ActionManager,
     Animation,
-    Color3, Color4,
+    Color3, Color4, CubicEase, EasingFunction,
     Engine, ExecuteCodeAction,
     HighlightLayer,
     IAnimationKey, InstancedMesh,
@@ -25,7 +25,7 @@ export class CollegeFloor {
     private _maxYPos: number //在y轴方向的最高位置
     private _studioBox!: AbstractMesh[]
     private _unnecessaryList!: AbstractMesh[]
-    private _locNode:TransformNode[]= []
+    private _locNode: TransformNode[] = []
     static readonly HEIGHT = 8 //每层楼的高度
     static readonly STUDIO_BOX_NAME = "studio_box_"  //工作室盒子的名称 studio_box_1 ... studio_box_6
     private _startName: string //mesh的clone起始名称
@@ -93,10 +93,9 @@ export class CollegeFloor {
         for (let i = 0; i < this._floor.studios.length; i++) {
             this._studioBox[i].visibility = 0
             this._studioBox[i].isVisible = true
-            this._scene.beginDirectAnimation(this._studioBox[i],this.createVisibleAnim(this._studioBox[i]),0,CollegeFloor.frameRate,false)
+            this._scene.beginDirectAnimation(this._studioBox[i], this.createVisibleAnim(this._studioBox[i]), 0, CollegeFloor.frameRate, false)
         }
     }
-
 
 
     static readonly StudioBoxColor: string[] = ["#FFDBAC", "#F6DEE4", "#C1DDF9", "#EAE2D6", "#D1F8E9", "#C6EB93"]
@@ -108,7 +107,7 @@ export class CollegeFloor {
             let rect1 = new Rectangle();
             rect1.width = 0.2;
             rect1.height = "40px";
-            rect1.width ="230px";
+            rect1.width = "230px";
             rect1.cornerRadius = 20;
             rect1.color = "#c28300";
             rect1.thickness = 4;
@@ -288,37 +287,81 @@ export class CollegeFloor {
     static popAnimationTime = CollegeFloor.frameRate
 
 
-    setHighLight(highLightLayer: HighlightLayer) {  //设置高光
-        this._studioBox.forEach(mesh => {
+    setStudioBoxAction() {  //设置高光
+        this._studioBox.forEach((mesh, index) => {
             if (mesh instanceof Mesh) {
-                mesh.actionManager = new ActionManager(this._scene)
-                mesh.actionManager.registerAction(new ExecuteCodeAction(  //鼠标悬浮
-                    ActionManager.OnPointerOverTrigger, () => {
-                        highLightLayer.addMesh(mesh, Color3.FromHexString("#04D792")) //白光
-                    }
-                ))
-                mesh.actionManager.registerAction(new ExecuteCodeAction(  //鼠标悬浮
-                    ActionManager.OnPointerOutTrigger, () => {
-                        highLightLayer.removeMesh(mesh) //白光
-                    }
-                ))
+                if (mesh.actionManager == null) {
+                    mesh.actionManager = new ActionManager(this._scene)
+                    mesh.actionManager.registerAction(new ExecuteCodeAction(  //鼠标悬浮
+                        ActionManager.OnPointerOverTrigger, () => {
+                            //highLightLayer.addMesh(mesh, Color3.FromHexString("#04D792")) //白光
+                            this.studioHoverAnim(mesh, true)
+                        }
+                    ))
+                    mesh.actionManager.registerAction(new ExecuteCodeAction(  //鼠标悬浮
+                        ActionManager.OnPointerOutTrigger, () => {
+                            //highLightLayer.removeMesh(mesh) //白光
+                            this.studioHoverAnim(mesh, false)
+                        }
+                    ))
+                    mesh.actionManager.registerAction(new ExecuteCodeAction(
+                        ActionManager.OnPickDownTrigger, () => {
+                            //点击进入工作室
+                            this._web3DStudio.goToStudio(this._floor.studios[index].uuid)
+                        }
+                    ))
+                }
             }
         })
     }
 
+    clearStudioBoxAction(){
+        this._studioBox.forEach((mesh, index) => {
+            if (mesh instanceof Mesh) {
+                mesh.actionManager = null
+            }
+        })
+    }
+
+    private studioHoverAnim(studioBox: AbstractMesh, isHover: boolean){
+        this._scene.beginDirectAnimation(studioBox, this.createStudioBoxHoverAnim(studioBox, isHover), 0, CollegeFloor.frameRate  / 2, false)
+
+    }
+
+    private createStudioBoxHoverAnim(studioBox: AbstractMesh, isHover: boolean) {
+        const studioBoxanimation = new Animation(`studioBoxanimation`, "position.y", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const keyFrames: IAnimationKey[] = []
+
+        keyFrames.push({
+            frame: 0,
+            value: studioBox.position.y
+        })
+        keyFrames.push({
+            frame: CollegeFloor.frameRate / 2,
+            value: isHover ? 2 : 1
+        })
+
+        const cubicEase = new CubicEase();
+        cubicEase.setEasingMode(EasingFunction.EASINGMODE_EASEOUT)
+        studioBoxanimation.setEasingFunction(cubicEase)
+        studioBoxanimation.setKeys(keyFrames)
+        return [studioBoxanimation]
+    }
+
+
     static LEFT_DOOR_NAME = "studio_door_left_"
     static RIGHT_DOOR_NAME = "studio_door_right_"
 
-    public openDoor(studioIndex: number,cb?:()=>void) {  //工作室开门动画 studioIndex 为1~6
+    public openDoor(studioIndex: number, cb?: () => void) {  //工作室开门动画 studioIndex 为1~6
         //找到左边的门
         const leftDoorName = `${this._startName}.${CollegeFloor.LEFT_DOOR_NAME}${studioIndex}`
         //找到右边的门
         const rightDoorName = `${this._startName}.${CollegeFloor.RIGHT_DOOR_NAME}${studioIndex}`
         const meshes = this._floorTransformNode.getChildMeshes();
-        let leftDoor: Mesh | null |InstancedMesh = null
-        let rightDoor: Mesh | null | InstancedMesh= null
+        let leftDoor: Mesh | null | InstancedMesh = null
+        let rightDoor: Mesh | null | InstancedMesh = null
         meshes.forEach(mesh => {
-            if ((mesh instanceof Mesh) || (mesh instanceof  InstancedMesh)) {
+            if ((mesh instanceof Mesh) || (mesh instanceof InstancedMesh)) {
                 if (mesh.name == leftDoorName) { //找到左边的门
                     leftDoor = mesh
                 } else if (mesh.name == rightDoorName) { //找到右边的门
@@ -326,30 +369,27 @@ export class CollegeFloor {
                 }
             }
         })
-        console.log(leftDoor,rightDoor)
+        console.log(leftDoor, rightDoor)
         if (leftDoor == null || rightDoor == null)
             return
 
         //开启动画
-        if (studioIndex == 1 || studioIndex == 2 ) {
-            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor,-Math.PI /2 ), 0, CollegeFloor.frameRate, false,1,cb)
-            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor,Math.PI / 2), 0, CollegeFloor.frameRate, false)
-        }
-        else if(studioIndex == 3 || studioIndex == 4){
-            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor,Math.PI /2 ), 0, CollegeFloor.frameRate, false,1,cb)
-            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor,-Math.PI / 2), 0, CollegeFloor.frameRate, false)
-        }
-        else if(studioIndex == 5){
-            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor,Math.PI ), 0, CollegeFloor.frameRate, false,1,cb)
-            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor,0), 0, CollegeFloor.frameRate, false)
-        }
-        else {
-            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor,Math.PI ), 0, CollegeFloor.frameRate, false,1,cb)
-            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor,0), 0, CollegeFloor.frameRate, false)
+        if (studioIndex == 1 || studioIndex == 2) {
+            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor, -Math.PI / 2), 0, CollegeFloor.frameRate, false, 1, cb)
+            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor, Math.PI / 2), 0, CollegeFloor.frameRate, false)
+        } else if (studioIndex == 3 || studioIndex == 4) {
+            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor, Math.PI / 2), 0, CollegeFloor.frameRate, false, 1, cb)
+            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor, -Math.PI / 2), 0, CollegeFloor.frameRate, false)
+        } else if (studioIndex == 5) {
+            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor, Math.PI), 0, CollegeFloor.frameRate, false, 1, cb)
+            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor, 0), 0, CollegeFloor.frameRate, false)
+        } else {
+            this._scene.beginDirectAnimation(leftDoor, this.createDoorAnim(leftDoor, Math.PI), 0, CollegeFloor.frameRate, false, 1, cb)
+            this._scene.beginDirectAnimation(rightDoor, this.createDoorAnim(rightDoor, 0), 0, CollegeFloor.frameRate, false)
         }
     }
 
-    private createDoorAnim(door: Mesh,rotateY:number) {
+    private createDoorAnim(door: Mesh, rotateY: number) {
         if (door.rotationQuaternion != null) {
             const animation = new Animation(`DoorAnim-${this._floor.floorNumber}`, "rotationQuaternion", CollegeFloor.frameRate, Animation.ANIMATIONTYPE_QUATERNION, Animation.ANIMATIONLOOPMODE_CONSTANT);
             const keyFrames: IAnimationKey[] = []
@@ -368,6 +408,7 @@ export class CollegeFloor {
         }
         return []
     }
+
     public hide() {
         const childMeshes = this._floorTransformNode.getChildMeshes();
         childMeshes.forEach(mesh => {
@@ -454,13 +495,14 @@ export class CollegeFloor {
 
     private setUpLoc() {
         const childTransformNodes = this._floorTransformNode.getChildTransformNodes();
-        childTransformNodes.forEach(node=>{
-            if (node.name.startsWith(`${this._startName}.Loc_`)){
+        childTransformNodes.forEach(node => {
+            if (node.name.startsWith(`${this._startName}.Loc_`)) {
                 this._locNode.push(node)
             }
         })
     }
-    public get locTransformNode(){
+
+    public get locTransformNode() {
         return this._locNode
     }
 

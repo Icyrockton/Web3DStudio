@@ -238,6 +238,7 @@ export class CollegeManager implements Update {
         this.invisiblePlayer()
         this.hideVisitUi()
         this.floorTranslucent()
+        this.setUpStudioBoxAction()
         // this._light?.setEnabled(false)
         if (floorNum == -1) {  //目标是显示所有楼层
 
@@ -371,6 +372,12 @@ export class CollegeManager implements Update {
         }
     }
 
+    setUpStudioBoxAction() {
+        this._collegeFloorInstances.forEach(floor=>{
+            floor.setStudioBoxAction()
+        })
+    }
+
     private floorVisible(floorNum: number, onAnimationEnd?: () => void) {
         this._collegeFloorInstances[floorNum - 1].floorVisible(onAnimationEnd)
     }
@@ -381,7 +388,7 @@ export class CollegeManager implements Update {
         //设置盒子上方的UI
         this._ui = AdvancedDynamicTexture.CreateFullscreenUI("floorUi", true, this._scene)
         floor.showStudioName(this._ui)
-        floor.setHighLight(this._highLightLayer)  //设置highlight Layer
+        floor.setStudioBoxAction()  //设置highlight Layer
         floor.showUnnecessary() //显示不必要项
     }
 
@@ -559,6 +566,7 @@ export class CollegeManager implements Update {
             return
         const floor = this._collegeFloorInstances[this._currentFloorNum - 1];
         floor.loadTexture() //加载纹理
+        floor.clearStudioBoxAction()
         // this._light?.setEnabled(true)
         //传递地标数据到player
         this._visitPlayerManager.locTransformNode = floor.locTransformNode

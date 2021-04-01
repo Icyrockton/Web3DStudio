@@ -58,6 +58,7 @@ export class FloorUiState {
 
     goToStudio(){
         if (this.collegeManager){
+            this.setVisitStudioUiShowing(false)
             this.collegeManager.goToStudio()
         }
     }

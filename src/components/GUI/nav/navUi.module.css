@@ -1,11 +1,10 @@
 
 .navUiArea{
-    width: 100vw;
+    width: auto;
     height: 10vh;
     position: absolute;
-
     top: 0;
-    left: 0;
+    right: 0;
     display: flex;
 }
 

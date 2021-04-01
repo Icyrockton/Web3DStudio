@@ -729,7 +729,6 @@ export class VisitPlayerManager {
         if (this.checkCanVisitThisStudio(isLeft)) {
             useFloorUiState.setVisitStudioUiShowing(true)
             this.updateBillBoard() //更新billboard
-
         }
     }
 
