@@ -3,6 +3,7 @@ import {Vector3} from "@babylonjs/core";
 
 
 export const  fakeStudio:Studio = {
+    uuid:1,
     name: "java工作室",
     modelURL: "model/studio/java_studio.glb",
     playerModelURL: "model/player.glb",

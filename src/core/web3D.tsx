@@ -22,6 +22,8 @@ import {NavUi} from "../components/GUI/nav/navUi";
 import useNavUiState from "../components/GUI/nav/navUiState";
 import {LoginUi} from "../components/login/loginUi";
 import useLoginUiState from "../components/login/loginUiState";
+import {AchievementUi} from "../components/GUI/achievement/achievementUi";
+import useAchievementUiState from "../components/GUI/achievement/achievementUiState";
 
 
 export const Web3D =()=>{
@@ -40,6 +42,7 @@ export const Web3D =()=>{
     const floorUiState = useFloorUiState;
     const navUiState = useNavUiState;
     const loginUiState = useLoginUiState;
+    const achievementUiState = useAchievementUiState;
     return (
         <React.Fragment>
             <canvas id="renderCanvas" ref={canvas}/>
@@ -55,6 +58,7 @@ export const Web3D =()=>{
             <KeyBoardUi  uiState={playerUiState}/>
             <NavUi uiState={navUiState}/>
             <LoginUi uiState={loginUiState}/>
+            <AchievementUi uiState={achievementUiState}/>
         </React.Fragment>
     )
 }

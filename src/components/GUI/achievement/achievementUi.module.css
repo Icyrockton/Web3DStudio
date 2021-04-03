@@ -1,0 +1,95 @@
+.achievementButtonArea {
+    position: absolute;
+    bottom: 10vh;
+    left: 4vw;
+    width: 3vw;
+    height: 3vw;
+    margin-left: 1vw;
+    margin-top: 1vw;
+
+}
+
+.cameraMoveInButtonArea{
+    position: absolute;
+    bottom: 10vh;
+    left: 8vw;
+    width: 3vw;
+    height: 3vw;
+    margin-left: 1vw;
+    margin-top: 1vw;
+}
+
+.openButton {
+    width: 100%;
+    height: 100%;
+    box-shadow: 10px 5px 5px rgba(0, 0, 0, .2);
+
+}
+
+.achievementTopTab{
+    position: absolute;
+    left: 20vw;
+    top: 15vh;
+    width: 40vw;
+    height: 27vh;
+    background: red;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+
+}
+
+
+
+.topItem{
+    flex: 1;
+    background: white;
+    margin: 1vw;
+    border-radius: 1vw;
+}
+.topItem:nth-child(1){
+    --animation-index: 1;
+}
+.topItem:nth-child(2){
+    --animation-index: 2;
+}
+.topItem:nth-child(3){
+    --animation-index: 3;
+}
+.achievementBottomTab{
+    border-radius: 1vw;
+    position: absolute;
+    left: 20vw;
+    top: 45vh;
+    width: 40vw;
+    background: greenyellow;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 2vh;
+
+}
+
+.bottomItem{
+    flex-basis: 33%;
+    background: red;
+    height: 5vh;
+    margin-top: 2vh;
+    padding: 1vh;
+}
+
+.bottomItem:nth-child(-n + 3){
+    margin-top: 0;
+}
+.achievementTab{
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-100vw);
+    transition: transform 2s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+}
+.achievementTabShow{
+    transform: translateX(0);
+}

@@ -8,6 +8,7 @@ export interface RotateCamera {
 }
 
 export interface Studio {
+    uuid:number
     name:string //工作室名称
     modelURL:string //模型的URL位置
     playerModelURL:string //玩家模型的URL位置
