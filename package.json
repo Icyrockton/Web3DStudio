@@ -12,6 +12,7 @@
     "@ant-design/icons": "^4.5.0",
     "@react-pdf-viewer/core": "^2.4.1",
     "antd": "^4.12.3",
+    "axios": "^0.21.1",
     "markdown-it": "^12.0.4",
     "mobx": "^6.1.7",
     "mobx-react-lite": "^3.2.0",

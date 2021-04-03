@@ -20,6 +20,8 @@ import useFloorUiState from "../components/GUI/floor/floorUiState";
 import {KeyBoardUi} from "../components/GUI/player/keyBoardUi";
 import {NavUi} from "../components/GUI/nav/navUi";
 import useNavUiState from "../components/GUI/nav/navUiState";
+import {LoginUi} from "../components/login/loginUi";
+import useLoginUiState from "../components/login/loginUiState";
 
 
 export const Web3D =()=>{
@@ -37,6 +39,7 @@ export const Web3D =()=>{
     const aiUiState = useAiUiState;
     const floorUiState = useFloorUiState;
     const navUiState = useNavUiState;
+    const loginUiState = useLoginUiState;
     return (
         <React.Fragment>
             <canvas id="renderCanvas" ref={canvas}/>
@@ -51,6 +54,7 @@ export const Web3D =()=>{
             <FloorUi uiState={floorUiState}/>
             <KeyBoardUi  uiState={playerUiState}/>
             <NavUi uiState={navUiState}/>
+            <LoginUi uiState={loginUiState}/>
         </React.Fragment>
     )
 }
