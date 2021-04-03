@@ -69,11 +69,11 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
             <SubTaskUi uiState={subTaskUiState}/>
 
             {/*自言自语对话框*/}
-            <div className={`${classes.bg} ${uiState.isShowingDialog ? "" : classes.none}`}>
+            <div className={`${classes.bg} ${uiState.isShowingDialog ? classes.bgShow : ""}`}>
                 <div className={`${classes.content} ${classes.unSkew}`}>
                     <img src={uiState.dialog.avatarURL} alt="" className={classes.imageLeft}/>
                     <br/><br/>
-                    <h1 style={{textAlign: "center"}}>{uiState.dialog.info}</h1>
+                    <h1 className={classes.infoContent}>{uiState.dialog.info}</h1>
                 </div>
             </div>
 

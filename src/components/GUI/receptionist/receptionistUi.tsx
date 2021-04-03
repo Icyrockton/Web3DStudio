@@ -12,7 +12,7 @@ const ReceptionistUiComponent=(props:ReceptionUiProps) => {
     const uiState = props.receptionistUiState;
     return (
         <>
-            <div className={`${classes.bg} ${uiState.isShowingDescription ? "" : classes.none}`}>
+            <div className={`${classes.bg} ${uiState.isShowingDescription ? classes.bgShow : ""}`}>
                 <div className={`${classes.content} ${classes.unSkew}`}>
                     <img src={uiState.description.avatarURL} alt="" className={classes.image}/>
                     <h2 className={classes.right}>职务：{uiState.description.position} 岗位：{uiState.description.title}</h2>

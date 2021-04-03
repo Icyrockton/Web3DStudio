@@ -59,18 +59,24 @@
 .bg {
     width: 45%;
     height: 10%;
-    transform: skew(30deg) translate(-50%, -50%);
+    transform:  skew(30deg) translateX(-50%) ;
     background: white;
     position: absolute;
     left: 50%;
-    bottom: -40%;
+    bottom: -40vh;
     color: white;
-    animation-name: slideFromBottom;
-    animation-duration: 3000ms;
-    animation-timing-function: ease-out;
+    transition: bottom .5s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
     box-shadow: 20px 20px rgba(0, 0, 0, .15);
 }
+.infoContent {
+    text-align: center;
+    font-size: 1.8em;
+}
 
+.bgShow {
+    bottom: 5vh;
+}
 .unSkew {
     transform: skew(-30deg);
 }

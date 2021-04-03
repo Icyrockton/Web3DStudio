@@ -17,6 +17,7 @@ import {fakeStudio} from "./core/studio/StudioApi";
 import usePlayerUiState from "./components/GUI/player/playerUiState";
 import useNavUiState from "./components/GUI/nav/navUiState";
 import useReceptionistUiState from "./components/GUI/receptionist/receptionistUiState";
+import useAiUiState from "./components/GUI/ai/aiUiState";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -104,7 +105,7 @@ export class Web3DStudio implements IState {
 
     async setLoadingAnimation() { //设置加载动画
 
-        await this.goToCollegeMap() //切换到地图场景
+        //await this.goToCollegeMap() //切换到地图场景
 
 
         //暂时直接
@@ -113,7 +114,7 @@ export class Web3DStudio implements IState {
         //暂时直接
 
 
-       //await this.goToStudio(1)
+       await this.goToStudio(1)
     }
 
     focusCanvas(): void {
@@ -129,6 +130,7 @@ export class Web3DStudio implements IState {
         usePlayerUiState.setShowing(false)
         usePlayerUiState.setDialogShowing(false)
         useReceptionistUiState.setDescriptionShow(false)
+        useAiUiState.setDialogShowing(false)
 
         const floorUiState = useFloorUiState;
         floorUiState.setFloorUiShowing(false)
@@ -152,6 +154,7 @@ export class Web3DStudio implements IState {
         usePlayerUiState.setShowing(false)
         usePlayerUiState.setDialogShowing(false)
         useReceptionistUiState.setDescriptionShow(false)
+        useAiUiState.setDialogShowing(false)
         const prevScene = this._scene
         this.changeToLoadingScene() //切换到加载场景
 

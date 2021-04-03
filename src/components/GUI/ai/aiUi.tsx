@@ -11,7 +11,7 @@ type AiUiProps = {
 const AiUi = observer<AiUiProps>((props: AiUiProps) => {
     const uiState = props.uiState;
     return (
-        <div className={`${classes.bg} ${uiState.isShowingDialog ? "" : classes.none}`}>
+        <div className={`${classes.bg} ${uiState.isShowingDialog ? classes.bgShow :""}`}>
             <div className={`${classes.content} ${classes.unSkew}`}>
                 <img src={uiState.dialog.avatarURL} alt="" className={classes.image}/>
                 <h2 className={classes.right}>职务：{uiState.dialog.position} 岗位：{uiState.dialog.title}</h2>
