@@ -26,6 +26,8 @@ export class AiUiState {
         if (!showing){
             this.isShowingDialog = showing
             this.count --
+            if (this.count < 0)
+                this.count = 0
         }
     }
 }

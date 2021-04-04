@@ -112,7 +112,7 @@ export class StudioManager {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);
         hemisphericLight.intensity = 0.5
         this._directionalLight = new DirectionalLight("directionalLight", new Vector3(1, -2, 1), this._scene)
-        this._directionalLight.position = this._studio.directionalLightPosition
+        this._directionalLight.position = new Vector3(this._studio.directionalLightPosition[0],this._studio.directionalLightPosition[1],this._studio.directionalLightPosition[2])
         this._directionalLight.intensity = 0.15
         this._directionalLight.lightmapMode = Light.LIGHTMAP_SHADOWSONLY
     }

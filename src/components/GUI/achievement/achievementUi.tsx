@@ -31,7 +31,7 @@ export const AchievementUi = observer<AchievementUiProps>(props => {
         )))
     }
     return (<>
-        <div className={`${classes.achievementButtonArea}  `}>
+        <div className={`${classes.achievementButtonArea} ${uiState.achievementOpenUiShowing ? "":classes.none}  `}>
             <Tooltip title={"打开成就面板"}>
                 <Button icon={<Icon component={AchievementSVG} />} shape={"circle"}
                         onClick={()=>uiState.achievementCamera()}
@@ -39,8 +39,8 @@ export const AchievementUi = observer<AchievementUiProps>(props => {
             </Tooltip>
         </div>
 
-        <div className={`${classes.cameraMoveInButtonArea}  `}>
-            <Tooltip title={"打开成就面板"}>
+        <div className={`${classes.cameraMoveInButtonArea} ${uiState.achievementOpenUiShowing ? "":classes.none}  `}>
+            <Tooltip title={"拉远/近镜头"}>
                 <Button icon={<Icon component={CameraMoveInSVG} />} shape={"circle"}
                         onClick={()=>uiState.cameraMoveInOrOut()}
                         className={classes.openButton}/>

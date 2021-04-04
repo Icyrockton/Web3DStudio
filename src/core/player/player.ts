@@ -169,7 +169,6 @@ export class Player extends TransformNode {
         //更新人物模型的Mesh移动
         this.mesh.moveWithCollisions(this._moveDirection)
         this._scene.audioListenerPositionProvider = ()=>{
-            console.log(this.mesh.position)
             return this.mesh.position
         }
     }

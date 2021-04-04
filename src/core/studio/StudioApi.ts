@@ -13,7 +13,7 @@ export const  fakeStudio:Studio = {
     groundName: "ground",
     groundLightMapUrl:"model/studio/ground_light_map.png",
     playerAvatarURL: "img/avatar/playerAvatar.png",
-    directionalLightPosition: new Vector3(-10, 10, -10),
+    directionalLightPosition: [-10,10,-10],
     bookShelfStartName: "BookShelf",
     practiceTableStartName: "PracticeTable",
     miniMap :"miniMap",
@@ -24,7 +24,7 @@ export const  fakeStudio:Studio = {
         distanceTrigger: 2,
         greetingSoundURL: "sound/javaGreeting.mp3",
         introductionSoundURL: "sound/javaIntroduction.mp3"
-    } as ReceptionistConfig,
+    } ,
     rotateCamera: [
         {mesh: "cameraRotate_1", rotate: 0},
         {mesh: "cameraRotate_2", rotate: -Math.PI / 2},

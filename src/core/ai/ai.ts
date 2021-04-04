@@ -76,6 +76,7 @@ export class Ai {
         this._aiTransformNode = new TransformNode(`AI-${this._aiInfo.name}`, this._scene)
         this._aiIndex = crowd.addAgent(startPos, aiParameter, this._aiTransformNode) //AI的索引号
         this.setUpSound()
+
         SceneLoader.ImportMesh("", this._aiInfo.modelURL, undefined, this._scene, this.modelLoaded)
     }
 
@@ -127,7 +128,6 @@ export class Ai {
         this.rightTurnAnimation.stop()
         this.idleAnimation.play()
         this.setUpPath()
-
     }
 
     private _currentIndex = 0 //当前所在的点
@@ -256,7 +256,6 @@ export class Ai {
                     if (playerManager.currentAIName = this._aiInfo.name){
                         playerManager.busy = false
                     }
-                    console.log('状态变回', this._prevState)
                     //this.stopAllSound()
                     this._state = this._prevState
                     if (this._state == AIState.moving || this._state == AIState.wait) { //继续之前没走的路
@@ -278,7 +277,6 @@ export class Ai {
     }
 
     private randomDialog() {  //随机生成对话
-        console.log('触发')
         const index = Math.floor(Math.random() * this._aiInfo.info.length)
         let dialogInfo = {
             avatarURL: this._aiInfo.avatarURL,
@@ -298,7 +296,9 @@ export class Ai {
     private setUpSound() { //加载AI声音
         this._aiInfo.infoSoundURL.forEach((soundURL, index) => {
             const sound = new Sound(`${this._aiInfo.name}-sound-${index}`, soundURL, this._scene, () => {
-            }, {loop: false, autoplay: false,spatialSound:true,maxDistance:4,
+            }, {loop: false, autoplay: false,
+                spatialSound:true,
+                maxDistance:4,
                 distanceModel: "exponential",
                 rolloffFactor: 2
             });

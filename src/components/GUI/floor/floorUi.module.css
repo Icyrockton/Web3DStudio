@@ -35,7 +35,7 @@
     position: fixed;
     bottom: 0;
     left: 50%;
-    width: 20vw;
+    width: 25vw;
     height: 15vh;
     color: #3498DB;
     text-align: center;
@@ -171,15 +171,15 @@
     position: fixed;
     bottom: 0;
     left: 50%;
-    width: 15vw;
-    height: 8vh;
+    width: 20vw;
+    height: 10vh;
     color: #3498DB;
     text-align: center;
     vertical-align: middle;
-    line-height: 8vh;
+    line-height: 10vh;
     font-size: xx-large;
     transform: translateX(-50%) translateY(100%);
-    border-radius: 1.5vw;
+    border-radius: 2vw;
 
     background: linear-gradient(15deg, white 48%, #1FA2FF 66%, #12D8FA 82%, #A6FFCB);
     background-size: 500% 100%;
@@ -205,11 +205,11 @@
 .studioInfoUiArea {
     position: absolute;
     left: 0;
-    bottom: 5vh;
+    bottom: 10vh;
     background: white;
     border-radius: 1vw;
     width: 30vw;
-    height: 35vh;
+
     transition: transform .5s var(--ease-out-swift);
     transform: translateX(-100%);
     --ease-out-swift: cubic-bezier(.55, 0, .1, 1);

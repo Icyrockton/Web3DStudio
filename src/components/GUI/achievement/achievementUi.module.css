@@ -19,6 +19,10 @@
     margin-top: 1vw;
 }
 
+.none{
+    display: none;
+}
+
 .openButton {
     width: 100%;
     height: 100%;

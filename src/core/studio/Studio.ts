@@ -21,7 +21,7 @@ export interface Studio {
     groundLightMapUrl:string //lightmap 贴图地址
     bookShelfStartName:string //所有书架的统一起始的Mesh名称
     practiceTableStartName:string //练习台的统一起始的Mesh名称
-    directionalLightPosition:Vector3 //平行光的位置
+    directionalLightPosition:number[] //平行光的位置
     rotateCamera:RotateCamera[] //相机的自动旋转
     receptionistConfig:ReceptionistConfig //虚拟人员配置文件
     studioAIs:StudioAI[]
