@@ -76,6 +76,7 @@ export class PlayerManager {
         let playerController = new InputController(this._scene);
         let player = new Player(playerAssets, this._scene, playerController);
         this.player = player
+
     }
 
 

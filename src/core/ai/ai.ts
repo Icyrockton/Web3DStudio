@@ -242,7 +242,7 @@ export class Ai {
             const distance = playerManager.playerPosition.subtract(this._aiTransformNode.position).length();
             if (distance < 1.5) {
                 if (!this._trigger) {
-                    if (!playerManager.busy) {  //如果玩家不忙碌
+                    if (!playerManager.busy && !this.checkIfSoundPlaying()) {  //如果玩家不忙碌
                         playerManager.currentAIName = this._aiInfo.name
                         playerManager.busy = true
                         this.randomDialog()
@@ -257,7 +257,7 @@ export class Ai {
                         playerManager.busy = false
                     }
                     console.log('状态变回', this._prevState)
-                    this.stopAllSound()
+                    //this.stopAllSound()
                     this._state = this._prevState
                     if (this._state == AIState.moving || this._state == AIState.wait) { //继续之前没走的路
                         let nextIndex = (this._currentIndex + 1) % this._path.length //需要走到的下一个点
@@ -297,11 +297,24 @@ export class Ai {
 
     private setUpSound() { //加载AI声音
         this._aiInfo.infoSoundURL.forEach((soundURL, index) => {
+            const sound = new Sound(`${this._aiInfo.name}-sound-${index}`, soundURL, this._scene, () => {
+            }, {loop: false, autoplay: false,spatialSound:true,maxDistance:4,
+                distanceModel: "exponential",
+                rolloffFactor: 2
+            });
             this._infoSound.push(
-                new Sound(`${this._aiInfo.name}-sound-${index}`, soundURL, this._scene, () => {
-                }, {loop: false, autoplay: false})
+                sound
             )
+            sound.attachToMesh(this._aiTransformNode)
         })
+    }
+
+    private checkIfSoundPlaying(){
+        for (let i = 0; i < this._infoSound.length; i++) {
+            if (this._infoSound[i].isPlaying)
+                return true
+        }
+        return  false
     }
 
     setUpShadow(_shadowGenerator: ShadowGenerator ) {

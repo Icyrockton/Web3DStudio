@@ -4,7 +4,7 @@ import {Player} from "../../../core/player/player";
 
 export class AchievementUiState {
 
-    achievementUiShowing:boolean = true //成就栏
+    achievementUiShowing:boolean = false //成就栏
     achievementOpenUiShowing:boolean =true //成就栏打开按钮
     player:Player | null = null
 

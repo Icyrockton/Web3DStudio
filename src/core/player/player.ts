@@ -168,6 +168,10 @@ export class Player extends TransformNode {
         this._updatePlayerAnimation()//更新动画
         //更新人物模型的Mesh移动
         this.mesh.moveWithCollisions(this._moveDirection)
+        this._scene.audioListenerPositionProvider = ()=>{
+            console.log(this.mesh.position)
+            return this.mesh.position
+        }
     }
 
     private _rayCastToGround(offsetX: number, offsetZ: number, rayCastLength: number): Vector3 { //检查是否与地面碰撞  空中 or 地上
