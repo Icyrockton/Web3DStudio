@@ -111,7 +111,8 @@ export class StudioManager {
     private setUpLight() {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);
         hemisphericLight.intensity = 0.5
-        this._directionalLight = new DirectionalLight("directionalLight", new Vector3(1, -2, 1), this._scene)
+        const direction = new Vector3(this._studio.directionalLightDirection[0],this._studio.directionalLightDirection[1],this._studio.directionalLightDirection[2]);
+        this._directionalLight = new DirectionalLight("directionalLight", direction , this._scene)
         this._directionalLight.position = new Vector3(this._studio.directionalLightPosition[0],this._studio.directionalLightPosition[1],this._studio.directionalLightPosition[2])
         this._directionalLight.intensity = 0.15
         this._directionalLight.lightmapMode = Light.LIGHTMAP_SHADOWSONLY
@@ -180,7 +181,7 @@ export class StudioManager {
 
     private async setUpPlayer() { //设置玩家
         this._playerManager = new PlayerManager(this._scene, this._studio.playerModelURL);
-        await this._playerManager.loadPlayer()
+        await this._playerManager.loadPlayer(this._studio.playerRotateYAxis)
         if (this._shadowGenerator) {
             this._playerManager.setUpShadow(this._shadowGenerator)
             this._AIs.forEach(ai => {
@@ -225,6 +226,15 @@ export class StudioManager {
             ground.receiveShadows = true //地面接受阴影
         }
 
+        //其它的mesh设置receiveShadows
+        this._studio.receiveShadowName.forEach(name=>{
+
+            const mesh = this._scene.getMeshByName(name);
+            if (mesh){
+                mesh.receiveShadows = true
+            }
+
+        })
     }
 
     private setUpRotateCamera() {
@@ -429,7 +439,7 @@ export class StudioManager {
             const sourceColor = Color3.FromHexString("#1FA2FF")
             const targetColor = Color3.FromHexString("#A6FFCB")
             mesh.outlineColor = sourceColor
-            mesh.outlineWidth = 3
+            mesh.outlineWidth = 1
             let up = true
             let down = false
             //边框动画
@@ -440,7 +450,7 @@ export class StudioManager {
                     if (up) { //向target进行过渡
                         mesh.outlineWidth += 0.05
                         mesh.outlineColor = Color3.Lerp(mesh.outlineColor, targetColor, 0.02)
-                        if (mesh.outlineWidth > 5) {
+                        if (mesh.outlineWidth > 3) {
                             up = false
                             down = true
                         }
@@ -449,7 +459,7 @@ export class StudioManager {
                         mesh.outlineColor = Color3.Lerp(mesh.outlineColor, sourceColor, 0.02)
 
                         mesh.outlineWidth -= 0.05
-                        if (mesh.outlineWidth < 3) {
+                        if (mesh.outlineWidth < 1) {
                             up = true
                             down = false
                         }
@@ -463,42 +473,45 @@ export class StudioManager {
             //距离按键。。进入
             const playerUiState = usePlayerUiState;
 
-            const distanceHelper = new DistanceHelper(this._scene, mesh, this._playerManager);
+            if (mesh.name == this._studio.practiceTableStartName) {
+                const distanceHelper = new DistanceHelper(this._scene, mesh, this._playerManager);
 
-            distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
-                this._currentArea = "PracticeTable" //当前所在位置为 练习台
-                if (!this._playerManager.busy &&  this._practiceTableAreaHint) {
-                    this._playerManager.busy =true
-                    playerUiState.setDialogShowing(true) //打开对话框
-                    if (!this._sound.practiceTable.isPlaying) {
-                        this._sound.practiceTable.play()//播放一次
-                        this._sound.practiceTable.onEndedObservable.add(()=>{
-                            this._playerManager.busy =false
+                distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
+
+                    this._currentArea = "PracticeTable" //当前所在位置为 练习台
+                    if (!this._playerManager.busy && this._practiceTableAreaHint) {
+                        this._playerManager.busy = true
+                        playerUiState.setDialogShowing(true) //打开对话框
+                        if (!this._sound.practiceTable.isPlaying) {
+                            this._sound.practiceTable.play()//播放一次
+                            this._sound.practiceTable.onEndedObservable.add(() => {
+                                this._playerManager.busy = false
+                            })
+                        }
+                        playerUiState.setDialogInfo({
+                            avatarURL: this._studio.playerAvatarURL,
+                            title: "课后练习台",
+                            info: "这里是Java工作室的课后练习台,按E键可以打开练习台"
                         })
+                        this._practiceTableAreaHint = false
                     }
-                    playerUiState.setDialogInfo({
-                        avatarURL: this._studio.playerAvatarURL,
-                        title: "课后练习台",
-                        info: "这里是Java工作室的课后练习台,按E键可以打开练习台"
-                    })
-                    this._practiceTableAreaHint = false
-                }
 
-                //注册键盘的监听器
-                if (!this.keyBoardObserver) {
-                    this.keyBoardObserver = this._scene.onKeyboardObservable.add(this.keyboardEventHandler)
-                }
+                    //注册键盘的监听器
+                    if (!this.keyBoardObserver) {
+                        this.keyBoardObserver = this._scene.onKeyboardObservable.add(this.keyboardEventHandler)
+                    }
 
-            })
+                })
 
-            distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
-                this._currentArea = null //设置位置为null
-                playerUiState.setDialogShowing(false) //关闭对话框
-                if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
-                    this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
-                    this.keyBoardObserver = null
-                }
-            })
+                distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
+                    this._currentArea = null //设置位置为null
+                    playerUiState.setDialogShowing(false) //关闭对话框
+                    if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
+                        this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
+                        this.keyBoardObserver = null
+                    }
+                })
+            }
         })
 
     }

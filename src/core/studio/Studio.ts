@@ -13,15 +13,18 @@ export interface Studio {
     modelURL:string //模型的URL位置
     playerModelURL:string //玩家模型的URL位置
     playerAvatarURL:string //玩家头像位置
+    playerRotateYAxis:number //玩家绕Y轴的位置 在初始位置时
     description:string //模型的描述
     playerSpawn:string //玩家的出生点的transformNode名称
     miniMap:string  //小地图的mesh名称
     collisionBox:string[] //碰撞盒子的Mesh名称
     groundName:string //地面Mesh名称
+    receiveShadowName:string [] //需要接受阴影的Mesh名称
     groundLightMapUrl:string //lightmap 贴图地址
     bookShelfStartName:string //所有书架的统一起始的Mesh名称
     practiceTableStartName:string //练习台的统一起始的Mesh名称
     directionalLightPosition:number[] //平行光的位置
+    directionalLightDirection:number[] //平行光的方向
     rotateCamera:RotateCamera[] //相机的自动旋转
     receptionistConfig:ReceptionistConfig //虚拟人员配置文件
     studioAIs:StudioAI[]

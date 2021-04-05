@@ -39,7 +39,7 @@ export class PlayerManager {
         this._playerModelURL = playerModelURL;
     }
 
-    async loadPlayer() {
+    async loadPlayer(playerRotateYAxis: number) {
 
         let playerImport = await SceneLoader.ImportMeshAsync("", this._playerModelURL, undefined, this._scene)
         playerImport.meshes.forEach(mesh => {
@@ -61,7 +61,7 @@ export class PlayerManager {
         //现在玩家的原点位于(0,0,0)的位置 原始的碰撞椭球体的中心与玩家的原点重合 我们需要将碰撞椭球体沿y轴向上移动 移动到玩家的中心
         collisionBox.ellipsoidOffset = new Vector3(0, PlayerManager.PlayerCollisionBoxHeight / 2, 0)
 
-        collisionBox.rotationQuaternion = new Quaternion(0, 0, 0, 0)
+        collisionBox.rotationQuaternion = Quaternion.FromEulerAngles(0,playerRotateYAxis,0)
         this._collisionBox = collisionBox
         let playerAssets = {
             collisionBox: collisionBox,

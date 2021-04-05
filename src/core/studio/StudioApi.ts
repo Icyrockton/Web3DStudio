@@ -2,18 +2,21 @@ import {ReceptionistConfig, Studio} from "./Studio";
 import {Vector3} from "@babylonjs/core";
 
 
-export const  fakeStudio:Studio = {
+export const  fakeStudio_Java:Studio = {
     uuid:1,
     name: "java工作室",
     modelURL: "model/studio/java_studio.glb",
     playerModelURL: "model/player.glb",
     description: "java工作室 一个学习高并发的工作室",
     playerSpawn: "playerSpawn",
+    playerRotateYAxis:0,
     collisionBox: ["collision", "ground"],
     groundName: "ground",
-    groundLightMapUrl:"model/studio/ground_light_map.png",
+    receiveShadowName:["ground"],
+    groundLightMapUrl:"model/studio/java_studio_lightMap.png",
     playerAvatarURL: "img/avatar/playerAvatar.png",
     directionalLightPosition: [-10,10,-10],
+    directionalLightDirection:[1,-2,1],
     bookShelfStartName: "BookShelf",
     practiceTableStartName: "PracticeTable",
     miniMap :"miniMap",
@@ -124,4 +127,41 @@ export const  fakeStudio:Studio = {
         },
 
     ]
+}
+
+export const fakeStudio_AI : Studio = {
+    uuid:2,
+    name:"AI",
+    modelURL:"model/studio/ai_studio.glb",
+    playerModelURL: "model/player.glb",
+    description: "java工作室 一个学习高并发的工作室",
+    playerSpawn: "playerSpawn",
+    playerRotateYAxis: Math.PI / 2,
+    collisionBox: ["collision", "ground"],
+    groundName: "ground",
+    receiveShadowName:["ground","rug"],
+    groundLightMapUrl:"model/studio/ai_studio_lightMap.png",
+    playerAvatarURL: "img/avatar/playerAvatar.png",
+    directionalLightPosition: [-10,10,-10],
+    directionalLightDirection:[-1,-2,1],
+    bookShelfStartName: "BookShelf",
+    practiceTableStartName: "PracticeTable",
+    miniMap :"miniMap",
+    receptionistConfig: {
+        receptionistModelURL: "model/receptionist.glb",
+        receptionistSpawn: "receptionistSpawn",
+        receptionistRotateYAxis: Math.PI / 2,
+        distanceTrigger: 2.5,
+        greetingSoundURL: "sound/javaGreeting.mp3",
+        introductionSoundURL: "sound/javaIntroduction.mp3"
+    },
+    rotateCamera: [
+        {mesh: "cameraRotate_1", rotate: -Math.PI / 2},
+        {mesh: "cameraRotate_2", rotate: 0},
+        {mesh: "cameraRotate_3", rotate: Math.PI / 2},
+        {mesh: "cameraRotate_4", rotate: Math.PI  +  Math.PI / 4},
+        {mesh: "cameraRotate_5", rotate: Math.PI - Math.PI / 4},
+        {mesh: "cameraRotate_6", rotate: Math.PI},
+    ],
+    studioAIs: []
 }

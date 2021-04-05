@@ -13,7 +13,7 @@ import {fakeCollegeFloors} from "./core/college/collegeFloorApi";
 import useFloorUiState from "./components/GUI/floor/floorUiState";
 import {fakeCollegeMap} from "./core/collegeMap/collegeMapApi";
 import {StudioManager} from "./core/studio/StudioManager";
-import {fakeStudio} from "./core/studio/StudioApi";
+import {fakeStudio_AI, fakeStudio_Java} from "./core/studio/StudioApi";
 import usePlayerUiState from "./components/GUI/player/playerUiState";
 import useNavUiState from "./components/GUI/nav/navUiState";
 import useReceptionistUiState from "./components/GUI/receptionist/receptionistUiState";
@@ -107,7 +107,7 @@ export class Web3DStudio implements IState {
 
     async setLoadingAnimation() { //设置加载动画
 
-        await this.goToCollegeMap() //切换到地图场景
+        //await this.goToCollegeMap() //切换到地图场景
 
 
         //暂时直接
@@ -116,7 +116,7 @@ export class Web3DStudio implements IState {
         //暂时直接
 
 
-        //await this.goToStudio(1)
+        await this.goToStudio(1)
     }
 
     focusCanvas(): void {
@@ -211,9 +211,10 @@ export class Web3DStudio implements IState {
 
         let studioScene = new Scene(this._engine)
         const web3dApi = useWeb3DApi;
-        const response = await web3dApi.getStudio(studioUUid);
-        const studioData = response.data;
-        let manager = new StudioManager(studioScene, studioData, this)
+        //const response = await web3dApi.getStudio(studioUUid);
+        //const studioData = response.data;
+        // let manager = new StudioManager(studioScene, studioData, this)
+        let manager = new StudioManager(studioScene, fakeStudio_AI, this)
         await manager.load()
 
         const playerUiState = usePlayerUiState;
