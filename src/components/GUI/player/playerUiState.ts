@@ -33,6 +33,11 @@ export class PlayerState {
     }  //当前正在完成的任务
     currentSubTaskIndex: number = -1
     isShowingDialog: boolean = false //显示对话框？
+    isHideSideBar : boolean =false //隐藏右边的楼梯 & 任务栏
+
+    setHideSideBar(hide:boolean){
+        this.isHideSideBar = hide
+    }
 
     dialog: PlayerDialog = {
         avatarURL: "", //玩家的头像

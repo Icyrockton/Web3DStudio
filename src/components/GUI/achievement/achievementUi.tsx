@@ -1,6 +1,6 @@
-import {AchievementUiState} from "./achievementUiState";
+import {AchievementItem, AchievementUiState} from "./achievementUiState";
 import {observer} from "mobx-react-lite";
-import React from "react";
+import React, {useEffect} from "react";
 import classes from './achievementUi.module.css'
 import {Button, Tooltip} from "antd";
 import Icon from "@ant-design/icons";
@@ -13,46 +13,77 @@ type AchievementUiProps = {
 export const AchievementUi = observer<AchievementUiProps>(props => {
     const uiState = props.uiState;
     //${uiState.navToMapShowing ? "" : classes.none}
-    const topContent = ()=>{
-        const data=[1,2,3]
-       return  data.map( (value) =>
-           <div className={classes.topItem}>
 
-           </div>
+    const topContent = () => {
+        const imageData = ["img/svgIcon/learning.svg", "img/svgIcon/concentration.svg", "img/svgIcon/creativity.svg"]
+        const label = ["学习力", "专注力", "创造力"]
+        return imageData.map((value, index) =>
+            <div className={classes.topItem}>
+                <div className={classes.roundImage}>
+                    <img src={value} className={classes.svgIcon}/>
+                </div>
+                <h3 className={classes.topItemLabel}>{label[index]}</h3>
+            </div>
         )
     }
 
-    const bottomContent = ()=>{
-        const  data = [1,2,3,4,5,6,7,8,9]
-        return data.map((value => (
+    const createItem= (item:AchievementItem)=>{
+        return (
             <div className={classes.bottomItem}>
-
+                <div className={`${classes.bottomItemIcon} ${item.finished? classes.bottomItemIconFinished :""}`}>
+                    <img src={item.iconURL}/>
+                </div>
+                <div className={`${classes.bottomItemText} ${item.finished? classes.bottomItemTextFinished :""}`}>
+                    <h3 className={`${classes.bottomItemTitle} ${item.finished? classes.bottomItemTitleFinished :""}`}>{item.title}</h3>
+                    <p>{item.description}</p>
+                </div>
             </div>
-        )))
+        )
+    }
+
+    const bottomContent = () => {
+        const data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        const list = uiState.achievementList;
+        if (list) {
+            let minRow = Math.min(list.creativity.length, list.learning.length, list.concentration.length)
+            minRow = Math.max(3,minRow )//最多三行
+            let content = []
+            for (let i = 0; i < minRow; i++) {
+                content.push(createItem(list.learning[i]))
+                content.push(createItem(list.concentration[i]))
+                content.push(createItem(list.creativity[i]))
+            }
+            return  (
+                content
+            )
+        }
+        else
+            return  <>暂无数据</>
     }
     return (<>
-        <div className={`${classes.achievementButtonArea} ${uiState.achievementOpenUiShowing ? "":classes.none}  `}>
+        <div className={`${classes.achievementButtonArea} ${uiState.achievementOpenUiShowing ? "" : classes.none}  `}>
             <Tooltip title={"打开成就面板"}>
-                <Button icon={<Icon component={AchievementSVG} />} shape={"circle"}
-                        onClick={()=>uiState.achievementCamera()}
+                <Button icon={<Icon component={AchievementSVG}/>} shape={"circle"}
+                        onClick={() => uiState.achievementCamera()}
                         className={classes.openButton}/>
             </Tooltip>
         </div>
 
-        <div className={`${classes.cameraMoveInButtonArea} ${uiState.achievementOpenUiShowing ? "":classes.none}  `}>
+        <div className={`${classes.cameraMoveInButtonArea} ${uiState.achievementOpenUiShowing ? "" : classes.none}  `}>
             <Tooltip title={"拉远/近镜头"}>
-                <Button icon={<Icon component={CameraMoveInSVG} />} shape={"circle"}
-                        onClick={()=>uiState.cameraMoveInOrOut()}
+                <Button icon={<Icon component={CameraMoveInSVG}/>} shape={"circle"}
+                        onClick={() => uiState.cameraMoveInOrOut()}
                         className={classes.openButton}/>
             </Tooltip>
         </div>
 
-        <section className={`${classes.achievementTab} ${uiState.achievementUiShowing ?  classes.achievementTabShow :""}`}>
-            <div className={`${classes.achievementTopTab}`}  >
+        <section
+            className={`${classes.achievementTab} ${uiState.achievementUiShowing ? classes.achievementTabShow : ""}`}>
+            <div className={`${classes.achievementTopTab}`}>
                 {topContent()}
             </div>
 
-            <div className={`${classes.achievementBottomTab}`} >
+            <div className={`${classes.achievementBottomTab}`}>
                 {bottomContent()}
             </div>
         </section>
@@ -61,7 +92,7 @@ export const AchievementUi = observer<AchievementUiProps>(props => {
 
 
 const AchievementSVG = () => (
-    <svg  className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
          p-id="9261" width="60%" height="60%">
         <path d="M448.8 622.8h126.5v126.5H448.8z" fill="#FFB300" p-id="9262"></path>
         <path d="M609.7 796.8H414.3v-61.2c0-11.5 9.4-20.9 20.9-20.9h153.7c11.5 0 20.9 9.4 20.9 20.9v61.2z"
@@ -89,9 +120,9 @@ const AchievementSVG = () => (
 )
 
 
-const CameraMoveInSVG=()=>(
-    <svg  className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-         p-id="2126"  width="60%" height="60%">
+const CameraMoveInSVG = () => (
+    <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+         p-id="2126" width="60%" height="60%">
         <path
             d="M538 837.95h-44.92c-28.44 0-52.69-20.6-57.27-48.66l-16.84-175.93h-3.75a42.689 42.689 0 0 1-25.83-9.36 32.941 32.941 0 0 1-13.85-30.32l18.34-138.5c2.77-29.1 28.09-50.78 57.27-49.04h20.96c10.51 0.07 20.58 4.23 28.07 11.6l14.6 12.73 20.96-12.73c6.11-3.7 13.07-5.76 20.21-5.99h20.96c28.44 0 52.69 20.6 57.27 48.66l18.34 131.76c0.72 8.89-0.96 17.81-4.86 25.83a16.94 16.94 0 0 1-3.74 4.87 40.428 40.428 0 0 1-28.08 11.6h-3.74l-16.47 174.81c-3.13 29.01-28.5 50.43-57.63 48.67zM514.04 379.02a95.8 95.8 0 0 1-69.39-25.93 95.855 95.855 0 0 1-30.18-67.65 95.797 95.797 0 0 1 30.18-67.66 95.883 95.883 0 0 1 69.39-25.93 95.823 95.823 0 0 1 69.4 25.93 95.878 95.878 0 0 1 30.18 67.66 95.796 95.796 0 0 1-30.18 67.65 95.823 95.823 0 0 1-69.4 25.93zM157.29 386.03h-60V139.99c0-23.16 18.84-42 42-42h244.83v60H157.29v228.04zM386.96 929.55H139.29c-23.16 0-42-18.84-42-42V639.96h60v229.59h229.67v60zM886.86 929.55H640.12v-60h228.73V641.67h60v245.88c0.01 23.16-18.84 42-41.99 42zM928.86 383.79h-60v-225.8H640.12v-60h246.73c23.16 0 42 18.84 42 42v243.8z"
             p-id="2127" fill="#000000"></path>

@@ -315,8 +315,8 @@ export class StudioManager {
 
         this._bookShelfMesh.forEach(bookShelf => {
             bookShelf.renderOutline = false
-            const sourceColor = Color3.FromHexString("#1FA2FF")
-            const targetColor = Color3.FromHexString("#A6FFCB")
+            const sourceColor = Color3.FromHexString("#ED213A")
+            const targetColor = Color3.FromHexString("#93291E")
             bookShelf.outlineColor = sourceColor
 
 
@@ -436,8 +436,8 @@ export class StudioManager {
     private setUpPracticeTable() {
         this._practiceTableMesh.forEach(mesh => {
             mesh.renderOutline = false
-            const sourceColor = Color3.FromHexString("#1FA2FF")
-            const targetColor = Color3.FromHexString("#A6FFCB")
+            const sourceColor = Color3.FromHexString("#ED213A")
+            const targetColor = Color3.FromHexString("#93291E")
             mesh.outlineColor = sourceColor
             mesh.outlineWidth = 1
             let up = true

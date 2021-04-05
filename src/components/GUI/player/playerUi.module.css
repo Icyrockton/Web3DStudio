@@ -1,6 +1,12 @@
 .taskState {
     width: 100%;
     margin-top: 5%;
+    transition: transform 1.75s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+}
+
+.taskStateHide{
+    transform: translateX(100%);
 }
 
 .stairCase {
@@ -8,6 +14,12 @@
     height: 45%;
     background: transparent;
     outline: none;
+    transition: transform 1.75s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+}
+
+.stairCaseHide{
+    transform: translateX(100%);
 }
 
 .misc {
@@ -24,7 +36,13 @@
     width: 20%;
     height: 100%;
     /*background: white;*/
+
+
 }
+
+
+
+
 
 .taskTab {
     margin-left: 20%;

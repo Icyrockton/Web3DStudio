@@ -34,38 +34,25 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
 
     },[uiState.isShowing,uiState.currentTask])
 
-    const content = (isShowing: boolean, currentTask: Task) => {
-        if (isShowing) {
-
-            return (
-                <>
-                    <div className={classes.taskState}>
-                        <TaskStateUi task={currentTask}/>
-                    </div>
-
-                    <canvas className={classes.stairCase} ref={stairCaseCanvas}/>
-
-                    <div className={classes.misc}>
-                        <MiscUi/>
-                    </div>
-
-                </>
-            )
-        } else {
-            return (
-                <>
-
-                </>
-            )
-        }
-    }
 
     return (
         <>
             <div className={classes.playerUi}>
-                {content(uiState.isShowing, uiState.currentTask)}
                 {/*    这里要注意 task 需要被跟踪 传进去uiState.currentTask  否则任务更新的时候 不会重新生成楼梯*/}
+                <div className={`${classes.taskState} ${uiState.isHideSideBar ? classes.taskStateHide :""} ${uiState.isShowing ? "":classes.none}`}>
+                    <TaskStateUi task={uiState.currentTask}/>
+                </div>
+
+                <canvas className={`${classes.stairCase} ${uiState.isHideSideBar ? classes.stairCaseHide :""}  ${uiState.isShowing ? "":classes.none}`}
+                        ref={stairCaseCanvas}/>
+
+                <div className={classes.misc}>
+                    <MiscUi/>
+                </div>
             </div>
+
+
+
             <SubTaskUi uiState={subTaskUiState}/>
 
             {/*自言自语对话框*/}

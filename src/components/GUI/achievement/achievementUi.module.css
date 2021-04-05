@@ -31,16 +31,11 @@
 }
 
 .achievementTopTab{
-    position: absolute;
-    left: 20vw;
-    top: 15vh;
+
     width: 40vw;
-    height: 27vh;
-    background: red;
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-
 }
 
 
@@ -50,6 +45,14 @@
     background: white;
     margin: 1vw;
     border-radius: 1vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 2vh;
+    padding-bottom: 1vh;
+    animation-delay: 1s;
+    box-shadow: 0 0  10px rgba(0, 0, 0, .5);
+
 }
 .topItem:nth-child(1){
     --animation-index: 1;
@@ -62,25 +65,60 @@
 }
 .achievementBottomTab{
     border-radius: 1vw;
-    position: absolute;
-    left: 20vw;
-    top: 45vh;
+    margin-top: 4vh;
     width: 40vw;
-    background: greenyellow;
+    background: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    padding: 2vh;
+    padding: 3vh;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, .5);
 
 }
 
 .bottomItem{
     flex-basis: 33%;
-    background: red;
     height: 5vh;
-    margin-top: 2vh;
+    margin-top: 4vh;
     padding: 1vh;
+    display: flex;
+    align-items: center;
+}
+
+.bottomItemIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4em;
+    height: 4em;
+    background: #c7c8e3;
+    border-radius: 50%;
+}
+
+.bottomItemIconFinished{
+    background: #1C228C;
+}
+
+.bottomItemText{
+    margin-left: 1vw;
+    margin-bottom: 0;
+    height: 4em;
+    color: #c7c8e3;
+}
+.bottomItemTextFinished{
+    color: #1C228C;
+}
+.bottomItemTitle{
+    color: #c7c8e3;
+}
+.bottomItemTitleFinished{
+    color: #F6226D;
+    font-weight: bold;
+}
+.bottomItemIcon img{
+    max-width: 50%;
+    max-height: 50%;
 }
 
 .bottomItem:nth-child(-n + 3){
@@ -88,12 +126,72 @@
 }
 .achievementTab{
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 20vh;
+    left: 20vw;
     transform: translateX(-100vw);
     transition: transform 2s var(--ease-out-swift);
     --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+    display: flex;
+    flex-direction: column;
+
 }
 .achievementTabShow{
     transform: translateX(0);
+}
+
+.roundImage{
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+
+    background:  #1C228C;
+    border-radius: 50%;
+}
+
+
+
+.roundImage::before{
+
+    width: 10em;
+    height: 10em;
+    opacity: .25;
+    background-image: url("img/achievementIconBG.png");
+    background-repeat: repeat;
+    background-size: 15% 15%;
+    transform: rotate(25deg);
+    content: "";
+}
+
+.roundImage::after{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    border: 1px solid white;
+    border-radius: 50%;
+    content: "";
+}
+
+.svgIcon{
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+
+.topItemLabel{
+    margin-top: 1vh;
+    font-size: 2.4em;
+    color: #1C228C;
 }
