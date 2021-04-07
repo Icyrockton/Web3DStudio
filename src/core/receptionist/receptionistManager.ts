@@ -1,11 +1,12 @@
 import {
+    Color3,
     KeyboardEventTypes,
-    KeyboardInfo,
+    KeyboardInfo, MeshBuilder,
     Observer,
     Scene,
     SceneLoader,
     ShadowGenerator,
-    Sound,
+    Sound, Sprite, SpriteManager, StandardMaterial, Texture,
     Vector3
 } from "@babylonjs/core";
 import {Receptionist, ReceptionistAsset} from "./receptionist";
@@ -29,7 +30,8 @@ export class ReceptionistManager {
     private _readingHintSound?: Sound
     private _taskFinishedHintSound?: Sound
     private _firstGreetingSoundHasPlayed: boolean = false
-    private _mesh?:AbstractMesh
+    private _mesh?: AbstractMesh
+
     constructor(scene: Scene, receptionistConfig: ReceptionistConfig) {
         this._scene = scene;
         this._receptionistModelURL = receptionistConfig.receptionistModelURL;
@@ -47,7 +49,8 @@ export class ReceptionistManager {
         this._mesh = meshes[0]  //虚拟人员的Mesh
         this.receptionist = new Receptionist(assets, this._scene);
         this.setUpSound()
-        this.setUpReceptionistUI() //设置UI
+        //this.setUpReceptionistUI() //设置UI
+        this.setUpReceptionistHint() //头顶上的提示
     }
 
     public set receptionistPosition(position: Vector3) {
@@ -212,11 +215,36 @@ export class ReceptionistManager {
     }
 
     setUpShadow(_shadowGenerator: ShadowGenerator) {
-        if (this._mesh){
+        if (this._mesh) {
             const childMeshes = this._mesh.getChildMeshes();
-            childMeshes.forEach(mesh=>{
+            childMeshes.forEach(mesh => {
                 _shadowGenerator.addShadowCaster(mesh)
             })
         }
     }
+
+    private setUpReceptionistHint() {
+
+        const spriteManager = new SpriteManager("spriteManager", "img/sprite/receptionistHint.png", 1, {
+            width: 520,
+            height: 248
+        }, this._scene);
+        spriteManager.texture.updateSamplingMode(Texture.TRILINEAR_SAMPLINGMODE);
+        spriteManager.texture.anisotropicFilteringLevel = this._scene.getEngine().getCaps().maxAnisotropy
+        spriteManager.texture.gammaSpace = false
+        const hint = new Sprite("Hint", spriteManager);
+
+        hint.width = 1.5
+        hint.height = 0.75
+        const distance = new Vector3(0,2.5 ,0)
+        this._scene.registerBeforeRender(()=>{
+            hint.position = this.receptionistPosition.add(distance)
+            hint.position.y += Math.sin(this.time) * 0.08
+            this.time += 0.01
+        })
+    }
+    private time:number = 0
+
+
+
 }

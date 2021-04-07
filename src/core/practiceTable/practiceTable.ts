@@ -449,4 +449,13 @@ export class PracticeTable implements EBookUtil {
         panel.addControl(button)
 
     }
+
+    //https://forum.babylonjs.com/t/two-scene-and-actionmanager-question/19712
+    attachControl() {  //action manager 连接
+        this._scene.attachControl()
+    }
+
+    detachControl(){ // actionManger 关闭
+        this._scene.detachControl()
+    }
 }

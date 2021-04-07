@@ -1,6 +1,7 @@
 import {makeAutoObservable, runInAction} from "mobx";
 import {Player} from "../../../core/player/player";
 import usePlayerUiState from "../player/playerUiState";
+import useNavUiState from "../nav/navUiState";
 
 
 export interface AchievementItem {  //成就项目
@@ -91,7 +92,12 @@ export class AchievementUiState {
     setUiShowing(showing: boolean) {
         this.achievementUiShowing = showing
         if (showing){
+            usePlayerUiState.studioManager?.setPlayerBusy(true)
             this.fetchAchievementList()
+        }
+        else{
+            usePlayerUiState.studioManager?.setPlayerBusy(false)
+            useNavUiState.navController?.focusCanvas()
         }
     }
 
@@ -107,17 +113,25 @@ export class AchievementUiState {
 
 
     achievementCamera() {  //成就摄像机
-        if (this.player) {
+        if (this.player && !this.player.isInAchievementAnimating) {
             this.player.achievementCamera()
             const uiOnOff = !this.achievementUiShowing
             this.setUiShowing(uiOnOff)
             usePlayerUiState.setHideSideBar(uiOnOff)
+            if (uiOnOff){
+                usePlayerUiState.studioManager?.setPlayerBusy(true)
+                usePlayerUiState.studioManager?.clearPlayerState()
+            }
+             else{
+                usePlayerUiState.studioManager?.setPlayerBusy(false)
+            }
         }
     }
 
     cameraMoveInOrOut() { //镜头移进
         if (this.player) {
             this.player.cameraFarOrNear()
+            useNavUiState.navController?.focusCanvas()
         }
     }
 

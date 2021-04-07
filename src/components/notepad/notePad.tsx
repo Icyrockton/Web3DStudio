@@ -20,6 +20,7 @@ import Paragraph from "antd/es/typography/Paragraph";
 import {Rnd} from "react-rnd";
 import usePlayerUiState, {PlayerState} from "../GUI/player/playerUiState";
 import {observer} from "mobx-react-lite";
+import useNavUiState from "../GUI/nav/navUiState";
 
 
 const markDownParser = new MarkdownIt(); //markdown解析器
@@ -122,6 +123,11 @@ const NotePad = observer<NotePadProps>((props: NotePadProps) => {
         setNotePads(notePads)
     }
 
+    const closeNotePad=()=>{
+        setShowing(false)
+        useNavUiState.navController?.focusCanvas() //聚焦canvas
+    }
+
     const notePadEditor = (tabKey: string) => {
         let notePad = notePads.find(notePad => notePad.key == tabKey)!;
         const editor = (<MdEditor value={notePad.content}
@@ -147,7 +153,7 @@ const NotePad = observer<NotePadProps>((props: NotePadProps) => {
                         </Col>
                         <Col span={2}>
                             <Button type="default" icon={<CloseOutlined/>} size={"large"}
-                                    className={classes.centerButton} onClick={() => setShowing(false)}
+                                    className={classes.centerButton} onClick={closeNotePad}
                             >
                             </Button>
                         </Col>
@@ -174,6 +180,7 @@ const NotePad = observer<NotePadProps>((props: NotePadProps) => {
                 <Tooltip title={hint()}>
                     <Button icon={<FormOutlined style={{fontSize: "30px"}}/>} shape={"circle"}
                             onClick={() => setShowing(!isShowing)}
+                            onMouseEnter={ ()=> usePlayerUiState.studioManager?.playSelectSound()}
                             className={classes.openButton}/>
                 </Tooltip>
             </div>

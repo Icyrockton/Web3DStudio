@@ -4,6 +4,7 @@ import {Book} from "../../../core/bookShelf/book";
 import {Web3DStudio} from "../../../web3DStudio";
 import {PlayerManager} from "../../../core/player/playerManager";
 import useNavUiState from "../nav/navUiState";
+import usePlayerUiState from "../player/playerUiState";
 
 
 const fakeBooks: BookDetail[] = [
@@ -145,6 +146,7 @@ export class BookShelfUiState {
         this.shelfShowing =showing
         if (!showing && this.playerManager){
             this.playerManager.busy =false //设置为非忙碌状态
+            usePlayerUiState.studioManager?.clearPlayerState()
             useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
     }

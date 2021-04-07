@@ -225,6 +225,7 @@ export class PracticeTableUiState {
         this.practiceTableShowing = showing
         if (!showing && this.playerManager) {
             this.playerManager.busy = false  //设置为非忙碌状态
+            usePlayerUiState.studioManager?.clearPlayerState()
             useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
     }

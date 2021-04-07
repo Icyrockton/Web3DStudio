@@ -5,6 +5,7 @@ import {StudioManager} from "../../../core/studio/StudioManager";
 import {notification} from "antd";
 import usePracticeTableUiState from "../practiceTable/practiceTableUiState";
 import {StudyType, SubTask, SubTaskState, Task, TaskState} from "../task/taskUiState";
+import useNavUiState from "../nav/navUiState";
 
 export interface Player {
 
@@ -258,6 +259,7 @@ export class PlayerState {
 
     setKeyBoardHintShow(showing: boolean) {
         this.keyBoardHintShowing = showing
+        useNavUiState.navController?.focusCanvas()
     }
 }
 

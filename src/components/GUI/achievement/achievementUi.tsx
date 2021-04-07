@@ -4,6 +4,7 @@ import React, {useEffect} from "react";
 import classes from './achievementUi.module.css'
 import {Button, Tooltip} from "antd";
 import Icon from "@ant-design/icons";
+import usePlayerUiState from "../player/playerUiState";
 
 
 type AchievementUiProps = {
@@ -65,6 +66,7 @@ export const AchievementUi = observer<AchievementUiProps>(props => {
             <Tooltip title={"打开成就面板"}>
                 <Button icon={<Icon component={AchievementSVG}/>} shape={"circle"}
                         onClick={() => uiState.achievementCamera()}
+                        onMouseEnter={ ()=> usePlayerUiState.studioManager?.playSelectSound()}
                         className={classes.openButton}/>
             </Tooltip>
         </div>
@@ -73,6 +75,7 @@ export const AchievementUi = observer<AchievementUiProps>(props => {
             <Tooltip title={"拉远/近镜头"}>
                 <Button icon={<Icon component={CameraMoveInSVG}/>} shape={"circle"}
                         onClick={() => uiState.cameraMoveInOrOut()}
+                        onMouseEnter={ ()=> usePlayerUiState.studioManager?.playSelectSound()}
                         className={classes.openButton}/>
             </Tooltip>
         </div>

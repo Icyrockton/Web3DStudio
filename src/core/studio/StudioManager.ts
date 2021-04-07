@@ -34,6 +34,10 @@ import {MINI_MAP_LAYER_MASK} from "./miniMap";
 interface StudioSound {
     bookShelf: Sound
     practiceTable: Sound
+    enter: Sound
+    select: Sound
+    selectSimple: Sound
+    buttonHit: Sound
 }
 
 type CurrentArea = "BookShelf" | "PracticeTable" | null
@@ -374,7 +378,7 @@ export class StudioManager {
                     })
                     this._bookShelfAreaHint = false
                 }
-
+                this._playerManager.showBookShelfHint()
                 //注册键盘的监听器
                 if (!this.keyBoardObserver) {
                     this.keyBoardObserver = this._scene.onKeyboardObservable.add(this.keyboardEventHandler)
@@ -385,6 +389,7 @@ export class StudioManager {
             distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
                 this._currentArea = null //设置位置为null
                 playerUiState.setDialogShowing(false) //关闭对话框
+                this._playerManager.hideHintSprite()
                 if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
                     this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
                     this.keyBoardObserver = null
@@ -421,15 +426,57 @@ export class StudioManager {
 
 
     private setUpSound() {
-        const bookShelf = new Sound("", "sound/java/bookShelf.mp3", this._scene, () => {
+        const bookShelf = new Sound("", "sound/bookShelf.mp3", this._scene, () => {
         }, {loop: false, autoplay: false});
 
-        const practiceTable = new Sound("", "sound/java/practiceTable.mp3", this._scene, () => {
+        const practiceTable = new Sound("", "sound/practiceTable.mp3", this._scene, () => {
         }, {loop: false, autoplay: false});
+
+        const enter = new Sound("enterSound", "/sound/college/enter.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const floorSelect = new Sound("floorSelectSound", "/sound/college/floorSelect.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const floorSelectSimple = new Sound("floorSelectSimpleSound", "/sound/college/floorSelectSimple.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+        const buttonHit = new Sound("buttonHitSound", "/sound/college/buttonHitSound.mp3", this._scene, null, {
+            loop: false,
+            autoplay: false
+        })
+
         this._sound = {
             bookShelf: bookShelf,
-            practiceTable: practiceTable
+            practiceTable: practiceTable,
+            enter: enter,
+            select: floorSelect,
+            selectSimple: floorSelectSimple,
+            buttonHit: buttonHit
         } as StudioSound
+    }
+
+    playEnterSound(){
+        if (!this._sound.enter.isPlaying) {
+            this._sound.enter.play()
+        }
+    }
+
+    playSelectSound(){
+            this._sound.select.play()
+    }
+
+
+    playSelectSimpleSound(){
+        this._sound.selectSimple.play()
+    }
+
+    playButtonHitSound(){
+        if (!this._sound.buttonHit.isPlaying)
+            this._sound.buttonHit.play()
     }
 
 
@@ -495,7 +542,7 @@ export class StudioManager {
                         })
                         this._practiceTableAreaHint = false
                     }
-
+                    this._playerManager.showPracticeTableHint()
                     //注册键盘的监听器
                     if (!this.keyBoardObserver) {
                         this.keyBoardObserver = this._scene.onKeyboardObservable.add(this.keyboardEventHandler)
@@ -506,6 +553,7 @@ export class StudioManager {
                 distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
                     this._currentArea = null //设置位置为null
                     playerUiState.setDialogShowing(false) //关闭对话框
+                    this._playerManager.hideHintSprite()
                     if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
                         this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
                         this.keyBoardObserver = null
@@ -577,5 +625,18 @@ export class StudioManager {
 
     }
 
+     setPlayerBusy(busy:boolean){
+        this._playerManager.busy = busy
+    }
+
+
+
+
+    clearPlayerState(){  //该方法用来清除玩家与AI的对话状态  并将玩家置位忙状态
+        this._playerManager.busy =true
+        this._AIs.forEach(ai=>{
+            ai.clearAIState()
+        })
+    }
 
 }

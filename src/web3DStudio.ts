@@ -107,7 +107,7 @@ export class Web3DStudio implements IState {
 
     async setLoadingAnimation() { //设置加载动画
 
-        await this.goToCollegeMap() //切换到地图场景
+        //await this.goToCollegeMap() //切换到地图场景
 
 
         //暂时直接
@@ -116,7 +116,7 @@ export class Web3DStudio implements IState {
         //暂时直接
 
 
-        //await this.goToStudio(1)
+        await this.goToStudio(1)
     }
 
     focusCanvas(): void {
@@ -243,16 +243,32 @@ export class Web3DStudio implements IState {
     setBookShelfShow(showing: boolean): void {
         this._bookShelfShowing = showing
         if (this._bookShelfShowing) { //显示关闭UI
+            if(this._bookShelf){
+                this._bookShelf.attachControl()
+            }
             const bookShelfUiState = useBookShelfUiState;
             bookShelfUiState.setShelfShowing(true) //显示关闭UI
+        }
+        else{
+            if (this._bookShelf){
+                this._bookShelf.detachControl()
+            }
         }
     }
 
     setPracticeTableShow(showing: boolean): void {
         this._practiceTableShowing = showing
         if (this._practiceTableShowing) {
+            if (this._practiceTable){
+                this._practiceTable.attachControl()
+            }
             const practiceTableUiState = usePracticeTableUiState;
             practiceTableUiState.setPracticeTableShowing(true) //显示关闭UI
+        }
+        else{
+            if (this._practiceTable){
+                this._practiceTable.detachControl()
+            }
         }
     }
 

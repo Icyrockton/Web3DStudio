@@ -6,7 +6,7 @@ import {
     Quaternion,
     Scene,
     SceneLoader,
-    ShadowGenerator,
+    ShadowGenerator, Sprite, SpriteManager, Texture,
     Vector3
 } from "@babylonjs/core";
 import {InputController} from "./inputController";
@@ -76,7 +76,7 @@ export class PlayerManager {
         let playerController = new InputController(this._scene);
         let player = new Player(playerAssets, this._scene, playerController);
         this.player = player
-
+        this.setUpPlayerHint()
     }
 
 
@@ -116,4 +116,62 @@ export class PlayerManager {
     setUpShadow(_shadowGenerator: ShadowGenerator) {
         this.player.setUpShadow(_shadowGenerator)
     }
+
+
+    private bookShelfHint?:Sprite
+    private practiceTableHint?:Sprite
+
+    private setUpPlayerHint() {
+        const bookShelfSpriteManager = new SpriteManager("spriteManager_book", "img/sprite/bookShelfHint.png", 1, {
+            width: 520,
+            height: 248
+        }, this._scene);
+        bookShelfSpriteManager.texture.updateSamplingMode(Texture.TRILINEAR_SAMPLINGMODE);
+        bookShelfSpriteManager.texture.anisotropicFilteringLevel = this._scene.getEngine().getCaps().maxAnisotropy
+
+        this.bookShelfHint = new Sprite("bookShelfHint", bookShelfSpriteManager);
+
+        this.bookShelfHint.width = 1.5
+        this.bookShelfHint.height = 0.75
+        this.bookShelfHint.isPickable=false
+        this.bookShelfHint.isVisible =false
+
+        const practiceTableSpriteManager = new SpriteManager("spriteManager_table", "img/sprite/practiceTableHint.png", 1, {
+            width: 520,
+            height: 248
+        }, this._scene);
+        practiceTableSpriteManager.texture.updateSamplingMode(Texture.TRILINEAR_SAMPLINGMODE);
+        practiceTableSpriteManager.texture.anisotropicFilteringLevel = this._scene.getEngine().getCaps().maxAnisotropy
+
+        this.practiceTableHint = new Sprite("practiceTableHint", practiceTableSpriteManager);
+
+        this.practiceTableHint.width = 1.5
+        this.practiceTableHint.height = 0.75
+        this.practiceTableHint.isPickable=false
+        this.practiceTableHint.isVisible =false
+
+        const distance = new Vector3(0,2.5 ,0)
+        this._scene.registerBeforeRender(()=>{
+            this.bookShelfHint!.position = this._collisionBox!.position.add(distance)
+            this.bookShelfHint!.position.y += Math.sin(this.time) * 0.08
+            this.practiceTableHint!.position = this._collisionBox!.position.add(distance)
+            this.practiceTableHint!.position.y += Math.sin(this.time) * 0.08
+            this.time += 0.01
+        })
+    }
+    hideHintSprite(){
+        if (this.bookShelfHint)
+            this.bookShelfHint.isVisible =false
+        if (this.practiceTableHint)
+            this.practiceTableHint.isVisible =false
+    }
+    showPracticeTableHint(){
+        if (this.practiceTableHint)
+            this.practiceTableHint.isVisible = true
+    }
+    showBookShelfHint(){
+        if (this.bookShelfHint)
+            this.bookShelfHint.isVisible =  true
+    }
+    private time:number = 0
 }

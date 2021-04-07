@@ -17,6 +17,7 @@ import {PlayerManager} from "./playerManager";
 import {MINI_MAP_LAYER_MASK} from "../studio/miniMap";
 import useAchievementUiState from "../../components/GUI/achievement/achievementUiState";
 import useNavUiState from "../../components/GUI/nav/navUiState";
+import usePlayerUiState from "../../components/GUI/player/playerUiState";
 
 
 export interface PlayerAssets {
@@ -34,6 +35,9 @@ export interface PlayerAnimation {
 }
 
 export class Player extends TransformNode {
+    get isInAchievementAnimating(): boolean {
+        return this._isInAchievementAnimating;
+    }
 
     static PLAYER_GRAVITY = 0.1
     static PLAYER_GRAVITY_MAX = 0.8
@@ -312,25 +316,34 @@ export class Player extends TransformNode {
     }
 
     private _isInAchievement: boolean = false //是否在成就状态?
+    private _isInAchievementAnimating : boolean =false
     private _isCameraClose: boolean = false //镜头是否靠近player?
 
     achievementCamera() {
         if (!this._isInAchievement) {
+            this._isInAchievementAnimating = true
+            setTimeout(()=>{
+                usePlayerUiState.studioManager?.playEnterSound() //声音
+            } , 700)
             this._acceptInput =false
             this._scene.beginDirectAnimation(this._yTilt, this.createYTiltAnim(false), 0, Player.frame_rate, false, 1, () => {
             })
             this._scene.beginDirectAnimation(this.camera, this.createAchievementCameraAnim(false), 0, Player.frame_rate, false, 1, () => {
                 this._isInAchievement = true
+                this._isInAchievementAnimating =false
             })
             this._scene.beginDirectAnimation(this.mesh, this.createPlayerTowardCamera(false), 0, Player.frame_rate, false, 1, () => {
             })
         } else {
+            this._isInAchievementAnimating = true
 
             this._scene.beginDirectAnimation(this._yTilt, this.createYTiltAnim(true), 0, Player.frame_rate, false, 1, () => {
             })
             this._scene.beginDirectAnimation(this.camera, this.createAchievementCameraAnim(true), 0, Player.frame_rate, false, 1, () => {
                 this._isInAchievement = false
                 this._acceptInput =true
+                this._isInAchievementAnimating =false
+
             })
             this._scene.beginDirectAnimation(this.mesh, this.createPlayerTowardCamera(true), 0, Player.frame_rate, false, 1, () => {
             })
@@ -412,7 +425,7 @@ export class Player extends TransformNode {
             value: this.mesh.rotationQuaternion
         })
 
-        const target= Quaternion.FromEulerAngles(this._cameraRoot.rotation.x,this._cameraRoot.rotation.y + Math.PI,this._cameraRoot.rotation.z)
+        const target= Quaternion.FromEulerAngles(this._cameraRoot.rotation.x,this._cameraRoot.rotation.y + Math.PI + Math.PI / 8,this._cameraRoot.rotation.z)
 
         playerRotateKeyFrames.push({
             frame: Player.frame_rate,
@@ -469,4 +482,5 @@ export class Player extends TransformNode {
         yTiltRotateAnimation.setKeys(yTiltRotateKeyFrames)
         return [yTiltRotateAnimation]
     }
+
 }
