@@ -44,8 +44,8 @@ export const LoginUi = observer<LoginUiProps>(props => {
             <div className={classes.boxForm}>
                 <div className={classes.left}>
                     <div className={classes.overlay}>
-                        <h1 className={classes.title}>Web3D</h1>
-                        <h1 className={classes.title}>学院</h1>
+                        <h1 className={classes.title}>立方</h1>
+                        <h1 className={classes.title}>教育</h1>
                         <div className={classes.description}>
                             <p className={classes.descriptionLeft}>服务外包 顶点着色器  </p>
                             <p className={classes.descriptionRight}>BabylonJS驱动</p>

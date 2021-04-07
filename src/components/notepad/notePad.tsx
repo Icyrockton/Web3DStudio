@@ -1,22 +1,21 @@
 import MarkdownIt from 'markdown-it'
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import 'react-markdown-editor-lite/lib/index.css';
 import classes from "./notePad.module.css"
 import Layout, {Content, Header} from "antd/es/layout/layout";
-import {Button, Col, Input, Menu, Row, Space, Tooltip} from "antd";
+import {Button, Col, Input, Menu, Row,  Tooltip} from "antd";
 import {createLocalStorageStateHook} from "use-local-storage-state";
 import Sider from "antd/es/layout/Sider";
 import 'antd/dist/antd.css';
 import MdEditor from 'react-markdown-editor-lite'
 import {
-    CloseCircleFilled, CloseOutlined, CloseSquareFilled,
+    CloseOutlined,
     DeleteFilled,
     FormOutlined,
-    HighlightOutlined,
+
     PlusCircleFilled,
-    PlusCircleTwoTone
+
 } from "@ant-design/icons";
-import Paragraph from "antd/es/typography/Paragraph";
 import {Rnd} from "react-rnd";
 import usePlayerUiState, {PlayerState} from "../GUI/player/playerUiState";
 import {observer} from "mobx-react-lite";
@@ -67,7 +66,6 @@ const NotePad = observer<NotePadProps>((props: NotePadProps) => {
     }
 
     const [tabKey, setTabKey] = useState<string>(defaultKey);
-    const [collapse, setCollapse] = useState(true);
     const [xy, setXy] = useState({x: 80, y: 400});
     const [size, setSize] = useState({width: "200px", height: "300px"});
     const notePadItem = () => {
@@ -187,10 +185,10 @@ const NotePad = observer<NotePadProps>((props: NotePadProps) => {
 
 
             <Rnd size={{width: size.width, height: size.height}}
-                 className={` ${isShowing ? "" : classes.none}`}
+                 className={`${classes.maxZIndex} ${isShowing ? "" : classes.none}`}
                  position={{x: xy.x, y: xy.y}}
                  onDragStop={(e, data) => setXy({x: data.x, y: data.y})}
-                 onResizeStop={(e, direction, ref, delta, position) => {
+                 onResizeStop={(e, direction, ref,) => {
                      setSize({
                          width: ref.style.width,
                          height: ref.style.height,

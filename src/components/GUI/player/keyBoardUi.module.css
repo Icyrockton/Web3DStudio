@@ -2,15 +2,16 @@
 .keyboardArea{
     width: 60vw;
     position: absolute;
-    background: hsla(0, 0%, 100%, .7);
+    background: rgba(255,255,255,0.7);
     border-radius: 1vw;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%) translateY(100%);
+    transform: translateX(-50%) translateY(150%);
     text-align: center;
     transition: transform .5s var(--ease-out-swift);
     --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
-
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
 }
 
 .keyboardAreaShow{
@@ -61,4 +62,21 @@
     cursor: pointer;
     color: white;
     transform: scale(0.95);
+}
+
+.blackBg{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .8);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity ease 1s,visibility linear 1s ;
+    visibility: hidden;
+}
+.blackBgShow{
+    opacity: 1;
+    visibility: visible;
 }

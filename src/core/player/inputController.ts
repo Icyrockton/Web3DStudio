@@ -72,7 +72,7 @@ export class InputController {
 
 
         this.dashing = this.inputMap["Shift"] //Shift键跑步
-        this.jump = this.inputMap[" "] //空格键跳跃
+        //this.jump = this.inputMap[" "] //空格键跳跃
 
 
         if (!this.inputMap["ArrowUp"] &&

@@ -213,8 +213,8 @@ export class Web3DStudio implements IState {
 
         let studioScene = new Scene(this._engine)
         const web3dApi = useWeb3DApi;
-        //const response = await web3dApi.getStudio(studioUUid);
-        //const studioData = response.data;
+        // const response = await web3dApi.getStudio(studioUUid);
+        // const studioData = response.data;
         // let manager = new StudioManager(studioScene, studioData, this)
         let manager = new StudioManager(studioScene, fakeStudio_AI, this)
         await manager.load()

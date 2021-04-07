@@ -59,7 +59,6 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
             <div className={`${classes.bg} ${uiState.isShowingDialog ? classes.bgShow : ""}`}>
                 <div className={`${classes.content} ${classes.unSkew}`}>
                     <img src={uiState.dialog.avatarURL} alt="" className={classes.imageLeft}/>
-                    <br/><br/>
                     <h1 className={classes.infoContent}>{uiState.dialog.info}</h1>
                 </div>
             </div>

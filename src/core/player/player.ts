@@ -1,6 +1,6 @@
 import {
     AbstractMesh, Animation,
-    Axis, BackEase, Color3, EasingFunction, IAnimationKey,
+     BackEase, Color3, EasingFunction, IAnimationKey,
     Mesh, MeshBuilder,
     Quaternion,
     Ray, Scalar,
@@ -9,14 +9,11 @@ import {
     UniversalCamera,
     Vector3, Viewport
 } from "@babylonjs/core";
-import {ISceneLoaderAsyncResult} from "@babylonjs/core/Loading/sceneLoader";
 import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
-import {CollegeManager} from "../college/collegeManager";
 import {InputController} from "./inputController";
 import {PlayerManager} from "./playerManager";
 import {MINI_MAP_LAYER_MASK} from "../studio/miniMap";
 import useAchievementUiState from "../../components/GUI/achievement/achievementUiState";
-import useNavUiState from "../../components/GUI/nav/navUiState";
 import usePlayerUiState from "../../components/GUI/player/playerUiState";
 
 
@@ -127,7 +124,7 @@ export class Player extends TransformNode {
             let move = correctedVertical.addInPlace(correctedHorizontal).normalize() //水平+垂直 得到移动的向量 再归一化
 
             //冲刺 跑步
-            if (this._inputController.dashing && this._canDash) {
+            if (this._inputController.dashing && this._canDash ) {
                 this._dashStart = true
                 this._canDash = false
             }
@@ -142,7 +139,6 @@ export class Player extends TransformNode {
                     dashFactor = Player.PLAYER_DASH_FACTOR
                 this._dashTime++
             }
-
 
             this._moveDirection = new Vector3(move.x, 0, move.z) //设置移动方向向量
             this._moveDirection = this._moveDirection.scaleInPlace(Player.PLAYER_SPEED * dashFactor) //玩家速度
@@ -161,6 +157,9 @@ export class Player extends TransformNode {
             //角色旋转
             this.mesh.rotationQuaternion = Quaternion.Slerp(this.mesh.rotationQuaternion!, quaternionTarget, 0.075)
 
+        }
+        else {
+            this._moveDirection = Vector3.Zero()
         }
 
     }
@@ -271,7 +270,6 @@ export class Player extends TransformNode {
         }
 
         if (this._currentAnimation !== this._prevAnimation) {
-            console.log('播放动画')
             this._prevAnimation.stop()
             this._currentAnimation.play(this._currentAnimation.loopAnimation)
             this._prevAnimation = this._currentAnimation
@@ -317,7 +315,6 @@ export class Player extends TransformNode {
 
     private _isInAchievement: boolean = false //是否在成就状态?
     private _isInAchievementAnimating : boolean =false
-    private _isCameraClose: boolean = false //镜头是否靠近player?
 
     achievementCamera() {
         if (!this._isInAchievement) {
@@ -348,6 +345,14 @@ export class Player extends TransformNode {
             this._scene.beginDirectAnimation(this.mesh, this.createPlayerTowardCamera(true), 0, Player.frame_rate, false, 1, () => {
             })
         }
+    }
+
+    blockInput(){ //阻止按键输入
+        this._acceptInput = false
+    }
+
+    acceptInput(){ //允许按键输入
+        this._acceptInput = true
     }
 
     static CAMERA_DISTANCE_FAR = 12

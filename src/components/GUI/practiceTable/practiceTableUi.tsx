@@ -33,7 +33,7 @@ const PracticeChoice = (props: PracticeProps) => {   //选择题
     const radioChoice = () => {
         const colSpan = 24 / choices.length //宽度
         return choices.map((choice, index) => (
-            <Col span={colSpan}>
+            <Col span={colSpan} key={`choice-${index}`}>
                 <Radio value={index}>{choice}</Radio>
             </Col>
         ))
@@ -122,13 +122,13 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
             let content = practiceDetail.subTasks.map((subTask, index) => {
                 switch (subTask.type) {
                     case PracticeSubTaskType.choice:
-                        return (<PracticeChoice task={subTask} index={index}/>)
+                        return (<PracticeChoice task={subTask} index={index} key={`chocie-${index}`}/>)
                     case PracticeSubTaskType.code:
-                        return (<PracticeCode task={subTask} index={index}/>)
+                        return (<PracticeCode task={subTask} index={index} key={`code-${index}`}/>)
                     case PracticeSubTaskType.fillInBlank:
-                        return (<PracticeFillInBlank task={subTask} index={index}/>)
+                        return (<PracticeFillInBlank task={subTask} index={index} key={`fillInBlank-${index}`}/>)
                     case PracticeSubTaskType.questions:
-                        return (<PracticeQuestions task={subTask} index={index}/>)
+                        return (<PracticeQuestions task={subTask} index={index} key={`question-${index}`}/>)
                 }
 
 
@@ -144,8 +144,9 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
             uiState.submit()
         }
         const closeTable = () => {
-            uiState.setPracticeTableShowing(false)
+            uiState.setPracticeTableShowing(false,true)
             uiState.web3DStudio?.setPracticeTableShow(false)
+            uiState.playerManager?.player.acceptInput()
         }
         const confirmContent = () => {
             const unFinishedPracticeCount = uiState.unFinishedPracticeCount;
@@ -162,7 +163,7 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
                 <div className={`${classes.practiceTableCloseArea} ${uiState.practiceTableShowing ? "" : classes.none}`}>
                     <Tooltip title={"关闭练习台"}>
                         <Button type={"primary"}
-                                icon={<CloseSquareOutlined style={{fontSize: "50px"}} onClick={closeTable}/>}
+                                icon={<CloseSquareOutlined style={{fontSize: "2.5em"}} onClick={closeTable}/>}
                                 className={classes.practiceTableCloseButton}/>
                     </Tooltip>
                 </div>
@@ -170,7 +171,7 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
                 <div className={`${classes.eBookReaderClose} ${uiState.eBookReaderShowing ? "" : classes.none}`}>
                     <Tooltip title={"关闭电子书"}>
                         <Button type="primary"
-                                icon={<CloseSquareOutlined style={{fontSize: "40px"}} onClick={eReaderClose}/>}
+                                icon={<CloseSquareOutlined style={{fontSize: "2em"}} onClick={eReaderClose}/>}
                                 className={classes.closeButton}/>
                     </Tooltip>
                 </div>
@@ -178,6 +179,9 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
 
                 <EBookReader eBookReaderShowing={uiState.eBookReaderShowing} eBookUUID={uiState.currentEBookDetail.uuid}
                              eBookFile={uiState.currentEBookDetail ? uiState.currentEBookDetail.bookURL : "pdf/Java.pdf"}/>
+
+                <div className={`${classes.blackBg} ${uiState.practiceShowing ? classes.blackBgShow : "" }`}></div>
+
                 <div className={`${classes.practiceArea} ${uiState.practiceShowing ? "" : classes.none}`}>
                     <Layout style={{height: "100%"}}>
                         <Sider className={classes.practiceSider} theme={"light"}>
@@ -284,14 +288,18 @@ const EBookReader = (props: EBookReaderProps) => {
     }
 
     return (
-        <div className={`${classes.eBookReaderArea} ${props.eBookReaderShowing ? "" : classes.none}`}>
-            <Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js">
+        <>
+            <div className={`${classes.blackBg} ${props.eBookReaderShowing ? classes.blackBgShow : "" }`}></div>
+
+            <div className={`${classes.eBookReaderArea} ${props.eBookReaderShowing ? "" : classes.none}`}>
+            <Worker workerUrl="src/assets/worker/pdf.worker.min.js">
                 <Viewer
                     fileUrl={props.eBookFile}
                     renderLoader={eBookRenderLoader} renderError={eBookRenderError}
                     onPageChange={eBookOnPageChange}/>
             </Worker>
         </div>
+        </>
     )
 }
 

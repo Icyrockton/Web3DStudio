@@ -16,6 +16,7 @@
     outline: none;
     transition: transform 1.75s var(--ease-out-swift);
     --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+    z-index: 150;
 }
 
 .stairCaseHide{
@@ -37,6 +38,7 @@
     height: 100%;
     /*background: white;*/
 
+    z-index: 5;
 
 }
 
@@ -58,6 +60,8 @@
 
 .content {
     position: relative;
+    padding: 1vw;
+
 }
 
 .image {
@@ -76,9 +80,8 @@
 
 .bg {
     width: 45%;
-    height: 10%;
     transform:  skew(30deg) translateX(-50%) ;
-    background: white;
+    background: #69BBDB;
     position: absolute;
     left: 50%;
     bottom: -40vh;
@@ -90,6 +93,7 @@
 .infoContent {
     text-align: center;
     font-size: 1.8em;
+    color: white;
 }
 
 .bgShow {
@@ -123,13 +127,12 @@
 .miniMap{
     position: absolute;
     background: transparent;
-    width: 10vw;
-    height: 20vh;
+    width: 14vw;
+    height: 28vh;
     top: 1vh;
     left: 1vw;
-    border: 5px solid transparent;
+    border: 6px solid transparent;
     border-image: linear-gradient(to bottom right, #FEAC5E 33%, #C779D0 66%, #f64f59 99%);
     border-image-slice: 1;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
-
 }

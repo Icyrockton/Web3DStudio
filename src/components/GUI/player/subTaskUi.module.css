@@ -4,7 +4,7 @@
     right: 20%;
     width: 20%;
     margin-right: 1%;
-
+    z-index: 5;
     transform: translateY(120%);
     transition: transform .5s var(--ease-out-swift);
     --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
@@ -25,4 +25,21 @@
     100% {
         bottom: 0;
     }
+}
+
+.blackBg{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity ease 1s,visibility linear 1s ;
+    visibility: hidden;
+}
+.blackBgShow{
+    opacity: 1;
+    visibility: visible;
 }

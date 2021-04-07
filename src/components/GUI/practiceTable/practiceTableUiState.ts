@@ -56,10 +56,10 @@ const fakeEBooks: EBookDetail [] = [
 
 
 export enum PracticeSubTaskType {
-    choice, //选择题
-    fillInBlank, //填空题
-    code, //代码题目
-    questions //问答题目
+    choice="choice", //选择题
+    fillInBlank="fillInBlank", //填空题
+    code= "code", //代码题目
+    questions="question" //问答题目
 }
 
 export interface PracticeSubTask { //每一道题 ... 选择题 填空题 代码题
@@ -70,7 +70,7 @@ export interface PracticeSubTask { //每一道题 ... 选择题 填空题 代码
 }
 
 export interface PracticeTask { //详细的练习任务
-    uuid: number
+    uuid: number //练习题的UUID
     name: string //练习题名称
     description: string // 练习的描述
     subTasks: PracticeSubTask [] //所有题目
@@ -221,21 +221,20 @@ export class PracticeTableUiState {
     practiceShowing: boolean = false //练习显示
     practiceTableShowing: boolean = false //练习台关闭按钮显示
 
-    setPracticeTableShowing(showing: boolean) {
+    setPracticeTableShowing(showing: boolean,leave:boolean =false) { // leave代表离开
         this.practiceTableShowing = showing
-        if (!showing && this.playerManager) {
-            this.playerManager.busy = false  //设置为非忙碌状态
+        if (showing && this.playerManager){
             usePlayerUiState.studioManager?.clearPlayerState()
+            this.playerManager?.player.blockInput() //阻止输入
+        }
+        if ( leave &&!showing && this.playerManager) {
+            this.playerManager.busy = false  //设置为非忙碌状态
             useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
     }
 
     setEBookReaderShowing(showing: boolean) {
         this.eBookReaderShowing = showing
-        if (showing) {
-            this.practiceTableShowing = false
-        } else
-            this.practiceTableShowing = true
     }
 
     setPracticeShowing(showing: boolean) {

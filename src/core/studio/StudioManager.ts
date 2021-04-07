@@ -154,7 +154,6 @@ export class StudioManager {
         const miniMapMesh = meshes.find(mesh=>mesh.name == this._studio.miniMap);
         if (miniMapMesh){
             miniMapMesh.layerMask = MINI_MAP_LAYER_MASK
-            console.log(miniMapMesh)
         }
 
     }
@@ -360,7 +359,7 @@ export class StudioManager {
 
             const distanceHelper = new DistanceHelper(this._scene, bookShelf, this._playerManager);
 
-            distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
+            distanceHelper.triggerOnceWhenDistanceLessThan(2, () => {
                 this._currentArea = "BookShelf" //当前所在位置为 图书架
                 if ( !this._playerManager.busy  && this._bookShelfAreaHint) {
                     playerUiState.setDialogShowing(true) //打开对话框
@@ -386,7 +385,7 @@ export class StudioManager {
 
             })
 
-            distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
+            distanceHelper.triggerOnceWhenDistanceMoreThan(2, () => {
                 this._currentArea = null //设置位置为null
                 playerUiState.setDialogShowing(false) //关闭对话框
                 this._playerManager.hideHintSprite()
@@ -523,7 +522,7 @@ export class StudioManager {
             if (mesh.name == this._studio.practiceTableStartName) {
                 const distanceHelper = new DistanceHelper(this._scene, mesh, this._playerManager);
 
-                distanceHelper.triggerOnceWhenDistanceLessThan(1.5, () => {
+                distanceHelper.triggerOnceWhenDistanceLessThan(2, () => {
 
                     this._currentArea = "PracticeTable" //当前所在位置为 练习台
                     if (!this._playerManager.busy && this._practiceTableAreaHint) {
@@ -550,7 +549,7 @@ export class StudioManager {
 
                 })
 
-                distanceHelper.triggerOnceWhenDistanceMoreThan(1.5, () => {
+                distanceHelper.triggerOnceWhenDistanceMoreThan(2, () => {
                     this._currentArea = null //设置位置为null
                     playerUiState.setDialogShowing(false) //关闭对话框
                     this._playerManager.hideHintSprite()
@@ -593,7 +592,6 @@ export class StudioManager {
 
         //创建AI
         this._studio.studioAIs.forEach(studioAI => {
-            console.log('创建AI')
             const ai = new Ai(this._scene, studioAI, crowd, navigationPlugin);
             this._AIs.push(ai)
         })
@@ -610,7 +608,7 @@ export class StudioManager {
     private setUpMiniMapCamera() {
         const miniMapCamera = new FreeCamera("miniMapCamera",new Vector3(0,10,0),this._scene);
         miniMapCamera.target = new Vector3(0,0,0)
-        miniMapCamera.viewport =new Viewport(0.01,0.79,0.1,0.2)
+        miniMapCamera.viewport =new Viewport(0.01,0.71,0.14,0.28)
         miniMapCamera.layerMask = MINI_MAP_LAYER_MASK
         miniMapCamera.mode = Camera.ORTHOGRAPHIC_CAMERA;
         miniMapCamera.orthoBottom = -7.5;
@@ -634,9 +632,9 @@ export class StudioManager {
 
     clearPlayerState(){  //该方法用来清除玩家与AI的对话状态  并将玩家置位忙状态
         this._playerManager.busy =true
+        usePlayerUiState.setDialogShowing(false)
         this._AIs.forEach(ai=>{
             ai.clearAIState()
         })
     }
-
 }

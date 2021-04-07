@@ -36,6 +36,11 @@ export interface BookDetail {
     thickness: number  //书的厚度
 }
 
+export interface StudioBook {
+    uuid: number  //工作室的UID
+    books:BookDetail[] //工作室内的书
+}
+
 export interface BookSound {
     playOpenBookSound(): void
 
@@ -103,7 +108,7 @@ export class BookShelf implements BookSound {
 
     private setUpCamera() {
 
-        const arcRotateCamera = new ArcRotateCamera("camera", Math.PI, Math.PI / (2.4), 2.800, new Vector3(0, 0.8, 0), this._scene);
+        const arcRotateCamera = new ArcRotateCamera("camera", Math.PI, Math.PI / (2.4), 3.300, new Vector3(0, 0.8, 0), this._scene);
         //arcRotateCamera.attachControl(true)   //摄像机控制
         arcRotateCamera.minZ = 0.1
         arcRotateCamera.wheelPrecision = 50

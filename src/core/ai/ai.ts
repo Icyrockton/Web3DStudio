@@ -1,12 +1,12 @@
 import {
-    AdvancedTimer, Angle, Color3,
+     Color3,
     ICrowd,
     Matrix, Mesh,
     MeshBuilder,
     Quaternion,
     RecastJSPlugin,
     Scene,
-    SceneLoader, setAndStartTimer, ShadowGenerator, Sound, StandardMaterial, Texture,
+    SceneLoader, setAndStartTimer, ShadowGenerator, Sound, Sprite, SpriteManager, StandardMaterial, Texture,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
@@ -81,7 +81,7 @@ export class Ai {
     }
 
     private _collisionBox? : Mesh
-    private modelLoaded = (meshes: AbstractMesh[], particleSystems: IParticleSystem[], skeletons: Skeleton[], animationGroups: AnimationGroup[], transformNodes: TransformNode[], geometries: Geometry[], lights: Light[]) => {
+    private modelLoaded = (meshes: AbstractMesh[], particleSystems: IParticleSystem[], skeletons: Skeleton[], animationGroups: AnimationGroup[], ) => {
         //设置父级关系
         const root = meshes[0];
 
@@ -128,6 +128,7 @@ export class Ai {
         this.rightTurnAnimation.stop()
         this.idleAnimation.play()
         this.setUpPath()
+        this.setUpEllipsisHint()
     }
 
     private _currentIndex = 0 //当前所在的点
@@ -243,6 +244,7 @@ export class Ai {
             if (distance < 1.5) {
                 if (!this._trigger) {
                     if (!playerManager.busy && !this.checkIfSoundPlaying()) {  //如果玩家不忙碌
+                        this.showEllipsisHint()
                         playerManager.currentAIName = this._aiInfo.name
                         playerManager.busy = true
                         this.randomDialog()
@@ -256,6 +258,7 @@ export class Ai {
                     if (playerManager.currentAIName = this._aiInfo.name){
                         playerManager.busy = false
                     }
+                    this.hideHintSprite()
                     //this.stopAllSound()
                     this._state = this._prevState
                     if (this._state == AIState.moving || this._state == AIState.wait) { //继续之前没走的路
@@ -335,6 +338,7 @@ export class Ai {
     }
 
     public clearAIState(){ //当玩家打开书架/练习台时 清除与AI的对话
+        this.hideHintSprite()
         if (this._encounterPlayer) {
             if (this._playerManager) {
                 this._playerManager.currentAIName = ""
@@ -374,4 +378,39 @@ export class Ai {
         miniMap.layerMask = MINI_MAP_LAYER_MASK
         this._miniMapMesh = miniMap
     }
+
+    private _ellipsisHint? : Sprite
+    private setUpEllipsisHint() {
+        const spriteManager = new SpriteManager("spriteManager", "img/sprite/ellipsisHint.png", 1, {
+            width: 520,
+            height: 248
+        }, this._scene);
+        spriteManager.texture.updateSamplingMode(Texture.TRILINEAR_SAMPLINGMODE);
+        spriteManager.texture.anisotropicFilteringLevel = this._scene.getEngine().getCaps().maxAnisotropy
+        spriteManager.texture.gammaSpace = false
+        const hint = new Sprite("Hint", spriteManager);
+
+        hint.width = 1
+        hint.height = 0.5
+        this._ellipsisHint = hint
+        this._ellipsisHint.isPickable =false
+        this._ellipsisHint.isVisible =false
+        const distance = new Vector3(0,2.2 ,0)
+        this._scene.registerBeforeRender(()=>{
+            hint.position = this._aiTransformNode.position.add(distance)
+            hint.position.y += Math.sin(this.time) * 0.08
+            this.time += 0.01
+        })
+    }
+    hideHintSprite(){
+        if (this._ellipsisHint)
+            this._ellipsisHint.isVisible =false
+    }
+    showEllipsisHint(){
+        if (this._ellipsisHint)
+            this._ellipsisHint.isVisible =true
+    }
+
+    private time:number = 0
+
 }

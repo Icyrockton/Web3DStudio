@@ -1,6 +1,6 @@
 import {AchievementItem, AchievementUiState} from "./achievementUiState";
 import {observer} from "mobx-react-lite";
-import React, {useEffect} from "react";
+import React from "react";
 import classes from './achievementUi.module.css'
 import {Button, Tooltip} from "antd";
 import Icon from "@ant-design/icons";
@@ -19,7 +19,7 @@ export const AchievementUi = observer<AchievementUiProps>(props => {
         const imageData = ["img/svgIcon/learning.svg", "img/svgIcon/concentration.svg", "img/svgIcon/creativity.svg"]
         const label = ["学习力", "专注力", "创造力"]
         return imageData.map((value, index) =>
-            <div className={classes.topItem}>
+            <div className={classes.topItem} key={value}>
                 <div className={classes.roundImage}>
                     <img src={value} className={classes.svgIcon}/>
                 </div>

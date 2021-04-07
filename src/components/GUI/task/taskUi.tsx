@@ -53,8 +53,8 @@ function SingleTask(props: TaskProps) {
     const modal = () => {
         if (props.finished) {
             //含有评分的time line
-            const subTaskTimeLineWithRate = task.subTask.map(subTask => (
-                <Timeline.Item color={"green"}
+            const subTaskTimeLineWithRate = task.subTask.map((subTask,index) => (
+                <Timeline.Item color={"green"} key={`subTask-${index}`}
                                label={subTask.name}>
                     <Tooltip title={`${subTask.name} 评价等级为 ${subTask.rate}`}>
                         {subTask.description} <Rate allowHalf disabled value={subTask.rate}/>
@@ -108,7 +108,8 @@ function SingleTask(props: TaskProps) {
             )
         } else {
             //子任务时间线
-            const subTaskTimeLine = task.subTask.map(subTask => <Timeline.Item
+            const subTaskTimeLine = task.subTask.map((subTask,index) => <Timeline.Item
+                 key={`subTaskTimeLine-${index}`}
                 label={subTask.name}>{subTask.description}</Timeline.Item>)
 
             //未完成的任务的详细信息
@@ -205,10 +206,10 @@ const TaskUi = observer<TaskUiProps>((props: TaskUiProps) => {
     const taskList = (key: string) => {
         if (key == "unfinished") {
             //未完成的任务
-             return uiState.unAcceptTask.map(task => <SingleTask key={task.uuid} task={task} finished={false}/>)
+             return uiState.unAcceptTask.map(task => <SingleTask key={`unFinishedTask-${task.uuid}`} task={task} finished={false}/>)
         } else {
             //已完成的任务
-            return uiState.finishedTask.map(task => <SingleTask key={task.uuid} task={task} finished={true}/>)
+            return uiState.finishedTask.map(task => <SingleTask key={`finishedTask-${task.uuid}`} task={task} finished={true}/>)
         }
     }
 

@@ -5,7 +5,8 @@
     width: 55%;
     height: 60%;
     background: white;
-    border: 1px solid rgba(0, 0, 0, 0.3)
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    z-index: 15;
 }
 
 .none{
@@ -14,14 +15,14 @@
 
 .eBookReaderClose{
     position: absolute;
-    top: 8%;
-    right: 17%;
-
+    top: 10%;
+    right: 23%;
+    z-index: 15;
 }
 
 .closeButton{
-    width: 50px;
-    height: 50px;
+    width: 2.5em;
+    height: 2.5em;
 }
 
 .practiceArea{
@@ -31,6 +32,7 @@
     width: 60%;
     height: 70%;
     background: red;
+    z-index: 15;
 }
 
 .practiceSider{
@@ -73,14 +75,16 @@
 }
 .practiceTableCloseArea{
     position: absolute;
-    top: 6%;
+    top: 15%;
     right: 16%;
     width: 60px;
     height: 60px;
+    z-index: 15;
 }
 .practiceTableCloseButton{
-    width: 60px;
-    height: 60px;
+    width: 3em;
+    height: 3em;
+    z-index: 15;
 }
 .eBookReaderLoaderProgressArea{
     background: white;
@@ -88,4 +92,21 @@
 }
 .eBookReaderLoaderProgress{
 
+}
+
+.blackBg{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .8);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity ease 1s,visibility linear 1s ;
+    visibility: hidden;
+}
+.blackBgShow{
+    opacity: 1;
+    visibility: visible;
 }

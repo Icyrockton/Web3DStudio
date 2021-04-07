@@ -68,7 +68,11 @@
     height: 3vw;
     margin-left: 1vw;
     margin-top: 1vw;
+    z-index: 99;
+}
 
+.maxZIndex{
+    z-index: 99;
 }
 
 .openButton {

@@ -100,6 +100,7 @@ const SubTaskUiComponent = (props: SubTaskUiProps) => {
     return (
 
         <>
+            <div className={`${classes.blackBg} ${uiState.showing ? classes.blackBgShow : ""}`}></div>
             <Card className={`${classes.subTaskUi} ${uiState.showing ? classes.subTaskUiShowing : ""}`} title={subTask?.name}>
                 <div className={classes.subTaskUi}></div>
                 <Typography>

@@ -22,6 +22,7 @@ const BookShelfUi = observer<BookShelfUiProps>(props => {
     const closeShelf = () => {
         uiState.setShelfShowing(false)
         uiState.web3DStudio?.setBookShelfShow(false)
+        uiState.playerManager?.player.acceptInput()
     }
     const playerUiState = usePlayerUiState;
     const onVideoProgress = (state: {
@@ -35,11 +36,12 @@ const BookShelfUi = observer<BookShelfUiProps>(props => {
         }
     }
     return <>
+        <div className={`${classes.blackBg} ${uiState.videoShowing ? classes.blackBgShow : "" }`}></div>
         <div className={`${classes.videoArea} ${uiState.videoShowing ? "" : classes.none}`}>
             {/*关闭按钮*/}
             <div className={`${classes.closeButtonArea}`}>
                 <Tooltip title={"合上书籍"}>
-                    <Button type="primary" icon={<CloseSquareOutlined style={{fontSize: "40px"}} onClick={close}/>}
+                    <Button type="primary" icon={<CloseSquareOutlined style={{fontSize: "1.5vw"}} onClick={close}/>}
                             className={classes.closeButton}/>
                 </Tooltip>
             </div>
@@ -62,7 +64,7 @@ const BookShelfUi = observer<BookShelfUiProps>(props => {
 
         <div className={`${classes.shelfArea} ${uiState.shelfShowing ? "" : classes.none}`}>
             <Tooltip title={"关闭书架"}>
-                <Button type={"primary"} icon={<CloseSquareOutlined style={{fontSize: "50px"}} onClick={closeShelf}/>}
+                <Button type={"primary"} icon={<CloseSquareOutlined style={{fontSize: "1.5vw"}} onClick={closeShelf}/>}
                         className={classes.shelfCloseButton}/>
             </Tooltip>
         </div>

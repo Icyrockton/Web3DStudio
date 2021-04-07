@@ -20,7 +20,7 @@ const SingleFloor = (props: SingleFloorUiProps) => {
     const studios = () => {
         return floor.studios.map(studio => (
             <>
-                <div className={classes.singleFloorStudio}>
+                <div className={classes.singleFloorStudio} key={studio.uuid}>
                     <div className={classes.studio}>
                         <Avatar src={studio.logoURL} size={"large"}>
                         </Avatar>
@@ -130,10 +130,10 @@ const FloorUi = observer<FloorUiProps>(props => {
     }
     const everyFloorContent = () => {
         const floors = uiState.collegeFloors?.floors;
-        return floors?.slice().reverse().map(floor => {
+        return floors?.slice().reverse().map((floor,index) => {
             return (
                 <>
-                    <SingleFloor floor={floor}/>
+                    <SingleFloor key={`floor-${index}`} floor={floor}/>
                 </>
             )
         })

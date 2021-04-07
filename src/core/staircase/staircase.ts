@@ -1,7 +1,7 @@
 import {
     ActionManager,
     ArcRotateCamera, Camera,
-    Color3, Color4,
+    Color3,
     Engine, ExecuteCodeAction,
     HighlightLayer,
     Material,
@@ -12,8 +12,9 @@ import {
 } from "@babylonjs/core";
 import {Firework} from "./firework";
 import {GradientMaterial} from "@babylonjs/materials";
-import useTaskUiState, {SubTask, SubTaskState, Task} from "../../components/GUI/task/taskUiState";
+import {SubTask, SubTaskState, Task} from "../../components/GUI/task/taskUiState";
 import {useSubTaskUiState} from "../../components/GUI/player/subTaskUi";
+import useNavUiState from "../../components/GUI/nav/navUiState";
 
 export class Staircase {
 
@@ -176,7 +177,7 @@ export class Staircase {
         this._fireworkStartPos.push(firework2)
     }
 
-    flagSuccessCallBack: SceneLoaderSuccessCallback = (meshes, particleSystems, skeletons, animationGroups, transformNodes, geometries, lights) => {
+    flagSuccessCallBack: SceneLoaderSuccessCallback = (meshes, ) => {
         meshes[0].parent = this._flagNode
         this._flagNode.scaling.set(2, 2, 2)
         this._flagNode.rotation.y = Math.PI / 2
@@ -184,7 +185,7 @@ export class Staircase {
     }
 
     rotateCount = 0 //旋转参数
-    arrowSuccessCallBack: SceneLoaderSuccessCallback = (meshes, particleSystems, skeletons, animationGroups, transformNodes, geometries, lights) => {
+    arrowSuccessCallBack: SceneLoaderSuccessCallback = (meshes,) => {
 
         meshes[0].parent = this._arrowNode
 
@@ -225,6 +226,7 @@ export class Staircase {
             ActionManager.OnPointerOutTrigger, (evt) => {
                 this._highLightLayer.removeMesh(staircase) //取消辉光
                 subTaskUiState.setSubTaskWithShowing(false,subTask)
+                useNavUiState.navController?.focusCanvas()
             }
         ))
     }

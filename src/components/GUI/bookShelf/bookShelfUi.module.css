@@ -2,8 +2,9 @@
     /*background: red;*/
     position: absolute;
     right: 20%;
-    top: 5%;
-
+    top: 12%;
+    z-index: 15;
+    transform: translateY(-50%);
 }
 
 .none{
@@ -11,15 +12,16 @@
 }
 
 .closeButton{
-    width: 50px;
-    height: 50px;
+    width: 2vw;
+    height: 2vw;
 }
 .videoPlayerArea{
     position: absolute;
-    top: 10%;
-    right: 22%;
-    width: 56%;
-    height: 62%;
+    top: 15%;
+    right: 20%;
+    width: 60%;
+    height: 70%;
+    z-index: 15;
 }
 
 .videoArea{
@@ -32,9 +34,10 @@
 
 .videoNameArea{
     position: absolute;
-    top: 7%;
-    right: 72%;
+    top: 12%;
+    left: 20%;
     color: white;
+    z-index: 15;
 }
 
 .videoName{
@@ -43,14 +46,33 @@
 
 .shelfArea{
     position: absolute;
-    top: 6%;
+    top: 12%;
     right: 16%;
-    width: 60px;
-    height: 60px;
+    width: 2vw;
+    height: 2vw;
     background: red;
+    border-radius: 1vh;
 }
 
 .shelfCloseButton{
-    width: 60px;
-    height: 60px;
+    width: 2vw;
+    height: 2vw;
+    z-index: 15;
+}
+
+.blackBg{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .8);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity ease 1s,visibility linear 1s ;
+    visibility: hidden;
+}
+.blackBgShow{
+    opacity: 1;
+    visibility: visible;
 }

@@ -1,19 +1,16 @@
 import {
-    Angle,
-    ArcRotateCamera, CascadedShadowGenerator, Color3, DirectionalLight, DynamicTexture,
+    ArcRotateCamera, CascadedShadowGenerator, Color3, DirectionalLight,
     Engine,
     HemisphericLight, HighlightLayer, Material, Mesh,
-    MeshBuilder, Ray,
     Scene,
-    SceneLoader, ShadowGenerator, Sound, StandardMaterial,
+    SceneLoader, ShadowGenerator, Sound, Sprite, SpriteManager, StandardMaterial, Texture,
     TransformNode,
     Vector3
 } from "@babylonjs/core";
 import {
-    GUI3DManager, Button3D, HolographicButton, TextBlock, MeshButton3D, StackPanel3D, AdvancedDynamicTexture, Button
-    , Rectangle, StackPanel, Control
+    GUI3DManager, TextBlock, MeshButton3D, StackPanel3D, AdvancedDynamicTexture, Button
+    ,  StackPanel, Control
 } from "@babylonjs/gui"
-import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState";
 import usePracticeTableUiState from "../../components/GUI/practiceTable/practiceTableUiState";
 import {EBook} from "./eBook";
 import usePlayerUiState from "../../components/GUI/player/playerUiState";
@@ -24,6 +21,11 @@ export interface EBookDetail { //电子书详细信息
     bookURL: string //电子书地址
     textureImgURL: string //纹理的地址
     thickness: number  //书的厚度
+}
+
+export interface StudioEBook{
+    uuid:number //工作室的ID
+    eBooks:EBookDetail[]
 }
 
 
@@ -47,6 +49,8 @@ export class PracticeTable implements EBookUtil {
     private _camera!: ArcRotateCamera
     private _3DGUIManager: GUI3DManager;
     private _practiceColumn?: StackPanel; //练习按钮 ...
+    static NEED_HINT:boolean =true
+    private _powerTransformNode?: TransformNode;
 
     constructor(_engine: Engine) {
         this._scene = new Scene(_engine)
@@ -124,6 +128,7 @@ export class PracticeTable implements EBookUtil {
                 }
                 if (transformNode.name == PracticeTable.COMPUTER_POWER_LOC) {
                     powerTransformNode = transformNode
+                    this._powerTransformNode=powerTransformNode
                 }
             })
 
@@ -162,7 +167,10 @@ export class PracticeTable implements EBookUtil {
                 }
             })
 
-
+            if (PracticeTable.NEED_HINT){
+                this.setUpHint()
+                PracticeTable.NEED_HINT =false
+            }
         })
     }
 
@@ -237,6 +245,8 @@ export class PracticeTable implements EBookUtil {
                 buttonMat.diffuseColor = Color3.Black()
                 this._computerScreenTurnOff() //关闭显示器
             } else { //开机
+                if (this._hint)
+                    this._hint.isVisible =false
                 buttonMat.diffuseColor = Color3.Red()
                 this._computerScreenTurnOn() //打开显示器
             }
@@ -276,7 +286,6 @@ export class PracticeTable implements EBookUtil {
         dynamicTexture.uOffset = -0.25
         dynamicTexture.uScale = 1.5
         // const dynamicTexture = new AdvancedDynamicTexture("haha", 1024, 1024, this._scene, false, undefined, true);
-        const context = dynamicTexture.getContext();
         //https://forum.babylonjs.com/t/generating-new-dynamic-texture-is-inverted-upside-down/18703/8
         //context.setTransform(1, 0, 0, -1, 0, 1024) //翻转?  纹理不对...
 
@@ -457,5 +466,26 @@ export class PracticeTable implements EBookUtil {
 
     detachControl(){ // actionManger 关闭
         this._scene.detachControl()
+    }
+
+    private  _hint ?: Sprite
+    private setUpHint() {
+
+        const spriteManager = new SpriteManager("spriteManager", "img/sprite/computerScreenHint.png", 1, {
+            width: 520,
+            height: 248
+        }, this._scene);
+        spriteManager.texture.updateSamplingMode(Texture.TRILINEAR_SAMPLINGMODE);
+        spriteManager.texture.anisotropicFilteringLevel = this._scene.getEngine().getCaps().maxAnisotropy
+        spriteManager.texture.gammaSpace = false
+        const hint = new Sprite("Hint", spriteManager);
+
+        hint.width = 0.5
+        hint.height = 0.25
+        this._hint = hint
+        this._hint.isPickable =false
+        if (this._powerTransformNode) {
+            hint.position.copyFrom(this._powerTransformNode.position).subtractInPlace(new Vector3(0.15,-0.15,-0.1))
+        }
     }
 }

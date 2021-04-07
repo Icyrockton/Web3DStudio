@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React from "react"
 import classes from "./keyBoardUi.module.css"
 import {observer} from "mobx-react-lite";
 import {PlayerState} from "./playerUiState";
@@ -14,7 +14,9 @@ type KeyBoardUiProps={
 export const KeyBoardUi =observer<KeyBoardUiProps>((props)=>{
     const uiState = props.uiState;
         return (
-            <div className={`${classes.keyboardArea } ${uiState.keyBoardHintShowing? classes.keyboardAreaShow:""}`}>
+            <>
+
+                <div className={`${classes.keyboardArea } ${uiState.keyBoardHintShowing? classes.keyboardAreaShow:""}`}>
                 <h3 className={classes.title}>按键提示</h3>
                 <img src={"/img/keyboardHint.png"} className={classes.keyboardImg}/>
                 <h3>1.控制人物的左右移动</h3>
@@ -24,6 +26,7 @@ export const KeyBoardUi =observer<KeyBoardUiProps>((props)=>{
                     我知道了
                 </div>
             </div>
+            </>
         )
     }
 )

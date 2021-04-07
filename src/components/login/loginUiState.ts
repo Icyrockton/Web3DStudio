@@ -4,7 +4,7 @@ import {notification} from "antd";
 
 
 export class LoginUiState {
-    isLogIn: boolean = true
+    isLogIn: boolean = false
     loginUserID: number | null = null
 
     constructor() {

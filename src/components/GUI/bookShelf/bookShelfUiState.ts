@@ -144,9 +144,12 @@ export class BookShelfUiState {
     }
     setShelfShowing(showing:boolean){
         this.shelfShowing =showing
+        if (showing && this.playerManager){
+            usePlayerUiState.studioManager?.clearPlayerState()
+            this.playerManager.player.blockInput()
+        }
         if (!showing && this.playerManager){
             this.playerManager.busy =false //设置为非忙碌状态
-            usePlayerUiState.studioManager?.clearPlayerState()
             useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
     }

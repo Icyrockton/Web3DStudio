@@ -1,6 +1,7 @@
 .selectFloorShow {
     display: block !important;
     opacity: 1 !important;
+    visibility: visible;
 }
 
 .selectFloor {
@@ -9,12 +10,13 @@
     top: 50%;
     background: hsla(0, 0%, 100%, .3);
     box-shadow: 10px 5px 5px rgba(0, 0, 0, .2);
-    visibility: visible;
+    visibility: hidden;
     border-radius: 10px;
     display: block;
     transform: translateY(-50%);
     opacity: 0;
     transition: opacity 2.5s linear;
+    z-index: 10;
 }
 
 .selectFloorDiv {
@@ -92,6 +94,7 @@
     background: white;
     margin-bottom: 1vh;
     overflow: auto;
+
 }
 
 .singleFloor:last-child {

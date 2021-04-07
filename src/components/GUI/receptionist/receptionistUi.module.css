@@ -6,6 +6,15 @@
 .content {
     position: relative;
     font-size: 0.8rem;
+    padding: 1vw;
+    color: white;
+}
+
+.content h1{
+    color: white;
+}
+.content h2{
+    color: white;
 }
 
 .image {
@@ -17,13 +26,11 @@
 
 .bg {
     width: 45%;
-    height: 10%;
-    background: white;
     position: absolute;
     left: 50%;
     bottom: -40vh;
     color: white;
-
+    background: #FF9B2C;
     box-shadow: 20px 20px rgba(0,0,0,.15);
     transform:  skew(30deg) translateX(-50%) ;
 

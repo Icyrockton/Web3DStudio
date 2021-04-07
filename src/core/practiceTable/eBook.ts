@@ -121,7 +121,8 @@ export class EBook {
         cover.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPickDownTrigger, () => {
             if (this._state == BookState.done) {  //如果已经悬浮出来了 再次单击 可以打开书
                 this.hoverOutAnim?.stop()
-
+                const practiceTableUiState = usePracticeTableUiState;
+                practiceTableUiState.setPracticeTableShowing(false)
                 this.cameraOutAnim = this._scene.beginDirectAnimation(this._eBookNode, this.createMoveToCamera()
                     , 0, EBook.frameRate * 2, false, undefined, () => {
                         this._state = BookState.camera
@@ -135,8 +136,7 @@ export class EBook {
     }
 
     private playOpenBook() {
-        //  const practiceTableUiState = usePracticeTableUiState;
-        // practiceTableUiState.setEBookReaderShowing(false) //关闭书架的UI 防止视频挡住
+
         this._openBookAnim?.play(false)
     }
 
@@ -158,6 +158,7 @@ export class EBook {
 
             this.cameraInAnim = this._scene.beginDirectAnimation(this._eBookNode, this.createMoveIn(), 0, EBook.frameRate * 2, false, undefined, () => {
                 this._state = BookState.init
+                usePracticeTableUiState.setPracticeTableShowing(true)
             })
 
             this._state = BookState.cameraIn

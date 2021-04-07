@@ -55,7 +55,7 @@ export class Book {
         this._bookSound = bookSound;
         this._shadowGenerator = shadowGenerator;
         this._highLightLayer = highLightLayer;
-        this._targetCameraPos = new Vector3(-2.2, 1.25, 0)
+        this._targetCameraPos = new Vector3(-2.7, 1.35, 0)
         //0.1的悬浮出来的位置
         this._targetPos = new Vector3(position.x - 0.15, position.y, position.z)
         this.bookNode = new TransformNode(`book-${bookDetail.uuid}`, this._scene)
