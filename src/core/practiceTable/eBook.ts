@@ -7,7 +7,7 @@ import {
     SceneLoaderSuccessCallback, StandardMaterial, Texture, TransformNode,
     Vector3
 } from "@babylonjs/core";
-import {EBookDetail, EBookUtil, PracticeTable} from "./practiceTable";
+import {EBookDetail, EBookSound, PracticeTable} from "./practiceTable";
 import {AnimationGroup} from "@babylonjs/core/Animations/animationGroup";
 import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState";
 import usePracticeTableUiState from "../../components/GUI/practiceTable/practiceTableUiState";
@@ -37,11 +37,11 @@ export class EBook {
     private _closeBookAnim?: AnimationGroup;
     private _state: BookState = BookState.init;
     private _targetPos: Vector3;
-    private _util: EBookUtil;
+    private _util: EBookSound;
 
 
     constructor(scene: Scene, eBook: EBookDetail, position: Vector3,
-                util: EBookUtil, shadowGenerator: CascadedShadowGenerator,
+                util: EBookSound, shadowGenerator: CascadedShadowGenerator,
                 highLightLayer: HighlightLayer) {
         this._scene = scene;
         this._eBook = eBook;

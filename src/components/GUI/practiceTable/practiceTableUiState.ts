@@ -6,6 +6,7 @@ import {Web3DStudio} from "../../../web3DStudio";
 import {StudyType, SubTask} from "../task/taskUiState";
 import {PlayerManager} from "../../../core/player/playerManager";
 import useNavUiState from "../nav/navUiState";
+import useWeb3DApi from "../../../network/web3dApi";
 
 
 const fakeEBooks: EBookDetail [] = [
@@ -166,7 +167,7 @@ const fakePracticeTask: PracticeTask[] = [
 
 export class PracticeTableUiState {
 
-    eBooks: EBookDetail[] = fakeEBooks
+    eBooks: EBookDetail[] = []
     currentEBook: EBook | null = null //保存实例为了关闭书籍
     currentEBookDetail: EBookDetail = {
         uuid: -1,
@@ -278,6 +279,16 @@ export class PracticeTableUiState {
                 count++
         })
         return count
+    }
+
+    async updatePracticeTable(uuid:number){ //工作室的UUID
+        const eBook = (await useWeb3DApi.getStudioEBook(uuid)).data;
+        runInAction(()=>{
+            this.eBooks = eBook
+            if (this.practiceTable){
+                this.practiceTable.updateEBook()
+            }
+        })
     }
 }
 

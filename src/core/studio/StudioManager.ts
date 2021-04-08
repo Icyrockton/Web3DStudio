@@ -71,6 +71,12 @@ export class StudioManager {
         this._scene.collisionsEnabled = true //打开碰撞
         const playerUiState = usePlayerUiState;
         playerUiState.setStudioManager(this) //注入
+
+        //更新书架上的内容
+        useBookShelfUiState.updateBookShelf(this._studio.uuid)
+        //更新练习台的内容
+        usePracticeTableUiState.updatePracticeTable(this._studio.uuid)
+
     }
 
     async load() {
@@ -115,16 +121,15 @@ export class StudioManager {
     private setUpLight() {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);
         hemisphericLight.intensity = 0.5
-        const direction = new Vector3(this._studio.directionalLightDirection[0],this._studio.directionalLightDirection[1],this._studio.directionalLightDirection[2]);
-        this._directionalLight = new DirectionalLight("directionalLight", direction , this._scene)
-        this._directionalLight.position = new Vector3(this._studio.directionalLightPosition[0],this._studio.directionalLightPosition[1],this._studio.directionalLightPosition[2])
+        const direction = new Vector3(this._studio.directionalLightDirection[0], this._studio.directionalLightDirection[1], this._studio.directionalLightDirection[2]);
+        this._directionalLight = new DirectionalLight("directionalLight", direction, this._scene)
+        this._directionalLight.position = new Vector3(this._studio.directionalLightPosition[0], this._studio.directionalLightPosition[1], this._studio.directionalLightPosition[2])
         this._directionalLight.intensity = 0.15
         this._directionalLight.lightmapMode = Light.LIGHTMAP_SHADOWSONLY
     }
 
     private setUpCamera() {
         this._scene.createDefaultCamera()
-
 
 
     }
@@ -151,8 +156,8 @@ export class StudioManager {
         this.setUpCollisionBox(meshes) //设置碰撞盒子
 
         //小地图
-        const miniMapMesh = meshes.find(mesh=>mesh.name == this._studio.miniMap);
-        if (miniMapMesh){
+        const miniMapMesh = meshes.find(mesh => mesh.name == this._studio.miniMap);
+        if (miniMapMesh) {
             miniMapMesh.layerMask = MINI_MAP_LAYER_MASK
         }
 
@@ -205,10 +210,10 @@ export class StudioManager {
     private _shadowGenerator?: ShadowGenerator  // 阴影
 
     //异步->转换成promise
-    private _loadLightMapTexture=()=>{
-        return new Promise<Texture>((resolve,reject) => {
+    private _loadLightMapTexture = () => {
+        return new Promise<Texture>((resolve, reject) => {
             const lightMapTexture = new Texture(this._studio.groundLightMapUrl, this._scene);
-            lightMapTexture.onLoadObservable.addOnce(()=>{
+            lightMapTexture.onLoadObservable.addOnce(() => {
                 resolve(lightMapTexture)
             })
         })
@@ -230,10 +235,10 @@ export class StudioManager {
         }
 
         //其它的mesh设置receiveShadows
-        this._studio.receiveShadowName.forEach(name=>{
+        this._studio.receiveShadowName.forEach(name => {
 
             const mesh = this._scene.getMeshByName(name);
-            if (mesh){
+            if (mesh) {
                 mesh.receiveShadows = true
             }
 
@@ -361,13 +366,13 @@ export class StudioManager {
 
             distanceHelper.triggerOnceWhenDistanceLessThan(2, () => {
                 this._currentArea = "BookShelf" //当前所在位置为 图书架
-                if ( !this._playerManager.busy  && this._bookShelfAreaHint) {
+                if (!this._playerManager.busy && this._bookShelfAreaHint) {
                     playerUiState.setDialogShowing(true) //打开对话框
-                    this._playerManager.busy =true
+                    this._playerManager.busy = true
                     if (!this._sound.bookShelf.isPlaying) {
                         this._sound.bookShelf.play()//播放一次
-                        this._sound.bookShelf.onEndedObservable.add(()=>{
-                            this._playerManager.busy =false
+                        this._sound.bookShelf.onEndedObservable.add(() => {
+                            this._playerManager.busy = false
                         })
                     }
                     playerUiState.setDialogInfo({
@@ -458,22 +463,22 @@ export class StudioManager {
         } as StudioSound
     }
 
-    playEnterSound(){
+    playEnterSound() {
         if (!this._sound.enter.isPlaying) {
             this._sound.enter.play()
         }
     }
 
-    playSelectSound(){
-            this._sound.select.play()
+    playSelectSound() {
+        this._sound.select.play()
     }
 
 
-    playSelectSimpleSound(){
+    playSelectSimpleSound() {
         this._sound.selectSimple.play()
     }
 
-    playButtonHitSound(){
+    playButtonHitSound() {
         if (!this._sound.buttonHit.isPlaying)
             this._sound.buttonHit.play()
     }
@@ -598,17 +603,18 @@ export class StudioManager {
 
     }
 
-    private clearAIState(){
-        this._AIs.forEach(ai=>{
+    private clearAIState() {
+        this._AIs.forEach(ai => {
             ai.clearAIState()
         })
     }
 
-    private _miniMapCamera?:FreeCamera
+    private _miniMapCamera?: FreeCamera
+
     private setUpMiniMapCamera() {
-        const miniMapCamera = new FreeCamera("miniMapCamera",new Vector3(0,10,0),this._scene);
-        miniMapCamera.target = new Vector3(0,0,0)
-        miniMapCamera.viewport =new Viewport(0.01,0.71,0.14,0.28)
+        const miniMapCamera = new FreeCamera("miniMapCamera", new Vector3(0, 10, 0), this._scene);
+        miniMapCamera.target = new Vector3(0, 0, 0)
+        miniMapCamera.viewport = new Viewport(0.01, 0.71, 0.14, 0.28)
         miniMapCamera.layerMask = MINI_MAP_LAYER_MASK
         miniMapCamera.mode = Camera.ORTHOGRAPHIC_CAMERA;
         miniMapCamera.orthoBottom = -7.5;
@@ -616,24 +622,21 @@ export class StudioManager {
         miniMapCamera.orthoLeft = -7.5;
         miniMapCamera.orthoRight = 7.5;
         this._miniMapCamera = miniMapCamera
-        this._scene.registerBeforeRender(()=>{
-            miniMapCamera.position.set(this._playerManager.playerPosition.x,10,this._playerManager.playerPosition.z)
+        this._scene.registerBeforeRender(() => {
+            miniMapCamera.position.set(this._playerManager.playerPosition.x, 10, this._playerManager.playerPosition.z)
         })
         this._scene.activeCameras?.push(miniMapCamera)
-
     }
 
-     setPlayerBusy(busy:boolean){
+    setPlayerBusy(busy: boolean) {
         this._playerManager.busy = busy
     }
 
 
-
-
-    clearPlayerState(){  //该方法用来清除玩家与AI的对话状态  并将玩家置位忙状态
-        this._playerManager.busy =true
+    clearPlayerState() {  //该方法用来清除玩家与AI的对话状态  并将玩家置位忙状态
+        this._playerManager.busy = true
         usePlayerUiState.setDialogShowing(false)
-        this._AIs.forEach(ai=>{
+        this._AIs.forEach(ai => {
             ai.clearAIState()
         })
     }

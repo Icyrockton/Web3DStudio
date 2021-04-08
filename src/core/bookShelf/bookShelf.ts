@@ -97,7 +97,8 @@ export class BookShelf implements BookSound {
         this.setUpSound()
         this.setUpCamera()
         this.setUpShelf()
-
+        const bookShelfUiState = useBookShelfUiState;
+        bookShelfUiState.bookShelfInstance= this
         // this._scene.debugLayer.show()
     }
 
@@ -141,34 +142,44 @@ export class BookShelf implements BookSound {
                 }
             })
 
-            //放置书籍
-            const bookShelfUiState = useBookShelfUiState;
+            this.updateBookShelf()
 
-            bookShelfUiState.books.forEach(book => {
-                switch (book.area) {
-                    case "A_Area":
-                        this.placeBook(book, this._bookLocTransformNode.A_Area)
-                        break
-                    case "B_Area":
-                        this.placeBook(book, this._bookLocTransformNode.B_Area)
-                        break
-                    case "C_Area":
-                        this.placeBook(book, this._bookLocTransformNode.C_Area)
-                        break
-                    case "D_Area":
-                        this.placeBook(book, this._bookLocTransformNode.D_Area)
-                        break
-                    default:
-
-                }
-            })
 
         })
     }
 
+    updateBookShelf(){ //更新书架上的书籍
+        this.disposeAllBook()
+        //放置书籍
+        const bookShelfUiState = useBookShelfUiState;
+
+        bookShelfUiState.books.forEach(book => {
+            switch (book.area) {
+                case "A_Area":
+                    this.placeBook(book, this._bookLocTransformNode.A_Area)
+                    break
+                case "B_Area":
+                    this.placeBook(book, this._bookLocTransformNode.B_Area)
+                    break
+                case "C_Area":
+                    this.placeBook(book, this._bookLocTransformNode.C_Area)
+                    break
+                case "D_Area":
+                    this.placeBook(book, this._bookLocTransformNode.D_Area)
+                    break
+                default:
+
+            }
+        })
+    }
+
+    private disposeAllBook(){ //dispose所有的图书
+        this._bookInstances.forEach(book => book.dispose())
+    }
+
+    private _bookInstances:Book[] = []
     // shelfTransformNode 要放置的那一行
     private placeBook(book: BookDetail, shelfTransformNodes: TransformNode[]) {
-        console.log('开始放置书籍')
         for (let i = 0; i < shelfTransformNodes.length; i++) {
             const slot = shelfTransformNodes[i]
             const hasPlacedNum = this._count.get(slot); //已经放置了多少书籍
@@ -177,7 +188,8 @@ export class BookShelf implements BookSound {
                 this._count.set(slot, hasPlacedNum + 1)
                 const position = new Vector3(-slot.position.x, slot.position.y, slot.position.z - 0.1 * (hasPlacedNum))  //z轴进行偏移
 
-                new Book(this._scene, book, position, this, this._shadowGenerator,this._highLightLayer)
+                const bookInstance = new Book(this._scene, book, position, this, this._shadowGenerator,this._highLightLayer);
+                this._bookInstances.push(bookInstance)
                 break; //停止放置
             }
         }

@@ -16,7 +16,7 @@
     height: 100%;
     transition: right .8s var(--ease-out-swift);
     --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
-
+    z-index: 120;
 }
 
 

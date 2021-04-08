@@ -29,7 +29,7 @@ export interface StudioEBook{
 }
 
 
-export interface EBookUtil {
+export interface EBookSound {
     playOpenBookSound(): void
 
     playCloseBookSound(): void
@@ -41,7 +41,7 @@ export interface EBookUtil {
 }
 
 
-export class PracticeTable implements EBookUtil {
+export class PracticeTable implements EBookSound {
     private _scene: Scene;
     private _shadowGenerator: CascadedShadowGenerator
     private _highLightLayer: HighlightLayer
@@ -144,28 +144,9 @@ export class PracticeTable implements EBookUtil {
                     this.setUpComputerScreen(mesh)
                 }
             })
-            const practiceTableUiState = usePracticeTableUiState;
 
-            //放置书籍
-            practiceTableUiState.eBooks.forEach(eBook => {
-                let index = -1
-                //找到放置的索引号
-                for (let i = 0; i < this._EBookLocTransformNodes.length; i++) {
-                    const bookCount = this._count.get(this._EBookLocTransformNodes[i])!;
-                    if (bookCount >= 1) {
-                        continue
-                    } else {
-                        index = i
-                        this._count.set(this._EBookLocTransformNodes[i], bookCount + 1);
-                        break
-                    }
-                }
-                if (index == -1) { //不放置了
-                    return
-                } else { //放置书籍
-                    this.placeBook(eBook, this._EBookLocTransformNodes[index])
-                }
-            })
+
+            this.updateEBook()
 
             if (PracticeTable.NEED_HINT){
                 this.setUpHint()
@@ -487,5 +468,33 @@ export class PracticeTable implements EBookUtil {
         if (this._powerTransformNode) {
             hint.position.copyFrom(this._powerTransformNode.position).subtractInPlace(new Vector3(0.15,-0.15,-0.1))
         }
+    }
+
+    updateEBook() {
+        this.disposeCurrentBook()
+        this.eBookGroupIndex = 0 //初始化为0
+        const practiceTableUiState = usePracticeTableUiState;
+
+        //放置书籍
+        practiceTableUiState.eBooks.forEach(eBook => {
+            let index = -1
+            //找到放置的索引号
+            for (let i = 0; i < this._EBookLocTransformNodes.length; i++) {
+                const bookCount = this._count.get(this._EBookLocTransformNodes[i])!;
+                if (bookCount >= 1) {
+                    continue
+                } else {
+                    index = i
+                    this._count.set(this._EBookLocTransformNodes[i], bookCount + 1);
+                    break
+                }
+            }
+            if (index == -1) { //不放置了
+                return
+            } else { //放置书籍
+                this.placeBook(eBook, this._EBookLocTransformNodes[index])
+            }
+        })
+
     }
 }

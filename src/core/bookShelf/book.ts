@@ -65,6 +65,10 @@ export class Book {
         // mesh.position.x = -1
     }
 
+    public dispose(){
+        this.bookNode.dispose()
+    }
+
     private _callback: SceneLoaderSuccessCallback = (meshes, particleSystems, skeletons, animationGroups, transformNodes) => {
 
         //设置父级

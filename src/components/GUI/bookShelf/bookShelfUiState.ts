@@ -1,10 +1,11 @@
-import {BookDetail} from "../../../core/bookShelf/bookShelf";
-import {makeAutoObservable} from "mobx";
+import {BookDetail, BookShelf} from "../../../core/bookShelf/bookShelf";
+import {makeAutoObservable, runInAction} from "mobx";
 import {Book} from "../../../core/bookShelf/book";
 import {Web3DStudio} from "../../../web3DStudio";
 import {PlayerManager} from "../../../core/player/playerManager";
 import useNavUiState from "../nav/navUiState";
 import usePlayerUiState from "../player/playerUiState";
+import useWeb3DApi from "../../../network/web3dApi";
 
 
 const fakeBooks: BookDetail[] = [
@@ -117,7 +118,7 @@ const fakeBooks: BookDetail[] = [
 
 export class BookShelfUiState {
 
-    books: BookDetail[ ] = fakeBooks
+    books: BookDetail[] = []
 
     currentBook: Book | null = null //保存实例为了关闭书籍
     currentBookDetail: BookDetail | null = null //书籍的信息
@@ -125,12 +126,14 @@ export class BookShelfUiState {
     shelfShowing : boolean =false //书架显示?
     web3DStudio:Web3DStudio | null =null
     playerManager: PlayerManager | null = null;
+    bookShelfInstance: BookShelf | null = null;
 
     constructor() {
         makeAutoObservable(this, {web3DStudio:false,
             currentBook: false,
             setBookWithDetail: false,
             currentBookDetail: false,
+            bookShelfInstance:false,
             playerManager:false})
     }
 
@@ -152,6 +155,18 @@ export class BookShelfUiState {
             this.playerManager.busy =false //设置为非忙碌状态
             useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
+    }
+
+    async updateBookShelf(studioUUID:number){ //传进来工作室的ID
+        const studioBook = await useWeb3DApi.getStudioBook(studioUUID);
+        console.log(studioBook.data)
+        runInAction(()=>{
+            this.books = studioBook.data
+            if (this.bookShelfInstance){
+                this.bookShelfInstance.updateBookShelf()
+            }
+        })
+
     }
 }
 

@@ -28,7 +28,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                     videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
                 },
                 {
-                    uuid: 3,
+                    uuid: 1,
                     name: "UI设计工作室",
                     location: 3,
                     description: "UI设计工作室一个友好的工作室，这里可以观看各种UI设计视频，以及完成UI设计练习",
@@ -38,7 +38,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                     videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
                 },
                 {
-                    uuid: 4,
+                    uuid: 2,
                     name: "大数据工作室",
                     location: 4,
                     description: "大数据工作室一个友好的工作室，这里可以观看各种大数据视频，以及完成大数据练习",
@@ -48,7 +48,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                     videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
                 },
                 {
-                    uuid: 5,
+                    uuid: 1,
                     name: "机器人工作室",
                     location: 5,
                     description: "机器人工作室一个友好的工作室，这里可以观看各种机器人视频，以及完成机器人练习",
@@ -58,7 +58,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                     videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4"
                 },
                 {
-                    uuid: 6,
+                    uuid: 2,
                     name: "人工智能工作室",
                     location: 6,
                     description: "人工智能工作室一个友好的工作室，这里可以观看各种人工智能视频，以及完成人工智能练习",
@@ -73,7 +73,7 @@ export const fakeCollegeFloors: CollegeFloors = {
         {
             floorNumber: 2,
             studios: [{
-                uuid: 9,
+                uuid: 1,
                 name: "机器人工作室",
                 location: 1,
                 description: "机器人工作室一个友好的工作室，这里可以观看各种机器人视频，以及完成机器人练习",
@@ -83,7 +83,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                 videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4"
             },
                 {
-                    uuid: 10,
+                    uuid: 2,
                     name: "游戏工作室",
                     location: 2,
                     description: "游戏工作室一个友好的工作室，这里可以观看各种游戏视频，以及完成游戏练习",
@@ -98,7 +98,7 @@ export const fakeCollegeFloors: CollegeFloors = {
         {
             floorNumber: 3,
             studios: [{
-                uuid: 11,
+                uuid: 1,
                 name: "机器人工作室",
                 location: 1,
                 description: "机器人工作室一个友好的工作室，这里可以观看各种机器人视频，以及完成机器人练习",
@@ -108,7 +108,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                 videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
             },
                 {
-                    uuid: 12,
+                    uuid: 2,
                     name: "大数据工作室",
                     location: 2,
                     description: "大数据工作室一个友好的工作室，这里可以观看各种大数据视频，以及完成大数据练习",
@@ -123,7 +123,7 @@ export const fakeCollegeFloors: CollegeFloors = {
         {
             floorNumber: 4,
             studios: [{
-                uuid: 13,
+                uuid: 1,
                 name: "UI设计工作室",
                 location: 1,
                 description: "UI设计工作室一个友好的工作室，这里可以观看各种UI设计视频，以及完成UI设计练习",
@@ -133,7 +133,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                 videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
             },
                 {
-                    uuid: 14,
+                    uuid: 2,
                     name: "大数据工作室",
                     location: 2,
                     description: "大数据工作室一个友好的工作室，这里可以观看各种大数据视频，以及完成大数据练习",
@@ -148,7 +148,7 @@ export const fakeCollegeFloors: CollegeFloors = {
         {
             floorNumber: 5,
             studios: [{
-                uuid: 15,
+                uuid: 1,
                 name: "python工作室",
                 location: 1,
                 description: "python工作室一个友好的工作室，这里可以观看各种python视频，以及完成python练习",
@@ -158,7 +158,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                 videoURL:"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"
             },
                 {
-                    uuid: 16,
+                    uuid: 2,
                     name: "软件测试工作室",
                     location: 2,
                     description: "软件测试工作室一个友好的工作室，这里可以观看各种软件测试视频，以及完成软件测试练习",

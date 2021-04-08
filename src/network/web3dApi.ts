@@ -2,6 +2,9 @@ import axios from "axios";
 import {CollegeMap} from "../core/collegeMap/collegeMapManager";
 import {CollegeFloors} from "../core/college/collegeManager";
 import {Studio} from "../core/studio/Studio";
+import {BookDetail, StudioBook} from "../core/bookShelf/bookShelf";
+import {EBookDetail, StudioEBook} from "../core/practiceTable/practiceTable";
+import {PracticeTask} from "../components/GUI/practiceTable/practiceTableUiState";
 
 interface LoginResponse {
     code: number,
@@ -47,6 +50,32 @@ export class Web3dApi {
         return this._axios.get<Studio>("/studio", {
             params: {
                 "uuid": uuid
+            }
+        })
+    }
+
+    getStudioBook(uuid:number){ //工作室的UUID
+        return this._axios.get<BookDetail[]>("/studioBook",{
+            params:{
+                "uuid": uuid
+            }
+        })
+    }
+
+
+    getStudioEBook(uuid:number){ //工作室的UUID
+        return this._axios.get<EBookDetail[]>("/studioEBook",{
+            params:{
+                "uuid": uuid
+
+            }
+        })
+    }
+
+    getStudioTask(taskUuid:number){ //练习题的UUID
+        return this._axios.get<PracticeTask>("studioTask",{
+            params:{
+                "uuid" : taskUuid
             }
         })
     }

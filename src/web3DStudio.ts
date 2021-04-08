@@ -107,7 +107,7 @@ export class Web3DStudio implements IState {
 
     async setLoadingAnimation() { //设置加载动画
 
-        //await this.goToCollegeMap() //切换到地图场景
+        await this.goToCollegeMap() //切换到地图场景
 
 
         //暂时直接
@@ -116,7 +116,7 @@ export class Web3DStudio implements IState {
         //暂时直接
 
 
-        await this.goToStudio(1)
+        //await this.goToStudio(1)
     }
 
     focusCanvas(): void {
@@ -146,11 +146,11 @@ export class Web3DStudio implements IState {
             this.changeToLoadingScene()
 
         let mapScene = new Scene(this._engine)
-        // const web3dApi = useWeb3DApi;
-        // const response = await web3dApi.getCollegeMap();
-        // const collegeMap = response.data;
-        // let manager = new CollegeMapManager(mapScene, this, collegeMap)
-        let manager = new CollegeMapManager(mapScene, this, fakeCollegeMap)
+        const web3dApi = useWeb3DApi;
+        const response = await web3dApi.getCollegeMap();
+        const collegeMap = response.data;
+        let manager = new CollegeMapManager(mapScene, this, collegeMap)
+         //let manager = new CollegeMapManager(mapScene, this, fakeCollegeMap)
         await manager.load()
 
         this._scene = mapScene
@@ -176,11 +176,11 @@ export class Web3DStudio implements IState {
         this.changeToLoadingScene() //切换到加载场景
 
         let collegeScene = new Scene(this._engine)
-        // const web3dApi = useWeb3DApi;
-        // const response = await web3dApi.getCollegeFloor(collegeUUid);
-        // const collegeFloor = response.data;
-        // let manager = new CollegeManager(collegeScene, this, collegeFloor)
-        let manager = new CollegeManager(collegeScene, this, fakeCollegeFloors)
+        const web3dApi = useWeb3DApi;
+        const response = await web3dApi.getCollegeFloor(collegeUUid);
+        const collegeFloor = response.data;
+        let manager = new CollegeManager(collegeScene, this, collegeFloor)
+        // let manager = new CollegeManager(collegeScene, this, fakeCollegeFloors)
         await manager.load()
         useFloorUiState.setFloorUiShowing(true) //显示UI
         useFloorUiState.setEveryFloorUiShowing(true)
@@ -213,10 +213,10 @@ export class Web3DStudio implements IState {
 
         let studioScene = new Scene(this._engine)
         const web3dApi = useWeb3DApi;
-        // const response = await web3dApi.getStudio(studioUUid);
-        // const studioData = response.data;
-        // let manager = new StudioManager(studioScene, studioData, this)
-        let manager = new StudioManager(studioScene, fakeStudio_AI, this)
+        const response = await web3dApi.getStudio(studioUUid);
+        const studioData = response.data;
+        let manager = new StudioManager(studioScene, studioData, this)
+        // let manager = new StudioManager(studioScene, , this)
         await manager.load()
 
         const playerUiState = usePlayerUiState;

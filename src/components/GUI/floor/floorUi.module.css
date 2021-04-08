@@ -1,7 +1,7 @@
 .selectFloorShow {
     display: block !important;
     opacity: 1 !important;
-    visibility: visible;
+    visibility: visible !important;
 }
 
 .selectFloor {
