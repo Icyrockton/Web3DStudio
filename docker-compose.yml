@@ -1,9 +1,34 @@
-version: "3.8"
+version: "3.9"
 services:
   web3D:
-    image: "web3d-studio"
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: icyrockton/web3d-studio
     ports:
-    - 3000:80
+    - 80:80
+    networks:
+      - frontendnetwork
+  backend:
+    image: icyrockton/web3d-studio-backend
+    container_name: springBoot
+    ports:
+    - 3020:3010
+    networks:
+      - backendnetwork
+      - frontendnetwork
+    depends_on:
+      - mysqlDB
+  mysqlDB:
+    image: mysql
+    container_name: testMysql
+    volumes:
+      - ./web3d.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: web3d
+    expose:
+        - 3306
+    networks:
+        - backendnetwork
+
+networks:
+  frontendnetwork :
+  backendnetwork :

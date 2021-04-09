@@ -9,7 +9,7 @@ import {
 } from "@babylonjs/core";
 import {
     GUI3DManager, TextBlock, MeshButton3D, StackPanel3D, AdvancedDynamicTexture, Button
-    ,  StackPanel, Control
+    , StackPanel, Control
 } from "@babylonjs/gui"
 import usePracticeTableUiState from "../../components/GUI/practiceTable/practiceTableUiState";
 import {EBook} from "./eBook";
@@ -23,9 +23,9 @@ export interface EBookDetail { //电子书详细信息
     thickness: number  //书的厚度
 }
 
-export interface StudioEBook{
-    uuid:number //工作室的ID
-    eBooks:EBookDetail[]
+export interface StudioEBook {
+    uuid: number //工作室的ID
+    eBooks: EBookDetail[]
 }
 
 
@@ -49,7 +49,7 @@ export class PracticeTable implements EBookSound {
     private _camera!: ArcRotateCamera
     private _3DGUIManager: GUI3DManager;
     private _practiceColumn?: StackPanel; //练习按钮 ...
-    static NEED_HINT:boolean =true
+    static NEED_HINT: boolean = true
     private _powerTransformNode?: TransformNode;
 
     constructor(_engine: Engine) {
@@ -59,7 +59,7 @@ export class PracticeTable implements EBookSound {
         const hemisphericLight = new HemisphericLight("practiceTableHemisphericLight", Vector3.Up(), this._scene);
         hemisphericLight.intensity = 0.7
         this._directionalLight = new DirectionalLight("practiceTableLight", new Vector3(1, -2, 2), this._scene)
-        this._directionalLight.position.set(0,2,-1)
+        this._directionalLight.position.set(0, 2, -1)
         this._directionalLight.intensity = 1.0
         //阴影
         this._shadowGenerator = new CascadedShadowGenerator(1024, this._directionalLight) //阴影贴图
@@ -82,7 +82,7 @@ export class PracticeTable implements EBookSound {
 
         this.setUpPracticeTable()
 
-         // this._scene.debugLayer.show()
+        // this._scene.debugLayer.show()
     }
 
     public render() {
@@ -128,14 +128,14 @@ export class PracticeTable implements EBookSound {
                 }
                 if (transformNode.name == PracticeTable.COMPUTER_POWER_LOC) {
                     powerTransformNode = transformNode
-                    this._powerTransformNode=powerTransformNode
+                    this._powerTransformNode = powerTransformNode
                 }
             })
 
             //制作按钮
             meshes.forEach((mesh) => {
                 //阴影
-                mesh.receiveShadows =true
+                mesh.receiveShadows = true
                 this._shadowGenerator.addShadowCaster(mesh)
                 if ((mesh instanceof Mesh) && mesh.name == PracticeTable.COMPUTER_POWER && powerTransformNode) {
                     this.setUpComputerPower(mesh, powerTransformNode)
@@ -148,9 +148,9 @@ export class PracticeTable implements EBookSound {
 
             this.updateEBook()
 
-            if (PracticeTable.NEED_HINT){
+            if (PracticeTable.NEED_HINT) {
                 this.setUpHint()
-                PracticeTable.NEED_HINT =false
+                PracticeTable.NEED_HINT = false
             }
         })
     }
@@ -227,7 +227,7 @@ export class PracticeTable implements EBookSound {
                 this._computerScreenTurnOff() //关闭显示器
             } else { //开机
                 if (this._hint)
-                    this._hint.isVisible =false
+                    this._hint.isVisible = false
                 buttonMat.diffuseColor = Color3.Red()
                 this._computerScreenTurnOn() //打开显示器
             }
@@ -342,7 +342,7 @@ export class PracticeTable implements EBookSound {
         if (this._practiceColumn) {
 
             //清空之前的东西
-            this._practiceColumn.children.splice(0,this._practiceColumn.children.length)
+            this._practiceColumn.children.splice(0, this._practiceColumn.children.length)
             //标题
             const practiceColumn = this._practiceColumn;
             const practiceTitle = new TextBlock("practice", "练习");
@@ -423,17 +423,17 @@ export class PracticeTable implements EBookSound {
         button.paddingRight = 5
         button.paddingTop = 10
         button.fontSize = "50px"
-        button.onPointerEnterObservable.add(()=>{
-            button.background ="#38ef7d"
+        button.onPointerEnterObservable.add(() => {
+            button.background = "#38ef7d"
         })
-        button.onPointerOutObservable.add(()=>{
-            button.background ="#f5af19"
+        button.onPointerOutObservable.add(() => {
+            button.background = "#f5af19"
         })
         button.onPointerDownObservable.add(() => {
             func()
         })
-        button.onPointerUpObservable.add(()=>{
-            button.background ="#f5af19"
+        button.onPointerUpObservable.add(() => {
+            button.background = "#f5af19"
         })
 
         panel.addControl(button)
@@ -445,11 +445,12 @@ export class PracticeTable implements EBookSound {
         this._scene.attachControl()
     }
 
-    detachControl(){ // actionManger 关闭
+    detachControl() { // actionManger 关闭
         this._scene.detachControl()
     }
 
-    private  _hint ?: Sprite
+    private _hint ?: Sprite
+
     private setUpHint() {
 
         const spriteManager = new SpriteManager("spriteManager", "img/sprite/computerScreenHint.png", 1, {
@@ -464,14 +465,15 @@ export class PracticeTable implements EBookSound {
         hint.width = 0.5
         hint.height = 0.25
         this._hint = hint
-        this._hint.isPickable =false
+        this._hint.isPickable = false
         if (this._powerTransformNode) {
-            hint.position.copyFrom(this._powerTransformNode.position).subtractInPlace(new Vector3(0.15,-0.15,-0.1))
+            hint.position.copyFrom(this._powerTransformNode.position).subtractInPlace(new Vector3(0.15, -0.15, -0.1))
         }
     }
 
     updateEBook() {
         this.disposeCurrentBook()
+        this.clearCount()
         this.eBookGroupIndex = 0 //初始化为0
         const practiceTableUiState = usePracticeTableUiState;
 
@@ -496,5 +498,11 @@ export class PracticeTable implements EBookSound {
             }
         })
 
+    }
+
+    clearCount() {
+        this._count.forEach(((value, key) => {
+            this._count.set(key, 0)
+        }))
     }
 }

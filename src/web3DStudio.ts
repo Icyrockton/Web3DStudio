@@ -127,6 +127,10 @@ export class Web3DStudio implements IState {
 
     async goToCollegeMap() {
         //网络获取学院地图
+        useBookShelfUiState.setShelfShowing(false)
+        usePracticeTableUiState.setPracticeTableShowing(false)
+        this.setPracticeTableShow(false)
+        this.setBookShelfShow(false)
         useNavUiState.setNavShowing(false) //关闭导航UI
         usePlayerUiState.setMiniMapShowing(false)
         usePlayerUiState.setShowing(false)
@@ -161,8 +165,13 @@ export class Web3DStudio implements IState {
         //this._scene.debugLayer.show()
     }
 
+    private _currentCollegeUUid:number = 1  //当前所在的学院UUid
 
     async goToCollege(collegeUUid: number) {  //传递进来collegeUUid
+        useBookShelfUiState.setShelfShowing(false)
+        usePracticeTableUiState.setPracticeTableShowing(false)
+        this.setPracticeTableShow(false)
+        this.setBookShelfShow(false)
         useNavUiState.setNavShowing(false) //关闭导航UI
         useNavUiState.currentCollegeId = collegeUUid //当前的ID
         usePlayerUiState.setMiniMapShowing(false)
@@ -174,6 +183,8 @@ export class Web3DStudio implements IState {
         useAchievementUiState.setOpenUiShowing(false)
         const prevScene = this._scene
         this.changeToLoadingScene() //切换到加载场景
+        //this._currentCollegeUUid = collegeUUid
+
 
         let collegeScene = new Scene(this._engine)
         const web3dApi = useWeb3DApi;
@@ -213,10 +224,10 @@ export class Web3DStudio implements IState {
 
         let studioScene = new Scene(this._engine)
         const web3dApi = useWeb3DApi;
-        const response = await web3dApi.getStudio(studioUUid);
+        const response = await web3dApi.getStudio(this._currentCollegeUUid,studioUUid);
         const studioData = response.data;
         let manager = new StudioManager(studioScene, studioData, this)
-        // let manager = new StudioManager(studioScene, , this)
+         //let manager = new StudioManager(studioScene, fakeStudio_AI, this)
         await manager.load()
 
         const playerUiState = usePlayerUiState;

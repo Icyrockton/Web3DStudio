@@ -1,13 +1,13 @@
 import usePracticeTableUiState, {
     PracticeSubTask,
     PracticeSubTaskType,
-    PracticeTableUiState
+    PracticeTableUiState, PracticeTask
 } from "./practiceTableUiState";
 import {observer} from "mobx-react-lite";
 import React, {ChangeEvent, useState} from "react";
 import classes from "./practiceTableUi.module.css"
 import {Button, Card, Col, Progress, Radio, Row, Tooltip} from "antd";
-import {AppstoreOutlined, CheckOutlined, CloseOutlined, CloseSquareOutlined} from "@ant-design/icons";
+import {AppstoreOutlined, CheckOutlined, CloseOutlined, CloseSquareOutlined, LoadingOutlined} from "@ant-design/icons";
 import Layout, {Content, Header} from "antd/es/layout/layout";
 import Sider from "antd/es/layout/Sider";
 import TextArea from "antd/es/input/TextArea";
@@ -103,7 +103,7 @@ type PracticeTableUiProps = {
 const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
 
         const uiState = props.uiState;
-        const practiceDetail = uiState.currentPracticeDetail!;
+        const practiceDetail = uiState.currentPracticeDetail;
         const [visible, setVisible] = useState(false);
         const eReaderClose = () => {
             uiState.setEBookReaderShowing(false)
@@ -117,24 +117,33 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
         const submit = () => {   //练习提交
             setVisible(true)
         }
-        const practiceContent = () => {
+        const practiceContent = (task : PracticeTask | null) => {
 
-            let content = practiceDetail.subTasks.map((subTask, index) => {
-                switch (subTask.type) {
-                    case PracticeSubTaskType.choice:
-                        return (<PracticeChoice task={subTask} index={index} key={`chocie-${index}`}/>)
-                    case PracticeSubTaskType.code:
-                        return (<PracticeCode task={subTask} index={index} key={`code-${index}`}/>)
-                    case PracticeSubTaskType.fillInBlank:
-                        return (<PracticeFillInBlank task={subTask} index={index} key={`fillInBlank-${index}`}/>)
-                    case PracticeSubTaskType.questions:
-                        return (<PracticeQuestions task={subTask} index={index} key={`question-${index}`}/>)
-                }
+            if (task) {
+                console.log(task)
+                let content = task.subTasks.map((subTask, index) => {
+                    switch (subTask.type) {
+                        case PracticeSubTaskType.choice:
+                            return (<PracticeChoice task={subTask} index={index} key={`chocie-${index}`}/>)
+                        case PracticeSubTaskType.code:
+                            return (<PracticeCode task={subTask} index={index} key={`code-${index}`}/>)
+                        case PracticeSubTaskType.fillInBlank:
+                            return (<PracticeFillInBlank task={subTask} index={index} key={`fillInBlank-${index}`}/>)
+                        case PracticeSubTaskType.questions:
+                            return (<PracticeQuestions task={subTask} index={index} key={`question-${index}`}/>)
+                    }
 
 
-            })
+                })
+                return content
+            }
+            else{
+                return (<div className={classes.loading}>
+                    <LoadingOutlined style={{ fontSize: 24  }} spin />
+                    <h1>加载中...</h1>
+                </div>)
+            }
 
-            return content
         }
         const hideModal = () => {
             setVisible(false)
@@ -205,8 +214,8 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
                         </Sider>
                         <Layout className={classes.practiceMainArea}>
                             <Header className={classes.practiceHeader}>
-                                <Row justify={"center"} align={"middle"}>
-                                    <Col span={20}>
+                                <Row justify={"center"} align={"middle"} style={{height:"100%"}}>
+                                    <Col span={19}>
                                         <h1 className={classes.centerText}>{practiceDetail?.name}</h1>
                                     </Col>
                                     <Col span={2}>
@@ -216,6 +225,7 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
                                             提交
                                         </Button>
                                     </Col>
+                                    <Col span={1}/>
 
                                     <Col span={2}>
                                         <Button type="default" danger icon={<CloseOutlined/>} size={"large"}
@@ -227,7 +237,7 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
                             </Header>
 
                             <Content style={{padding: "24px"}} className={classes.practiceContentArea}>
-                                {practiceContent()}
+                                {practiceContent(uiState.currentPracticeDetail)}
                             </Content>
                         </Layout>
                     </Layout>
@@ -292,7 +302,7 @@ const EBookReader = (props: EBookReaderProps) => {
             <div className={`${classes.blackBg} ${props.eBookReaderShowing ? classes.blackBgShow : "" }`}></div>
 
             <div className={`${classes.eBookReaderArea} ${props.eBookReaderShowing ? "" : classes.none}`}>
-            <Worker workerUrl="src/assets/worker/pdf.worker.min.js">
+            <Worker workerUrl="worker/pdf.worker.min.js">
                 <Viewer
                     fileUrl={props.eBookFile}
                     renderLoader={eBookRenderLoader} renderError={eBookRenderError}

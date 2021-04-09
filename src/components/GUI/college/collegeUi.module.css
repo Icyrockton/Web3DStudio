@@ -1,30 +1,117 @@
-.logo {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-}
+
 
 .none {
     display: none;
 }
 
-.collegeUI {
+.collegeUIRight {
     position: absolute;
-    right: -300px;
-    top: 0;
-    width: 300px;
-    height: 100%;
-    transition: right .8s var(--ease-out-swift);
+    right: -50vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40vw;
+    transition: right .5s var(--ease-out-swift) ,height .3s ease,left .5s var(--ease-out-swift);
     --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
     z-index: 120;
+    border-radius: 1vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(100, 100, 100, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(1vh);
+    padding: 1vh;
+}
+
+.collegeUILeft {
+    position: absolute;
+    left: -50vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40vw;
+    transition: right .5s var(--ease-out-swift) ,height .3s ease,left .5s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+    z-index: 120;
+    border-radius: 1vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(100, 100, 100, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(1vh);
+    padding: 1vh;
 }
 
 
-.collegeUIShow{
-    right: 0;
+.collegeUIShowLeft{
+    left: 5vw;
 }
+
+.collegeUIShowRight{
+    right: 5vw;
+}
+
+
+
 
 
 .cardImg {
-    width: 100%;
+    flex: 1;
+    width: 12vw;
+    border-radius: 1vw;
+}
+
+.cardSideBar{
+    flex: 1;
+    text-align: center;
+    border-radius: 1vw;
+}
+.cardSideBar h2{
+    font-weight: bold;
+    color: white;
+}
+
+.cardInfo{
+    flex: 2;
+    align-self: start;
+    padding: 1vh;
+}
+
+.cardInfo h2{
+    font-weight: bold;
+    color: white;
+}
+.cardInfo p{
+    text-indent: 2em;
+    color: white;
+}
+.studio{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.singleStudio{
+    flex-basis: 50%;
+    align-self: center;
+    padding: 1vh;
+}
+
+.singleStudio span{
+    color: white;
+}
+.logo {
+    width: 3vw;
+    height: 3vw;
+    border-radius: 1.5vw;
+    margin-right: 1vw;
+}
+
+.loading{
+    text-align: center;
+    color: white;
+}
+.loading h2{
+    font-weight: bold;
+    color: white;
 }

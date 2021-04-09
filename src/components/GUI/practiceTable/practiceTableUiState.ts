@@ -56,6 +56,62 @@ const fakeEBooks: EBookDetail [] = [
 ]
 
 
+
+const fakeAiEBooks: EBookDetail [] = [
+    {
+        uuid: 21,
+        bookName: "深度学习",
+        bookURL: "pdf/Functional_programming-22-25.pdf",
+        textureImgURL: "img/bookCover/eBook/eBook_6.png",
+        thickness: 1.0
+    },
+    {
+        uuid: 22,
+        bookName: "人工智能数学基础",
+        bookURL: "pdf/java8practice-22-26.pdf",
+        textureImgURL: "img/bookCover/eBook/eBook_2.png",
+        thickness: 1.0
+    },
+    {
+        uuid: 23,
+        bookName: "机器学习",
+        bookURL: "pdf/Concurrent_programming_art-15-19.pdf",
+        textureImgURL: "img/bookCover/eBook/eBook_3.png",
+        thickness: 1.0
+    },
+    {
+        uuid: 24,
+        bookName: "机器学习实战",
+        bookURL: "pdf/DeepUnderstandingOfJVM-253-257.pdf",
+        textureImgURL: "img/bookCover/eBook/eBook_4.png",
+        thickness: 1.0
+    },
+    {
+        uuid: 25,
+        bookName: "机器学习要素",
+        bookURL: "pdf/java8practice-88-93.pdf",
+        textureImgURL: "img/bookCover/eBook/eBook_5.png",
+        thickness: 1.0
+    },
+    {
+        uuid: 26,
+        bookName: "TensorFlow深度学习",
+        bookURL: "pdf/java8practice-88-93.pdf",
+        textureImgURL: "img/bookCover/eBook/eBook_1.png",
+        thickness: 1.0
+    },
+    {
+        uuid: 27,
+        bookName: "统计学习要素",
+        bookURL: "pdf/java8practice-88-93.pdf",
+        textureImgURL: "img/bookCover/eBook/eBook_7.png",
+        thickness: 1.0
+    }
+
+]
+
+
+
 export enum PracticeSubTaskType {
     choice="choice", //选择题
     fillInBlank="fillInBlank", //填空题
@@ -163,6 +219,96 @@ const fakePracticeTask: PracticeTask[] = [
 ]
 
 
+const fakeAiPracticeTask: PracticeTask[] = [
+    {
+        uuid: 11,
+        name: "1单元机器学习练习题",
+        description: "人工智能工作室，机器学习练习题",
+        subTasks: [
+            {
+                name: "回归和分类都是有监督学习问题",
+                type: PracticeSubTaskType.choice,
+                choice: ["对", "错"],
+                score: 5
+            },
+            {
+                name: "回归问题和分类问题都有可能发生过拟合",
+                type: PracticeSubTaskType.choice,
+                choice: ["对", "错"],
+                score: 5
+            },
+            {
+                name: "在神经网络模型VggNet中，使用两个级联的卷积核大小为3×3，stride=1的卷积层代替了一个5×5的卷积层，如果将stride设置为2，则此时感受野为",
+                type: PracticeSubTaskType.choice,
+                choice: ["7*7", "9*9","5*5","8*8"],
+                score: 5
+            },
+            {
+                name: "在网络训练时，loss在最初几个epoch没有下降，可能原因是",
+                type: PracticeSubTaskType.questions,
+                score: 5
+            },
+        ]
+    },
+    {
+        uuid: 12,
+        name: "深度学习面试题",
+        description: "人工智能工作室，深度学习练习题",
+        subTasks: [
+            {
+                name: "为什么必须在神经网络中引入非线性？",
+                type: PracticeSubTaskType.questions,
+                score: 5
+            },
+            {
+                name: "说明解决神经网络中梯度消失问题的两种方法。",
+                type: PracticeSubTaskType.questions,
+                score: 5
+            },
+            {
+                name: "在图像分类任务中，相较于使用密集神经网络（DenseNeuralNetwork，DNN），使用卷积神经网络（ConvolutionalNeuralNetwork，CNN）有哪些优势？",
+                type: PracticeSubTaskType.questions,
+                score: 5
+            },
+            {
+                name: "解释Adam优化器的概念。",
+                type: PracticeSubTaskType.questions,
+                score: 5
+            },
+
+        ]
+    },
+    {
+        uuid: 13,
+        name: "2单元机器学习练习题",
+        description: "人工智能工作室，机器学习练习题",
+        subTasks: [
+            {
+                name: "期望、方差、协方差、相关系数总结",
+                type: PracticeSubTaskType.fillInBlank,
+                score: 5
+            },
+            {
+                name: "监督学习、非监督学习、半监督学习、弱监督学习?",
+                type: PracticeSubTaskType.fillInBlank,
+                score: 5
+            },
+            {
+                name: "常用分类算法的优缺点",
+                type: PracticeSubTaskType.code,
+                score: 5
+            },
+            {
+                name: "在神经网络模型VggNet中，使用两个级联的卷积核大小为3×3，stride=1的卷积层代替了一个5×5的卷积层，如果将stride设置为2，则此时感受野为",
+                type: PracticeSubTaskType.choice,
+                choice: ["7*7", "9*9","5*5","8*8"],
+                score: 5
+            },
+        ]
+    }
+]
+
+
 
 
 export class PracticeTableUiState {
@@ -178,7 +324,7 @@ export class PracticeTableUiState {
     } //书籍的信息
 
     currentPractice: SubTask | null = null //保存
-    currentPracticeDetail: PracticeTask | null = fakePracticeTask[0]  //练习的详细数据结构 保存了练习的所有题目等...
+    currentPracticeDetail: PracticeTask | null = null  //练习的详细数据结构 保存了练习的所有题目等...
     practiceAnswer: PracticeAnswer[] = []
     web3DStudio: Web3DStudio | null = null
     practiceTable: PracticeTable | null = null
@@ -190,15 +336,15 @@ export class PracticeTableUiState {
 
 
     private async getPracticeTaskDetail(uuid: number) {
-        const task = await this.fetchPracticeTask(uuid);
+        const practice = await this.fetchPracticeTask(uuid);
         runInAction(() => {
-            this.currentPracticeDetail = task  //设置当前练习
+            this.currentPracticeDetail = practice  //设置当前练习
 
             this.practiceAnswer.splice(0, this.practiceAnswer.length)
             for (let i = 0; i < this.currentPracticeDetail.subTasks.length; i++) {
                 this.practiceAnswer.push({answer: ""})
             }
-            console.log('找到练习任务', task)
+            console.log('找到练习任务', practice)
         })
     }
 
@@ -210,7 +356,8 @@ export class PracticeTableUiState {
 
 
     async fetchPracticeTask(uuid: number) { //从服务器根据练习的uuid 获取所有练习的题目
-        return fakePracticeTask.find(task => task.uuid == uuid)!
+        const response = await useWeb3DApi.getStudioPractice(uuid);
+        return response.data
     }
 
     setEBookWithDetail(eBook: EBook, eBookDetail: EBookDetail) {
@@ -231,6 +378,10 @@ export class PracticeTableUiState {
         if ( leave &&!showing && this.playerManager) {
             this.playerManager.busy = false  //设置为非忙碌状态
             useNavUiState.navController?.focusCanvas() //聚焦canvas
+        }
+        if(!showing){
+            this.practiceShowing=false
+            this.eBookReaderShowing=false
         }
     }
 

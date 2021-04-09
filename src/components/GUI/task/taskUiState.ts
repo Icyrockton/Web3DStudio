@@ -1,18 +1,21 @@
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable, runInAction} from "mobx";
 import usePlayerUiState from "../player/playerUiState";
 import useNavUiState from "../nav/navUiState";
+import useWeb3DApi from "../../../network/web3dApi";
 
 
 export enum SubTaskState {
-    UnFinished, //未完成
-    Finished, //完成
-    OnProgress // 正在进行
+    UnFinished="UnFinished", //未完成
+    Finished="Finished", //完成
+    OnProgress="OnProgress" // 正在进行
 }
+
 export enum TaskState { //任务的状态
-    NotAccept, //还未接收任务
-    OnProgress,//正在进行中
-    Finished //已完成的任务
+    NotAccept="NotAccept", //还未接收任务
+    OnProgress="OnProgress",//正在进行中
+    Finished="Finished" //已完成的任务
 }
+
 export interface Task {
     uuid: number //任务的唯一id
     name: string //任务名称
@@ -28,17 +31,16 @@ export interface SubTask {
     name: string //子任务的名称
     status: SubTaskState //子任务的状态
     description: string // 子任务的描述
-    progress:number //子任务的完成进度 0-100
+    progress: number //子任务的完成进度 0-100
     type: StudyType //子任务类型
     studyUuid: number // 要么是一本书的ID 要么是电子书的ID 要么是练习的ID
     rate?: number //子任务评分 1-5
-
 }
 
 export enum StudyType {
-    video, //视频
-    practice, //课后练习
-    read //读书
+    video="video", //视频
+    practice="practice", //课后练习
+    read="read" //读书
 }
 
 export const fakeTask: Task[] = [{
@@ -160,7 +162,7 @@ export const fakeTask: Task[] = [{
                 type: StudyType.video,
                 status: SubTaskState.UnFinished,
                 progress: 0,
-                studyUuid: 8    ,
+                studyUuid: 8,
             }
         ]
     },
@@ -233,17 +235,134 @@ export const fakeTask: Task[] = [{
 ]
 
 
+export const fakeAiTask: Task[] = [{
+    uuid: 1,
+    name: '任务1',
+    description: '从零入门机器学习',
+    status: TaskState.NotAccept,
+    goal: "学习机器学习的基本知识",
+    subTask: [
+        {
+            status: SubTaskState.UnFinished,
+            name: '子任务1',
+            type: StudyType.video,
+            description: '了解卷积神经网络',
+            progress: 0,
+            studyUuid: 21,
+        },
+        {
+            status: SubTaskState.UnFinished,
+            name: '子任务2',
+            type: StudyType.video,
+            description: '了解多元问题',
+            progress: 0,
+            studyUuid: 23,
+
+        },
+        {
+            status: SubTaskState.UnFinished,
+            name: '子任务3',
+            type: StudyType.practice,
+            description: '完成机器学习练习题',
+            progress: 0,
+            studyUuid: 11,
+        },
+        {
+            status: SubTaskState.UnFinished,
+            name: '子任务4',
+            type: StudyType.read,
+            description: '阅读深度学习电子书',
+            progress: 0,
+            studyUuid: 21,
+        },
+        {
+            status: SubTaskState.UnFinished,
+            name: '子任务5',
+            type: StudyType.read,
+            description: '阅读机器学习实战',
+            progress: 0,
+            studyUuid: 24,
+        },
+
+    ],
+},
+
+    {
+        uuid: 2,
+        description: "深度学习实战",
+        name: "入门深度学习",
+        goal: "从机器学习到深度学习的学习",
+        status: TaskState.NotAccept,
+        subTask: [
+            {
+                name: "子任务1",
+                status: SubTaskState.UnFinished,
+                type: StudyType.video,
+                studyUuid: 21,
+                progress: 0,
+                description: "了解卷积神经网络"
+            },
+            {
+                name: "子任务2",
+                status: SubTaskState.UnFinished,
+                type: StudyType.video,
+                studyUuid: 25,
+                progress: 0,
+                description: "了解深度学习编程工具"
+            },
+            {
+                name: "子任务3",
+                status: SubTaskState.UnFinished,
+                type: StudyType.practice,
+                studyUuid: 3,
+                progress: 0,
+                description: "数据库安装"
+            },
+            {
+                name: "子任务4",
+                description: "完成深度学习面试题",
+                type: StudyType.practice,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid: 12,
+            },
+            {
+                name: "子任务5",
+                description: "阅读TensorFlow深度学习",
+                type: StudyType.read,
+                status: SubTaskState.UnFinished,
+                progress: 0,
+                studyUuid: 26,
+            },
+            {
+                status: SubTaskState.UnFinished,
+                name: '子任务6',
+                type: StudyType.read,
+                description: '阅读深度学习电子书',
+                progress: 0,
+                studyUuid: 21,
+            },
+        ]
+    },
+
+]
+
+
 export class TaskUiState {
     isShowing: boolean = false
-    taskList: Task[] = fakeTask
+    taskList: Task[] = []
+    currentStudioUUid: number = -1
 
     constructor() {
-        makeAutoObservable(this)
+        makeAutoObservable(this , {
+            currentStudioUUid:false
+        })
     }
 
     setShowing(showing: boolean) {
+        this.updateTaskList()
         this.isShowing = showing
-        if (!this.isShowing){
+        if (!this.isShowing) {
             useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
     }
@@ -293,6 +412,12 @@ export class TaskUiState {
     }
 
 
+   async  updateTaskList() {  //更新任务
+       const response = await useWeb3DApi.getStudioTask(this.currentStudioUUid);
+       runInAction(()=>{
+           this.taskList = response.data
+       })
+    }
 }
 
 

@@ -30,6 +30,7 @@ import useBookShelfUiState from "../../components/GUI/bookShelf/bookShelfUiState
 import usePracticeTableUiState from "../../components/GUI/practiceTable/practiceTableUiState";
 import {Light} from "@babylonjs/core/Lights/light";
 import {MINI_MAP_LAYER_MASK} from "./miniMap";
+import useTaskUiState from "../../components/GUI/task/taskUiState";
 
 interface StudioSound {
     bookShelf: Sound
@@ -76,6 +77,8 @@ export class StudioManager {
         useBookShelfUiState.updateBookShelf(this._studio.uuid)
         //更新练习台的内容
         usePracticeTableUiState.updatePracticeTable(this._studio.uuid)
+
+        useTaskUiState.currentStudioUUid  = this._studio.uuid
 
     }
 
@@ -372,7 +375,6 @@ export class StudioManager {
                     if (!this._sound.bookShelf.isPlaying) {
                         this._sound.bookShelf.play()//播放一次
                         this._sound.bookShelf.onEndedObservable.add(() => {
-                            this._playerManager.busy = false
                         })
                     }
                     playerUiState.setDialogInfo({
@@ -393,6 +395,7 @@ export class StudioManager {
             distanceHelper.triggerOnceWhenDistanceMoreThan(2, () => {
                 this._currentArea = null //设置位置为null
                 playerUiState.setDialogShowing(false) //关闭对话框
+                this._playerManager.busy = false
                 this._playerManager.hideHintSprite()
                 if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
                     this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
@@ -536,7 +539,6 @@ export class StudioManager {
                         if (!this._sound.practiceTable.isPlaying) {
                             this._sound.practiceTable.play()//播放一次
                             this._sound.practiceTable.onEndedObservable.add(() => {
-                                this._playerManager.busy = false
                             })
                         }
                         playerUiState.setDialogInfo({
@@ -558,6 +560,7 @@ export class StudioManager {
                     this._currentArea = null //设置位置为null
                     playerUiState.setDialogShowing(false) //关闭对话框
                     this._playerManager.hideHintSprite()
+                    this._playerManager.busy = false
                     if (this.keyBoardObserver) { //如果走出了这个范围的话 清除键盘的监听器
                         this._scene.onKeyboardObservable.remove(this.keyBoardObserver) //清除这个监听器
                         this.keyBoardObserver = null

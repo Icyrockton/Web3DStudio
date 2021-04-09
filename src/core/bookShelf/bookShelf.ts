@@ -149,6 +149,7 @@ export class BookShelf implements BookSound {
     }
 
     updateBookShelf(){ //更新书架上的书籍
+        this.clearCount()
         this.disposeAllBook()
         //放置书籍
         const bookShelfUiState = useBookShelfUiState;
@@ -170,6 +171,12 @@ export class BookShelf implements BookSound {
                 default:
 
             }
+        })
+    }
+
+    clearCount() {
+        this._count.forEach((value, key) => {
+            this._count.set(key,0)
         })
     }
 

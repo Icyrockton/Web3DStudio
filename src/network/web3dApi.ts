@@ -5,6 +5,8 @@ import {Studio} from "../core/studio/Studio";
 import {BookDetail, StudioBook} from "../core/bookShelf/bookShelf";
 import {EBookDetail, StudioEBook} from "../core/practiceTable/practiceTable";
 import {PracticeTask} from "../components/GUI/practiceTable/practiceTableUiState";
+import {Task} from "../components/GUI/task/taskUiState";
+import {CollegeDescription} from "../core/collegeMap/college";
 
 interface LoginResponse {
     code: number,
@@ -15,7 +17,7 @@ interface LoginResponse {
 
 export class Web3dApi {
     private _axios = axios.create({
-        baseURL: "http://localhost:3010/",
+        baseURL: "http://121.4.151.26:3020",
         responseType: "json",
         headers: {
             'Content-Type': 'application/json'
@@ -46,9 +48,10 @@ export class Web3dApi {
         })
     }
 
-    getStudio(uuid: number) {
+    getStudio(cuuid:number,uuid: number) { //学院ID 工作室ID
         return this._axios.get<Studio>("/studio", {
             params: {
+                "c_uuid":cuuid,
                 "uuid": uuid
             }
         })
@@ -73,9 +76,25 @@ export class Web3dApi {
     }
 
     getStudioTask(taskUuid:number){ //练习题的UUID
-        return this._axios.get<PracticeTask>("studioTask",{
+        return this._axios.get<Task[]>("studioTask",{
             params:{
                 "uuid" : taskUuid
+            }
+        })
+    }
+
+    getStudioPractice(practiceUuid:number){
+        return this._axios.get<PracticeTask>("studioPractice",{
+            params:{
+                "uuid" : practiceUuid
+            }
+        })
+    }
+
+    getCollegeDescription(uuid: number) {
+        return this._axios.get<CollegeDescription>("collegeDescription",{
+            params:{
+                "uuid":uuid
             }
         })
     }

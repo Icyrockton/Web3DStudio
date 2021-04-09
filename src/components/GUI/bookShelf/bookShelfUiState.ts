@@ -116,6 +116,91 @@ const fakeBooks: BookDetail[] = [
 ]
 
 
+const fakeAiBooks: BookDetail[] = [
+    {
+        uuid: 21,
+        area: "A_Area",
+        videoName: "卷积神经网络",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_6.png",
+        thickness:1
+    },
+    {
+        uuid: 22,
+        area: "B_Area",
+        videoName: "原问题和对偶问题",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_7.png",
+        thickness:1
+    },
+    {
+        uuid: 23,
+        area: "C_Area",
+        videoName: "多元问题",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_8.png",
+        thickness:0.5
+    },
+    {
+        uuid: 24,
+        area: "B_Area",
+        videoName: "数据库准备",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_10.png",
+        thickness:1
+    },
+    {
+        uuid: 25,
+        area: "A_Area",
+        videoName: "深度学习编程工具",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_11.png",
+        thickness:0.5
+    },
+    {
+        uuid: 26,
+        area: "B_Area",
+        videoName: "卷积神经网络",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_6.png",
+        thickness:1
+    },
+    {
+        uuid: 27,
+        area: "D_Area",
+        videoName: "原问题和对偶问题",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_7.png",
+        thickness:1
+    },
+    {
+        uuid: 28,
+        area: "D_Area",
+        videoName: "多元问题",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_8.png",
+        thickness:0.5
+    },
+    {
+        uuid: 29,
+        area: "B_Area",
+        videoName: "数据库准备",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_10.png",
+        thickness:1
+    },
+    {
+        uuid: 30,
+        area: "A_Area",
+        videoName: "深度学习编程工具",
+        videoURL: "video/javaVideo_1.flv",
+        textureImgURL: "img/bookCover/book_11.png",
+        thickness:0.5
+    },
+]
+
+
+
 export class BookShelfUiState {
 
     books: BookDetail[] = []
@@ -154,6 +239,9 @@ export class BookShelfUiState {
         if (!showing && this.playerManager){
             this.playerManager.busy =false //设置为非忙碌状态
             useNavUiState.navController?.focusCanvas() //聚焦canvas
+        }
+        if (!showing){
+            this.videoShowing=false
         }
     }
 

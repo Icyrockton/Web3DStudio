@@ -1,6 +1,7 @@
 import {CollegeDescription} from "../../../core/collegeMap/college";
 import {action, autorun, makeObservable, observable, runInAction} from "mobx";
 import {collegeDescription, fetchCollgeDescription} from "../../../core/collegeMap/collegeMapApi";
+import useWeb3DApi from "../../../network/web3dApi";
 
 
 export class CollegeUiState {
@@ -20,10 +21,12 @@ export class CollegeUiState {
     }
 
 
-    fetchCollegeDescriptionByUUId(uuid: number) {
-        const find = collegeDescription.find(college => college.uuid == uuid);
-        if (find)
-            this.college = find
+    async fetchCollegeDescriptionByUUId(uuid: number) {
+
+        const response = await useWeb3DApi.getCollegeDescription(uuid);
+        runInAction(()=>{
+            this.college = response.data
+        })
 
     }
 }

@@ -7,7 +7,7 @@ export interface RotateCamera {
     rotate:number //绕y轴旋转的角度 0~360
 }
 
-export interface Studio {
+export interface    Studio {
     uuid:number
     name:string //工作室名称
     modelURL:string //模型的URL位置
