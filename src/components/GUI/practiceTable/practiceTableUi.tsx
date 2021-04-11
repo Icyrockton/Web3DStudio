@@ -151,6 +151,7 @@ const PracticeTableUi = observer<PracticeTableUiProps>((props) => {
         const handleOk = () => { //确认提交
             setVisible(false)
             uiState.submit()
+            uiState.setPracticeShowing(false)
         }
         const closeTable = () => {
             uiState.setPracticeTableShowing(false,true)

@@ -39,6 +39,7 @@
     /*background: white;*/
 
     z-index: 5;
+    /*z-index: 0;*/
 
 }
 
@@ -135,4 +136,142 @@
     border-image: linear-gradient(to bottom right, #FEAC5E 33%, #C779D0 66%, #f64f59 99%);
     border-image-slice: 1;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, .2);
+
+}
+
+.scoreInfo{
+    width: 25vw;
+    position: absolute;
+    bottom: 0;
+    background: white;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    border-radius: 1vw;
+    padding: 1vw;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+    transition: bottom 1s var(--ease-out-swift) , transform 1s var(--ease-out-swift);
+    display: flex;
+    flex-direction: column;
+}
+
+
+.scoreInfoShowing{
+    bottom: 50vh;
+    transform: translateX(-50%) translateY(50%);
+}
+
+.divide{
+    width: 95%;
+    height: 1px;
+    background: gray;
+    margin: 0 auto;
+}
+
+.scoreInfoTitle{
+    font-weight: bold;
+    font-size: 2.5vh;
+}
+
+.scoreInfoContent{
+    display: flex;
+    flex-direction: column;
+    max-height: 50vh;
+    overflow: auto;
+}
+.scoreInfoContent::-webkit-scrollbar{
+    width: 1.5vw;
+    transition: background-color 1s ease;
+}
+.scoreInfoContent::-webkit-scrollbar-track{
+    background-color: transparent;
+}
+
+.scoreInfoContent::-webkit-scrollbar-thumb{
+    background-color: #d6dee1;
+    border-radius: 1vw;
+    border: 0.5vw solid transparent;
+    background-clip: content-box;
+}
+.scoreInfoContent::-webkit-scrollbar-thumb:hover {
+    background-color: #a8bbbf;
+    cursor: pointer;
+}
+
+
+.loading{
+    margin-top: 2vh;
+    text-align: center;
+    color: black;
+}
+.loading h2{
+    font-weight: bold;
+    color: black;
+}
+
+.singleScoreInfo{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+}
+
+
+
+
+.singleScoreInfoTitle{
+    padding: 1vh;
+    font-weight: bold;
+    font-size: 1.5vh;
+}
+
+.singleScoreInfoDescription{
+    font-size: 1vh;
+    padding: 1.2vh;
+}
+
+.singleScoreInfoScore{
+    align-self: flex-end;
+}
+
+.totalScore{
+    font-weight: bold;
+    font-size: 2vh;
+    display: flex;
+    justify-content: center;
+    margin-top: 1vh;
+}
+
+.totalScore ul{
+    font-size: 2vh;
+}
+
+.confirmButton{
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 1vh;
+
+    text-align: center;
+    color: white;
+    vertical-align: middle;
+    line-height: 4vh;
+    border-radius: 2vw;
+    border: none;
+    font-size: 2vh;
+    outline: none;
+    background: linear-gradient(to right, #1FA2FF, #12D8FA 50%, #A6FFCB);
+    background-size: 200% 100%;
+    background-position: left;
+    transition: transform .5s var(--ease-out-swift),
+    background-position .5s var(--ease-out-swift),
+    fill .5s var(--ease-out-swift),
+    color .5s var(--ease-out-swift);
+    --ease-out-swift: cubic-bezier(.55, 0, .1, 1);
+}
+
+.confirmButton:hover {
+    background-position: right;
+    color: white;
+    cursor: pointer;
 }

@@ -133,7 +133,7 @@ export const SubTaskUi = observer
     < SubTaskUiProps > (SubTaskUiComponent)
 
 
-const ExerciseSVG = () => (
+export const ExerciseSVG = () => (
     <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
          p-id="4151" id="mx_n_1615018481175" data-spm-anchor-id="a313x.7781069.0.i5" width="30" height="30">
         <path d="M680 260.352L450.112 658.56l-181.12-104.512 229.952-398.272z" fill="#1890FF" p-id="4152"
@@ -157,7 +157,7 @@ const ExerciseSVG = () => (
 )
 
 
-const VideoSVG = () => (
+export  const VideoSVG = () => (
     <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
          p-id="5267" width="30" height="30">
         <path
@@ -169,7 +169,7 @@ const VideoSVG = () => (
     </svg>
 )
 
-const ReadingSVG = () =>
+export const ReadingSVG = () =>
 
     <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
          p-id="6172" width="30" height="30">

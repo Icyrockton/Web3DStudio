@@ -23,6 +23,7 @@ export class CollegeUiState {
 
     async fetchCollegeDescriptionByUUId(uuid: number) {
 
+        this.college = null
         const response = await useWeb3DApi.getCollegeDescription(uuid);
         runInAction(()=>{
             this.college = response.data

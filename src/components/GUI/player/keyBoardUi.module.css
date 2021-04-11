@@ -6,7 +6,7 @@
     border-radius: 1vw;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%) translateY(150%);
+    transform: translateX(-50%) translateY(250%);
     text-align: center;
     transition: transform .5s var(--ease-out-swift);
     --ease-out-swift: cubic-bezier(.55, 0, .1, 1);

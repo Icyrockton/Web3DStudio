@@ -43,7 +43,8 @@ function SingleTask(props: TaskProps) {
                 message: `接收到新的任务`,
                 description: `任务名称:${task.name} `
                 ,
-                placement: "topLeft"
+                placement: "topLeft",
+                top : window.innerHeight * 0.3
             }
         )
         setIsModalVisible(false)

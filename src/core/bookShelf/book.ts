@@ -168,7 +168,7 @@ export class Book {
 
     private playOpenBook() {
         const bookShelfUiState = useBookShelfUiState;
-        bookShelfUiState.setShelfShowing(false) //关闭书架的UI 防止视频挡住
+        bookShelfUiState.setShelfShowing(false,false) //关闭书架的UI 防止视频挡住
         this._openBookAnim?.play(false)
     }
 

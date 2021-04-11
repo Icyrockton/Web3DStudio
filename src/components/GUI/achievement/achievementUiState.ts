@@ -2,6 +2,8 @@ import {makeAutoObservable, runInAction} from "mobx";
 import {Player} from "../../../core/player/player";
 import usePlayerUiState from "../player/playerUiState";
 import useNavUiState from "../nav/navUiState";
+import useWeb3DApi from "../../../network/web3dApi";
+import useLoginUiState from "../../login/loginUiState";
 
 
 export interface AchievementItem {  //成就项目
@@ -93,6 +95,7 @@ export class AchievementUiState {
         this.achievementUiShowing = showing
         if (showing){
             usePlayerUiState.studioManager?.setPlayerBusy(true)
+            this.achievementList = null
             this.fetchAchievementList()
         }
         else{
@@ -136,9 +139,12 @@ export class AchievementUiState {
     }
 
     async fetchAchievementList() {
-        runInAction(() => {
-            this.achievementList = fakeAchievement
-        })
+        if (useLoginUiState.loginUserID) {
+            const response = await useWeb3DApi.getUserAchievement(useLoginUiState.loginUserID);
+            runInAction(() => {
+                this.achievementList = response.data
+            })
+        }
     }
 }
 

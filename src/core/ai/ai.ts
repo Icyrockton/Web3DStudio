@@ -90,7 +90,7 @@ export class Ai {
             width: PlayerManager.PlayerCollisionBoxWidth,
             height: PlayerManager.PlayerCollisionBoxHeight,
             depth: PlayerManager.PlayerCollisionBoxDepth
-        });
+        },this._scene);
         collisionBox.bakeTransformIntoVertices(Matrix.Translation(0, PlayerManager.PlayerCollisionBoxHeight / 2, 0))
         collisionBox.isVisible = false //不可见
         collisionBox.isPickable = false //不可拾取

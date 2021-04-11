@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import React from "react";
 import classes from './achievementUi.module.css'
 import {Button, Tooltip} from "antd";
-import Icon from "@ant-design/icons";
+import Icon, {LoadingOutlined} from "@ant-design/icons";
 import usePlayerUiState from "../player/playerUiState";
 
 
@@ -59,7 +59,10 @@ export const AchievementUi = observer<AchievementUiProps>(props => {
             )
         }
         else
-            return  <>暂无数据</>
+            return  (<div className={classes.loading}>
+                <LoadingOutlined style={{fontSize: 35}} spin/>
+                <h2>加载中...</h2>
+            </div>)
     }
     return (<>
         <div className={`${classes.achievementButtonArea} ${uiState.achievementOpenUiShowing ? "" : classes.none}  `}>

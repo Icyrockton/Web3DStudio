@@ -111,7 +111,7 @@ export class PracticeTable implements EBookSound {
         arcRotateCamera.upperBetaLimit = Math.PI / (2.0)
         arcRotateCamera.upperRadiusLimit = 2.75
         arcRotateCamera.lowerRadiusLimit = 1.75
-        arcRotateCamera.wheelPrecision = 50
+        arcRotateCamera.wheelPrecision = 80
         this._camera = arcRotateCamera
     }
 

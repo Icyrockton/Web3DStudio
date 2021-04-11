@@ -23,17 +23,23 @@ export class LoginUiState {
                 })
                 notification.success({
                     message: `登录成功,${data.message}`,
+                    placement : "topRight",
+                    top: 24
                 })
                 return  true
             }
             else{
                 notification.error({
                     message: `登录失败,${data.message}`,
+                    placement : "topRight",
+                    top:24
                 })
             }
         } else {
             notification.error({
                 message: `登录失败,请检查网络连接`,
+                placement : "topRight",
+                top:24
             })
         }
         return false

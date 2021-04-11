@@ -374,14 +374,17 @@ export class PracticeTableUiState {
         if (showing && this.playerManager){
             usePlayerUiState.studioManager?.clearPlayerState()
             this.playerManager?.player.blockInput() //阻止输入
+            usePlayerUiState.studioManager?.startVague(true)
         }
         if ( leave &&!showing && this.playerManager) {
             this.playerManager.busy = false  //设置为非忙碌状态
             useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
-        if(!showing){
+        if(!showing && leave){
             this.practiceShowing=false
             this.eBookReaderShowing=false
+            usePlayerUiState.checkFinishedCurrentTask()
+            usePlayerUiState.studioManager?.startVague(false)
         }
     }
 

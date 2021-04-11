@@ -1,8 +1,8 @@
 import {
-    AbstractMesh, Camera,
+    AbstractMesh, Animation, Camera,
     Color3, Color4, DefaultRenderingPipeline,
     DirectionalLight, FreeCamera,
-    HemisphericLight,
+    HemisphericLight, IAnimationKey,
     KeyboardEventTypes,
     KeyboardInfo,
     Mesh,
@@ -55,6 +55,7 @@ export class StudioManager {
     static PlayerCollisionBoxDepth = 0.5
     private _playerManager!: PlayerManager;
     private _directionalLight!: DirectionalLight
+    private _hemisphericLight! : HemisphericLight
     private _receptionManager!: ReceptionistManager;
     private _bookShelfMesh: Mesh[] = [] //书架
     private _practiceTableMesh: Mesh [] = [] //练习台
@@ -97,10 +98,10 @@ export class StudioManager {
         // let arcRotateCamera = new ArcRotateCamera("arc",0,0,10,Vector3.Zero(),this._scene);
         // arcRotateCamera.attachControl()
         // this._scene.activeCamera = arcRotateCamera
-        this.setPostProcess()
+       this.setPostProcess()
 
     }
-
+    private _pipeLine? : DefaultRenderingPipeline
     setPostProcess() {
         const pipeline = new DefaultRenderingPipeline(
             "pipeline",
@@ -110,20 +111,26 @@ export class StudioManager {
         );
         //开启测晕的效果
         pipeline.imageProcessingEnabled = true;
-        pipeline.imageProcessing.vignetteEnabled = true;
+        pipeline.imageProcessing.vignetteEnabled = false;
         pipeline.imageProcessing.vignetteWeight = 1.5;
         pipeline.imageProcessing.vignetteColor = Color4.FromHexString("#2e80ffff")
-        pipeline.imageProcessing.exposure = 1.4
+        pipeline.imageProcessing.exposure = 1.2
 
         //开启抗锯齿
         pipeline.samples = 4
 
+        //开启景深
+        pipeline.depthOfFieldEnabled = true
+        pipeline.depthOfField.focalLength = 180
+        pipeline.depthOfField.fStop = 18
+        pipeline.depthOfField.focusDistance = 4000
+        this._pipeLine = pipeline
     }
-
 
     private setUpLight() {
         const hemisphericLight = new HemisphericLight("hemisphericLight", Vector3.Up(), this._scene);
         hemisphericLight.intensity = 0.5
+        this._hemisphericLight = hemisphericLight
         const direction = new Vector3(this._studio.directionalLightDirection[0], this._studio.directionalLightDirection[1], this._studio.directionalLightDirection[2]);
         this._directionalLight = new DirectionalLight("directionalLight", direction, this._scene)
         this._directionalLight.position = new Vector3(this._studio.directionalLightPosition[0], this._studio.directionalLightPosition[1], this._studio.directionalLightPosition[2])
@@ -133,8 +140,6 @@ export class StudioManager {
 
     private setUpCamera() {
         this._scene.createDefaultCamera()
-
-
     }
 
     private async loadModel() {
@@ -629,6 +634,11 @@ export class StudioManager {
             miniMapCamera.position.set(this._playerManager.playerPosition.x, 10, this._playerManager.playerPosition.z)
         })
         this._scene.activeCameras?.push(miniMapCamera)
+        window.addEventListener('keydown', ev => {
+            if (ev.keyCode == 81) {
+               //this.startFireWork()
+            }
+        })
     }
 
     setPlayerBusy(busy: boolean) {
@@ -643,4 +653,97 @@ export class StudioManager {
             ai.clearAIState()
         })
     }
+
+    startFireWork(){ //开启烟花的场景
+
+        this._playerManager.busy = true
+        this._playerManager.player.blockInput()   //暂停输入
+        //阳光变黑
+        this._scene.beginDirectAnimation(this._hemisphericLight,this.createLightDarkAnim(true),0,StudioManager.frame_rate,false,1,()=>{
+            this._playerManager.player.cameraRotateOneRound(()=>{
+                usePlayerUiState.setScoreInfoShowing(true)
+            }) //围绕一圈
+            this._playerManager.startFireWork()  //开始烟花
+        })
+    }
+
+    afterFireWork(){ //关闭烟花的场景
+
+        this._playerManager.player.acceptInput() //接受输入
+        this._playerManager.busy = false
+        //阳光变亮
+        this._scene.beginDirectAnimation(this._hemisphericLight,this.createLightDarkAnim(false),0,StudioManager.frame_rate,false,2,()=>{
+
+        })
+    }
+
+
+    private _vagued:boolean =false
+
+    startVague(vague:boolean ){ //模糊？
+        if (vague != this._vagued) {
+            this._vagued = vague;
+            this._scene.beginDirectAnimation(this._pipeLine, this.createDepthOfLensAnim(vague), 0, StudioManager.frame_rate, false, 1, () => {
+
+            })
+        }
+    }
+
+
+    private createLightDarkAnim( dark : boolean = true){  //太阳光减弱 为了烟花效果
+        const intensityAnimation = new Animation("intensityAnimation", "intensity",StudioManager.frame_rate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const intensityKeyFrames: IAnimationKey [] = []
+        intensityKeyFrames.push({
+            frame: 0,
+            value : dark ? 0.5 : 0.1
+        })
+        intensityKeyFrames.push({
+            frame:StudioManager.frame_rate,
+            value : dark ? 0.1 : 0.5
+        })
+        intensityAnimation.setKeys(intensityKeyFrames)
+        return [intensityAnimation]
+
+    }
+
+
+    private createDepthOfLensAnim(vague : boolean = false ){ // 模糊?
+        this._pipeLine?.depthOfField.focusDistance
+        const animation = new Animation("lensAnim","depthOfField.focusDistance",StudioManager.frame_rate,Animation.ANIMATIONTYPE_FLOAT,Animation.ANIMATIONLOOPMODE_CONSTANT)
+        const animationKeyframe:IAnimationKey[ ] = []
+
+        if (vague){
+            animationKeyframe.push({
+                frame:0,
+                value : this._pipeLine?.depthOfField.focusDistance
+            })
+            animationKeyframe.push({
+                frame:10,
+                value:1500
+            })
+            animationKeyframe.push({
+                frame:StudioManager.frame_rate,
+                value:500
+            })
+        }
+        else{
+            animationKeyframe.push({
+                frame:0,
+                value : 500
+            })
+            animationKeyframe.push({
+                frame:50,
+                value:1500
+            })
+            animationKeyframe.push({
+                frame:StudioManager.frame_rate,
+                value:4000
+            })
+        }
+
+        animation.setKeys(animationKeyframe)
+        return [animation]
+    }
+
+    static readonly frame_rate = 60
 }

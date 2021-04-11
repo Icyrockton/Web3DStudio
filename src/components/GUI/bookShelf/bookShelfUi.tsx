@@ -17,10 +17,10 @@ const BookShelfUi = observer<BookShelfUiProps>(props => {
     const close = () => {
         uiState.setVideoShowing(false)
         uiState.currentBook?.moveToOriginStepOne()
-        uiState.setShelfShowing(true) //显示书架的关闭
+        uiState.setShelfShowing(true,false) //显示书架的关闭
     }
     const closeShelf = () => {
-        uiState.setShelfShowing(false)
+        uiState.setShelfShowing(false,true)
         uiState.web3DStudio?.setBookShelfShow(false)
         uiState.playerManager?.player.acceptInput()
     }

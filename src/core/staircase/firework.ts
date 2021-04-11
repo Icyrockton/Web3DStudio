@@ -9,6 +9,7 @@ import {
     Vector3,
     VertexBuffer
 } from "@babylonjs/core";
+import {FireWorkSound} from "../player/playerManager";
 
 
 export class Firework {
@@ -19,47 +20,49 @@ export class Firework {
     private _height: number
     private _started: boolean = false //是否启动烟花
     private _exploded: boolean = false //是否爆炸
-    private readonly flareImageURL = "img/flare.png";
-    private _rocketSound:Sound
-    private _explosionSound:Sound
+    static readonly flareImageURL = "img/flare.png";
 
-    constructor(scene: Scene, startNode: TransformNode, height: number) {
+
+    private _flareTexture : Texture
+    private _fireWorkSound: FireWorkSound;
+
+    constructor(scene: Scene,fireworkSound: FireWorkSound,flareTexture: Texture, startNode: TransformNode, height: number) {
         this._scene = scene;
-        this._rocketSound=new Sound("rocketSound","sound/firework/rocket.wav",this._scene,()=>{});
-        this._explosionSound=new Sound("rocketSound","sound/firework/explosion.wav",this._scene,()=>{});
+        this._fireWorkSound = fireworkSound
+        this._flareTexture = flareTexture
+
         //火箭向上发射
-        const rocket = MeshBuilder.CreateSphere("rocket", {segments: 4, diameter: 1});
+        const rocket = MeshBuilder.CreateSphere("rocket", {segments: 1, diameter: 1});
         this._emitter = rocket
         rocket.isVisible = false
         //设置火箭的初始位置
         this._emitter.position.copyFrom(startNode.position)
         this._height = height
         //粒子系统
-        let particle = new ParticleSystem(`${startNode.name}-particleSystem`, 100, scene)
+        let particle = new ParticleSystem(`${startNode.name}-particleSystem`, 30, scene)
         //设置粒子纹理
-        particle.particleTexture = new Texture(this.flareImageURL, scene)
+        particle.particleTexture = this._flareTexture.clone()
         //设置粒子发射原点 （在火箭的位置
         particle.emitter = rocket
         //发射区域限制为点
         particle.minEmitBox = new Vector3(0, 0, 0)
         particle.maxEmitBox = new Vector3(0, 0, 0)
         //颜色
-        particle.color1 = new Color4(1, 0.8, 1.0, 1.0);
-        particle.color2 = new Color4(1, 0.5, 1.0, 1.0);
+        particle.color1 =  new Color4(224 / 255, 191 / 255, 152 / 255, 1.0)
+        particle.color2 =  new Color4(187 / 255, 51 / 255, 78 /255, 1.0)
         particle.colorDead = new Color4(0, 0, 0.2, 0.5);
         //大小
-        particle.minSize = .7
-        particle.maxSize = .7
+        particle.minSize = .1
+        particle.maxSize = .4
+        particle.minLifeTime = 0.5;
+        particle.maxLifeTime = .1;
         particle.addSizeGradient(0, 1)
         particle.addSizeGradient(1, 0.1)
-        //生存周期
-        particle.minLifeTime = 1
-        particle.maxLifeTime = 1
-        particle.emitRate = 40
+        particle.emitRate = 30
         //速率
         particle.minEmitPower = 1
         particle.maxEmitPower = 1
-        particle.updateSpeed = 0.02
+        particle.updateSpeed = 0.005
         particle.blendMode = ParticleSystem.BLENDMODE_ONEONE
         this._particleSys = particle
 
@@ -70,19 +73,19 @@ export class Firework {
 
             if (this._emitter.position.y >= this._height) {
                 if (!this._exploded) {
-                    this._explosionSound.play() //播放爆炸声音
+                    this._fireWorkSound.explosionSound.play() //播放爆炸声音
                     this._exploded = true
                     this.explosion(this._emitter.position)
                     this._emitter.dispose() //销毁Mesh
                     this._particleSys.stop() //停止粒子系统
                 }
             } else {
-                this._emitter.position.y += 0.05
+                this._emitter.position.y += 0.02
             }
         } else {
             this._started = true
             this._particleSys.start()
-            this._rocketSound.play() //播放上升声音
+            this._fireWorkSound.rocketSound.play() //播放上升声音
         }
     }
 
@@ -90,7 +93,7 @@ export class Firework {
     //爆炸
     private explosion(position: Vector3) {
 
-        const explosion = Mesh.CreateSphere("explosion", 4, 0.5, this._scene);
+        const explosion = Mesh.CreateSphere("explosion", 2, 1, this._scene);
         explosion.isVisible = false;
         explosion.position = position;
 
@@ -123,7 +126,7 @@ export class Firework {
             let direction = vertNormal.normalize().scale(1);
 
             const particleSys = new ParticleSystem("particles", 20, this._scene);
-            particleSys.particleTexture = new Texture(this.flareImageURL, this._scene);
+            particleSys.particleTexture = this._flareTexture.clone()
             particleSys.emitter = gizmo;
             particleSys.minEmitBox = new Vector3(1, 0, 0);
             particleSys.maxEmitBox = new Vector3(1, 0, 0);
@@ -142,8 +145,12 @@ export class Firework {
             particleSys.maxEmitPower = 13;
             particleSys.updateSpeed = 0.01;
             particleSys.targetStopDuration = 0.2;
+            particleSys.blendMode = ParticleSystem.BLENDMODE_ONEONE
             particleSys.disposeOnStop = true;
             particleSys.start();
+            particleSys.onDisposeObservable.add(()=>{
+                gizmo.dispose(false,true)
+            })
         }
 
         emitter.setVerticesData(VertexBuffer.ColorKind, vertColors);

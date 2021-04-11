@@ -2,16 +2,16 @@ import {
     ActionManager,
     ArcRotateCamera, Color3,
     Color4, DefaultRenderingPipeline,
-    DirectionalLight,
+    DirectionalLight, Effect,
     ExecuteCodeAction, FxaaPostProcess,
-    HemisphericLight, Mesh,
+    HemisphericLight, Mesh, MeshBuilder, PBRMaterial, ProceduralTexture,
     Quaternion,
     Scene,
     SceneLoader,
     ShadowGenerator,
     Sound,
     TransformNode,
-    Vector3,
+    Vector3, VertexBuffer, VertexData,
 } from "@babylonjs/core";
 import {__DEBUG__} from "../../global";
 import {College} from "./college";
@@ -19,6 +19,7 @@ import {AdvancedDynamicTexture, Ellipse, Line, Rectangle, TextBlock} from "@baby
 import {CollegeFence} from "./collegeFence";
 import useCollegeUiState from '../../components/GUI/college/collegeUiState'
 import {IState} from "../IState";
+import {PBRCustomMaterial} from "@babylonjs/materials";
 
 
 export interface CollegeMap {
@@ -50,6 +51,8 @@ export class CollegeMapManager { //加载学院相关的资源
         this._scene.clearColor = Color4.FromHexString("#6fabffff").toLinearSpace()
         this._clickSound = new Sound('clickSound', "sound/collegeBuildingClick.mp3", this._scene, () => {
         }, {volume: 0.3})
+        this.setUpOcean()
+
     }
 
     async load() {
@@ -339,4 +342,105 @@ export class CollegeMapManager { //加载学院相关的资源
     }
 
 
+    //https://forum.babylonjs.com/t/optimize-procedural-texture/19870/2
+    // 详见论坛  感谢Evgeni_Popov的帮助
+    private setUpOcean() {
+
+        const subdivisions = 100 //海洋的大小
+
+        const ocean = MeshBuilder.CreateGround('ocean', {
+            width: subdivisions,
+            height: subdivisions,
+            subdivisions: subdivisions,
+            updatable: true,
+        });
+
+        ocean.isPickable = false
+        ocean.doNotSyncBoundingInfo = false //关闭BoundingBox的计算
+        ocean.convertToFlatShadedMesh()
+        ocean.freezeWorldMatrix() //冻结变换矩阵
+
+        const oceanMaterial = new PBRCustomMaterial("oceanMaterial", this._scene);
+        oceanMaterial.AddUniform("iTime", "float", 0.0)
+        oceanMaterial.AddUniform("size", "float", 0.0)
+        oceanMaterial.AddAttribute("uv")
+        //顶点着色器定义
+        oceanMaterial.Vertex_Definitions(oceanVertexDefinitions)
+        //世界坐标计算后
+        oceanMaterial.Vertex_After_WorldPosComputed(
+            oceanAfterWorldPosComputed
+        )
+        //计算光照
+        oceanMaterial.Fragment_Before_Lights(
+            `normalW = normalize(cross(dFdx(vPositionW), dFdy(vPositionW))) * vEyePosition.w;`
+        )
+        oceanMaterial.metallic = 0.05
+        oceanMaterial.roughness = 0.5
+        oceanMaterial.albedoColor = Color3.FromHexString('#48AFF0').toLinearSpace();
+        ocean.material = oceanMaterial
+
+        this._scene.registerBeforeRender(() => {
+            this._time += this._scene.getEngine().getDeltaTime() * .001;
+        });
+
+
+        //更新参数
+        oceanMaterial.onBindObservable.add(() => {
+            oceanMaterial.getEffect().setFloat("iTime", this._time)
+            oceanMaterial.getEffect().setFloat("size", subdivisions)
+        })
+
+
+
+
+    }
+
+
+    private _oceanStart = false
+    private _time: number = 0
 }
+
+const decodeUInt32 = (rgba: number[]) => {
+    return rgba[0] + rgba[1] / 255.0 + rgba[2] / 65025.0 + rgba[3] / 16581375.0;
+}
+
+const oceanAfterWorldPosComputed = `
+        vec2 uv_ = uv * size * .1 + vec2(10.);
+        float b = getwaves(uv_, 11) * 1.0;
+        worldPos.y += (b * 2.0) - 1.1;
+        vPositionW = vec3(worldPos);
+`
+
+const oceanVertexDefinitions = `
+attribute vec2 uv;
+
+        vec2 wavedx(vec2 position, vec2 direction, float speed, float frequency, float timeshift) {
+            float x = dot(direction, position) * frequency + timeshift * speed;
+            float wave = exp(sin(x) - 1.0);
+            float dx = wave * cos(x);
+            return vec2(wave, -dx);
+        }
+
+        float getwaves(vec2 position, int iterations) {
+            float iter = 0.0;
+            float phase = 6.0;
+            float speed = 2.0;
+            float weight = 1.0;
+            float w = 0.0;
+            float ws = 0.0;
+            for (int i = 0; i < iterations; i++) {
+                vec2 p = vec2(sin(iter), cos(iter));
+                vec2 res = wavedx(position, p, speed, phase, iTime * 1.5);
+                position += normalize(p) * res.y * weight * 0.0148;
+                w += res.x * weight;
+                iter += 12.0;
+                ws += weight;
+                weight = mix(weight, 0.0, 0.2);
+                phase *= 1.18;
+                speed *= 1.07;
+            }
+            return w / ws;
+        }
+
+`
+

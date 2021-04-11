@@ -7,6 +7,7 @@ import {EBookDetail, StudioEBook} from "../core/practiceTable/practiceTable";
 import {PracticeTask} from "../components/GUI/practiceTable/practiceTableUiState";
 import {Task} from "../components/GUI/task/taskUiState";
 import {CollegeDescription} from "../core/collegeMap/college";
+import {AchievementList} from "../components/GUI/achievement/achievementUiState";
 
 interface LoginResponse {
     code: number,
@@ -26,77 +27,50 @@ export class Web3dApi {
 
     //登录
     login(userName: string, password: string) {
-        return this._axios.get<LoginResponse>("/user/userLogin", {
-            method: "get",
-            params: {
-                login_name: userName,
-                login_pwd: password
+        return this._axios.post<LoginResponse>("user/login",
+            {
+                username: userName,
+                password: password
             }
-        })
+        )
     }
 
     //获取collegeMap
     getCollegeMap() {
-        return this._axios.get<CollegeMap>("/collegeMap")
+        return this._axios.get<CollegeMap>("/college/map")
     }
 
     getCollegeFloor(uuid: number) {
-        return this._axios.get<CollegeFloors>("/collegeFloor", {
-            params: {
-                "uuid": uuid
-            }
-        })
+        return this._axios.get<CollegeFloors>(`/college/floor/${uuid}`)
     }
 
     getStudio(cuuid:number,uuid: number) { //学院ID 工作室ID
-        return this._axios.get<Studio>("/studio", {
-            params: {
-                "c_uuid":cuuid,
-                "uuid": uuid
-            }
-        })
+        return this._axios.get<Studio>(`/studio/${uuid}`)
     }
 
     getStudioBook(uuid:number){ //工作室的UUID
-        return this._axios.get<BookDetail[]>("/studioBook",{
-            params:{
-                "uuid": uuid
-            }
-        })
+        return this._axios.get<BookDetail[]>(`/studio/book/${uuid}`)
     }
 
 
     getStudioEBook(uuid:number){ //工作室的UUID
-        return this._axios.get<EBookDetail[]>("/studioEBook",{
-            params:{
-                "uuid": uuid
-
-            }
-        })
+        return this._axios.get<EBookDetail[]>(`/studio/ebook/${uuid}`)
     }
 
     getStudioTask(taskUuid:number){ //练习题的UUID
-        return this._axios.get<Task[]>("studioTask",{
-            params:{
-                "uuid" : taskUuid
-            }
-        })
+        return this._axios.get<Task[]>(`/studio/task/${taskUuid}`)
     }
 
     getStudioPractice(practiceUuid:number){
-        return this._axios.get<PracticeTask>("studioPractice",{
-            params:{
-                "uuid" : practiceUuid
-            }
-        })
+        return this._axios.get<PracticeTask>(`practice/${practiceUuid}`)
     }
 
     getCollegeDescription(uuid: number) {
-        return this._axios.get<CollegeDescription>("collegeDescription",{
-            params:{
-                "uuid":uuid
-            }
-        })
+        return this._axios.get<CollegeDescription>(`college/description/${uuid}`)
+    }
+
+    getUserAchievement(uuid:number){
+        return this._axios.get<AchievementList>(`user/achievement/${uuid}`)
     }
 }
 

@@ -2,6 +2,7 @@ import React, {createRef, useEffect, useRef} from 'react'
 import './App.css'
 import {BrowserRouter, Switch, Route} from "react-router-dom";
 import {Web3D} from "./core/web3D";
+import {notification} from "antd";
 
 function App() {
 
@@ -18,5 +19,7 @@ function App() {
         </BrowserRouter>
     )
 }
+
+
 
 export default App

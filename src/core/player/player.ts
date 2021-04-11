@@ -1,6 +1,6 @@
 import {
     AbstractMesh, Animation,
-     BackEase, Color3, EasingFunction, IAnimationKey,
+    BackEase, Color3, EasingFunction, IAnimationKey,
     Mesh, MeshBuilder,
     Quaternion,
     Ray, Scalar,
@@ -84,7 +84,6 @@ export class Player extends TransformNode {
         backRotate.rotation = new Vector3(0, Math.PI, 0)
 
 
-
         //绕X轴旋转
         this._yTilt = new TransformNode("yTilt");
         this._yTilt.parent = backRotate //设置父级关系
@@ -108,7 +107,7 @@ export class Player extends TransformNode {
 
     //从InputController中更新按键响应信息
     private _updateFromInputController() {
-        if (this._acceptInput){
+        if (this._acceptInput) {
             this._moveDirection = Vector3.Zero()
             //水平X轴
             this._h = this._inputController.horizontal
@@ -124,7 +123,7 @@ export class Player extends TransformNode {
             let move = correctedVertical.addInPlace(correctedHorizontal).normalize() //水平+垂直 得到移动的向量 再归一化
 
             //冲刺 跑步
-            if (this._inputController.dashing && this._canDash ) {
+            if (this._inputController.dashing && this._canDash) {
                 this._dashStart = true
                 this._canDash = false
             }
@@ -157,8 +156,7 @@ export class Player extends TransformNode {
             //角色旋转
             this.mesh.rotationQuaternion = Quaternion.Slerp(this.mesh.rotationQuaternion!, quaternionTarget, 0.075)
 
-        }
-        else {
+        } else {
             this._moveDirection = Vector3.Zero()
         }
 
@@ -171,7 +169,7 @@ export class Player extends TransformNode {
         this._updatePlayerAnimation()//更新动画
         //更新人物模型的Mesh移动
         this.mesh.moveWithCollisions(this._moveDirection)
-        this._scene.audioListenerPositionProvider = ()=>{
+        this._scene.audioListenerPositionProvider = () => {
             return this.mesh.position
         }
     }
@@ -252,7 +250,7 @@ export class Player extends TransformNode {
     }
 
     private _updatePlayerAnimation() { //更新玩家动画
-        if (this._acceptInput){
+        if (this._acceptInput) {
             if (this._inputController.idle) {
                 this._currentAnimation = this._animation.idle
             } else if (this._inputController.walk) {
@@ -264,8 +262,7 @@ export class Player extends TransformNode {
             } else {
                 this._currentAnimation = this._animation.idle
             }
-        }
-        else{
+        } else {
             this._currentAnimation = this._animation.idle
         }
 
@@ -314,20 +311,20 @@ export class Player extends TransformNode {
     }
 
     private _isInAchievement: boolean = false //是否在成就状态?
-    private _isInAchievementAnimating : boolean =false
+    private _isInAchievementAnimating: boolean = false
 
     achievementCamera() {
         if (!this._isInAchievement) {
             this._isInAchievementAnimating = true
-            setTimeout(()=>{
+            setTimeout(() => {
                 usePlayerUiState.studioManager?.playEnterSound() //声音
-            } , 700)
-            this._acceptInput =false
+            }, 700)
+            this._acceptInput = false
             this._scene.beginDirectAnimation(this._yTilt, this.createYTiltAnim(false), 0, Player.frame_rate, false, 1, () => {
             })
             this._scene.beginDirectAnimation(this.camera, this.createAchievementCameraAnim(false), 0, Player.frame_rate, false, 1, () => {
                 this._isInAchievement = true
-                this._isInAchievementAnimating =false
+                this._isInAchievementAnimating = false
             })
             this._scene.beginDirectAnimation(this.mesh, this.createPlayerTowardCamera(false), 0, Player.frame_rate, false, 1, () => {
             })
@@ -338,8 +335,8 @@ export class Player extends TransformNode {
             })
             this._scene.beginDirectAnimation(this.camera, this.createAchievementCameraAnim(true), 0, Player.frame_rate, false, 1, () => {
                 this._isInAchievement = false
-                this._acceptInput =true
-                this._isInAchievementAnimating =false
+                this._acceptInput = true
+                this._isInAchievementAnimating = false
 
             })
             this._scene.beginDirectAnimation(this.mesh, this.createPlayerTowardCamera(true), 0, Player.frame_rate, false, 1, () => {
@@ -347,22 +344,22 @@ export class Player extends TransformNode {
         }
     }
 
-    blockInput(){ //阻止按键输入
+    blockInput() { //阻止按键输入
         this._acceptInput = false
     }
 
-    acceptInput(){ //允许按键输入
+    acceptInput() { //允许按键输入
         this._acceptInput = true
     }
 
     static CAMERA_DISTANCE_FAR = 12
     static CAMERA_DISTANCE_NEAR = 5
-    static CAMERA_FAR_Y_TILT=-Math.PI / 4
-    static CAMERA_NEAR_Y_TILT=-Math.PI / 9
+    static CAMERA_FAR_Y_TILT = -Math.PI / 4
+    static CAMERA_NEAR_Y_TILT = -Math.PI / 9
 
-    private _cameraFar:boolean =true
+    private _cameraFar: boolean = true
     private _cameraPositionZ = Player.CAMERA_DISTANCE_FAR
-    private _cameraYTilt  = Player.CAMERA_FAR_Y_TILT
+    private _cameraYTilt = Player.CAMERA_FAR_Y_TILT
     private _acceptInput: boolean = true
 
     private createAchievementCameraAnim(backToOrigin: boolean = false) {
@@ -418,11 +415,12 @@ export class Player extends TransformNode {
         return [yTiltRotateAnimation, yTiltPositionAnimation]
     }
 
-    private _prevRotation:Quaternion=Quaternion.FromEulerAngles(0,0,0)
-    private createPlayerTowardCamera(backToOrigin: boolean = false){
+    private _prevRotation: Quaternion = Quaternion.FromEulerAngles(0, 0, 0)
+
+    private createPlayerTowardCamera(backToOrigin: boolean = false) {
         const playerRotateAnimation = new Animation("playerRotateAnimation", "rotationQuaternion", Player.frame_rate, Animation.ANIMATIONTYPE_QUATERNION, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const playerRotateKeyFrames: IAnimationKey [] = []
-        if (!backToOrigin){ //保存之前的旋转
+        if (!backToOrigin) { //保存之前的旋转
             this._prevRotation = this.mesh.rotationQuaternion!
         }
         playerRotateKeyFrames.push({
@@ -430,31 +428,32 @@ export class Player extends TransformNode {
             value: this.mesh.rotationQuaternion
         })
 
-        const target= Quaternion.FromEulerAngles(this._cameraRoot.rotation.x,this._cameraRoot.rotation.y + Math.PI + Math.PI / 8,this._cameraRoot.rotation.z)
+        const target = Quaternion.FromEulerAngles(this._cameraRoot.rotation.x, this._cameraRoot.rotation.y + Math.PI + Math.PI / 8, this._cameraRoot.rotation.z)
 
         playerRotateKeyFrames.push({
             frame: Player.frame_rate,
-            value: backToOrigin ? this._prevRotation: target
+            value: backToOrigin ? this._prevRotation : target
         })
         playerRotateAnimation.setKeys(playerRotateKeyFrames)
 
         return [playerRotateAnimation]
     }
+
     static readonly frame_rate = 60
 
     cameraFarOrNear() {
-        this._scene.beginDirectAnimation(this.camera,this.createCameraFarOrNearAnim(),0,Player.frame_rate,false,1,()=>{
-            this._cameraFar  = !this._cameraFar
+        this._scene.beginDirectAnimation(this.camera, this.createCameraFarOrNearAnim(), 0, Player.frame_rate, false, 1, () => {
+            this._cameraFar = !this._cameraFar
             this._cameraPositionZ = this._cameraFar ? Player.CAMERA_DISTANCE_FAR : Player.CAMERA_DISTANCE_NEAR
             this._cameraYTilt = this._cameraFar ? Player.CAMERA_FAR_Y_TILT : Player.CAMERA_NEAR_Y_TILT
         })
-        this._scene.beginDirectAnimation(this._yTilt,this.createCameraFarOrNearYTiltAnim(),0,Player.frame_rate,false,1,()=>{
+        this._scene.beginDirectAnimation(this._yTilt, this.createCameraFarOrNearYTiltAnim(), 0, Player.frame_rate, false, 1, () => {
 
         })
     }
 
 
-    private createCameraFarOrNearAnim(){
+    private createCameraFarOrNearAnim() {
         //镜头距离
         const distanceAnimation = new Animation("distanceAnimation", "position.z", Player.frame_rate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const distanceKeyFrames: IAnimationKey [] = []
@@ -472,7 +471,7 @@ export class Player extends TransformNode {
         return [distanceAnimation]
     }
 
-    private createCameraFarOrNearYTiltAnim(){
+    private createCameraFarOrNearYTiltAnim() {
         //俯仰角
         const yTiltRotateAnimation = new Animation("yTiltRotateAnimation", "rotation.x", Player.frame_rate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
         const yTiltRotateKeyFrames: IAnimationKey [] = []
@@ -482,10 +481,37 @@ export class Player extends TransformNode {
         })
         yTiltRotateKeyFrames.push({
             frame: Player.frame_rate,
-            value: this._cameraFar ?  Player.CAMERA_NEAR_Y_TILT : Player.CAMERA_FAR_Y_TILT
+            value: this._cameraFar ? Player.CAMERA_NEAR_Y_TILT : Player.CAMERA_FAR_Y_TILT
         })
         yTiltRotateAnimation.setKeys(yTiltRotateKeyFrames)
         return [yTiltRotateAnimation]
     }
 
+
+    cameraRotateOneRound(cb : ()=>void) {
+        this._scene.beginDirectAnimation(this._yTilt, this.createCameraRotateOneRoundAnim(), 0, Player.frame_rate * 4, false, 1, () => {
+            cb()
+        })
+    }
+
+
+    private createCameraRotateOneRoundAnim() {  //摄像机绕着人物转一圈 并且 转回来
+        //绕Y轴旋转
+        const rotateAnimation = new Animation("rotateAnimation", "rotation.y", Player.frame_rate, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+        const rotateKeyFrames: IAnimationKey [] = []
+        rotateKeyFrames.push({
+            frame: 0,
+            value: this._yTilt.rotation.y
+        })
+        rotateKeyFrames.push({
+            frame: Player.frame_rate * 2,
+            value: this._yTilt.rotation.y + Math.PI
+        })
+        rotateKeyFrames.push({
+            frame: Player.frame_rate * 4,
+            value: this._yTilt.rotation.y + Math.PI * 2
+        })
+        rotateAnimation.setKeys(rotateKeyFrames)
+        return [rotateAnimation]
+    }
 }

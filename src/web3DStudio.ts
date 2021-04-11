@@ -67,7 +67,10 @@ export class Web3DStudio implements IState {
                         this._scene.debugLayer.hide()
                     } else {
                         console.log('打开debug tab');
-                        this._scene.debugLayer.show()
+                        this._scene.debugLayer.show({
+                            embedMode:false,
+                            overlay : true
+                        })
                     }
                 }
             })
@@ -98,6 +101,10 @@ export class Web3DStudio implements IState {
                     this._practiceTable.render()
                 }
             }
+
+
+
+
         })
         window.addEventListener('resize', _ => {
             this._engine.resize() //监听窗口调整大小事件
@@ -116,7 +123,7 @@ export class Web3DStudio implements IState {
         //暂时直接
 
 
-        //await this.goToStudio(1)
+       //await this.goToStudio(1)
     }
 
     focusCanvas(): void {
@@ -127,8 +134,8 @@ export class Web3DStudio implements IState {
 
     async goToCollegeMap() {
         //网络获取学院地图
-        useBookShelfUiState.setShelfShowing(false)
-        usePracticeTableUiState.setPracticeTableShowing(false)
+        useBookShelfUiState.setShelfShowing(false,true)
+        usePracticeTableUiState.setPracticeTableShowing(false,true)
         this.setPracticeTableShow(false)
         this.setBookShelfShow(false)
         useNavUiState.setNavShowing(false) //关闭导航UI
@@ -168,8 +175,8 @@ export class Web3DStudio implements IState {
     private _currentCollegeUUid:number = 1  //当前所在的学院UUid
 
     async goToCollege(collegeUUid: number) {  //传递进来collegeUUid
-        useBookShelfUiState.setShelfShowing(false)
-        usePracticeTableUiState.setPracticeTableShowing(false)
+        useBookShelfUiState.setShelfShowing(false,true)
+        usePracticeTableUiState.setPracticeTableShowing(false,true)
         this.setPracticeTableShow(false)
         this.setBookShelfShow(false)
         useNavUiState.setNavShowing(false) //关闭导航UI
@@ -227,7 +234,8 @@ export class Web3DStudio implements IState {
         const response = await web3dApi.getStudio(this._currentCollegeUUid,studioUUid);
         const studioData = response.data;
         let manager = new StudioManager(studioScene, studioData, this)
-         //let manager = new StudioManager(studioScene, fakeStudio_AI, this)
+         // let manager = new StudioManager(studioScene, fakeStudio_AI, this)
+
         await manager.load()
 
         const playerUiState = usePlayerUiState;
@@ -258,7 +266,7 @@ export class Web3DStudio implements IState {
                 this._bookShelf.attachControl()
             }
             const bookShelfUiState = useBookShelfUiState;
-            bookShelfUiState.setShelfShowing(true) //显示关闭UI
+            bookShelfUiState.setShelfShowing(true,false) //显示关闭UI
         }
         else{
             if (this._bookShelf){
@@ -274,7 +282,7 @@ export class Web3DStudio implements IState {
                 this._practiceTable.attachControl()
             }
             const practiceTableUiState = usePracticeTableUiState;
-            practiceTableUiState.setPracticeTableShowing(true) //显示关闭UI
+            practiceTableUiState.setPracticeTableShowing(true,false) //显示关闭UI
         }
         else{
             if (this._practiceTable){

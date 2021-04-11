@@ -52,7 +52,6 @@ export class Staircase {
         this.setUpCamera()
         this.setUpMaterial()
         this.setUpStaircase()
-        this.setUpFirework()
 
         this._engine.runRenderLoop(() => {
             this._scene.render()
@@ -62,24 +61,6 @@ export class Staircase {
     private _fireworks: Firework[] = []
     private _fireworkStart = false
 
-    setUpFirework() {
-        //生成烟花
-        this._fireworkStartPos.forEach(startPos => {
-            this._fireworks.push(new Firework(this._scene, startPos, this._fireworkHeight))
-
-        })
-
-
-        this._scene.registerBeforeRender(() => {
-            if (this._fireworkStart) {
-
-                this._fireworks.forEach(fireWork => {
-                    fireWork.launchFireWork()
-                })
-
-            }
-        })
-    }
 
     setUpMaterial() {
         //生成楼梯的材质

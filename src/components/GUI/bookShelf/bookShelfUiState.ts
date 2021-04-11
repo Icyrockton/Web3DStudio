@@ -230,18 +230,21 @@ export class BookShelfUiState {
     setVideoShowing(showing: boolean) {
         this.videoShowing = showing
     }
-    setShelfShowing(showing:boolean){
+    setShelfShowing(showing:boolean,leave:boolean = false){
         this.shelfShowing =showing
-        if (showing && this.playerManager){
+        if (showing && this.playerManager ){
             usePlayerUiState.studioManager?.clearPlayerState()
             this.playerManager.player.blockInput()
+            usePlayerUiState.studioManager?.startVague(true)
         }
-        if (!showing && this.playerManager){
+        if (!showing && this.playerManager && leave){
             this.playerManager.busy =false //设置为非忙碌状态
             useNavUiState.navController?.focusCanvas() //聚焦canvas
         }
-        if (!showing){
+        if (!showing && leave){
             this.videoShowing=false
+            usePlayerUiState.checkFinishedCurrentTask()
+            usePlayerUiState.studioManager?.startVague(false)
         }
     }
 

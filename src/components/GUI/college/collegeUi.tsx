@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {observer} from "mobx-react-lite";
 import {CollegeUiState} from "./collegeUiState";
-import {Card, Divider, Typography, List} from "antd/es";
 import 'antd/dist/antd.css';
-import {SimpleStudio} from "../../../core/collegeMap/college";
 import classes from './collegeUi.module.css'
 import {LoadingOutlined} from "@ant-design/icons";
 
@@ -18,7 +16,9 @@ const CollegeUiComponent = (props: CollegeUiProps) => {
 
     const {x, y} = useMousePosition();
     const {width, height} = useWindowDimensions();
-    const isLeft = () => (x / width <= 0.5);
+    const isLeft = () => {
+        return (x / width <= 0.5)
+    }
     if (college) {
         const studios = college.studios.map(studio => {
             return (
@@ -83,7 +83,7 @@ const useMousePosition = () => {
 };
 
 const useWindowDimensions = () => {
-    const [windowDimensions, setWindowDimensions] = useState({width: 0, height: 0});
+    const [windowDimensions, setWindowDimensions] = useState({width: window.innerWidth, height: window.innerHeight});
     const updateWindowDimensions = (event: UIEvent) => {
         setWindowDimensions({width: window.innerWidth, height: window.innerHeight});
     };
