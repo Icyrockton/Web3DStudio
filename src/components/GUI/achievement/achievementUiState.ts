@@ -93,12 +93,11 @@ export class AchievementUiState {
 
     setUiShowing(showing: boolean) {
         this.achievementUiShowing = showing
-        if (showing){
+        if (showing) {
             usePlayerUiState.studioManager?.setPlayerBusy(true)
             this.achievementList = null
             this.fetchAchievementList()
-        }
-        else{
+        } else {
             usePlayerUiState.studioManager?.setPlayerBusy(false)
             useNavUiState.navController?.focusCanvas()
         }
@@ -121,11 +120,10 @@ export class AchievementUiState {
             const uiOnOff = !this.achievementUiShowing
             this.setUiShowing(uiOnOff)
             usePlayerUiState.setHideSideBar(uiOnOff)
-            if (uiOnOff){
+            if (uiOnOff) {
                 usePlayerUiState.studioManager?.setPlayerBusy(true)
                 usePlayerUiState.studioManager?.clearPlayerState()
-            }
-             else{
+            } else {
                 usePlayerUiState.studioManager?.setPlayerBusy(false)
             }
         }
@@ -139,12 +137,12 @@ export class AchievementUiState {
     }
 
     async fetchAchievementList() {
-        if (useLoginUiState.loginUserID) {
-            const response = await useWeb3DApi.getUserAchievement(useLoginUiState.loginUserID);
-            runInAction(() => {
-                this.achievementList = response.data
-            })
-        }
+
+        const response = await useWeb3DApi.getUserAchievement();
+        runInAction(() => {
+            this.achievementList = response.data
+        })
+
     }
 }
 

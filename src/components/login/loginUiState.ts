@@ -5,7 +5,6 @@ import {notification} from "antd";
 
 export class LoginUiState {
     isLogIn: boolean = false
-    loginUserID: number | null = null
 
     constructor() {
         makeAutoObservable(this)
@@ -18,7 +17,6 @@ export class LoginUiState {
         if (data != null ) {
             if (data.code == 100) {
                 runInAction(() => {
-                    this.loginUserID = data.loginID
                     this.isLogIn = true
                 })
                 notification.success({

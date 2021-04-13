@@ -72,8 +72,8 @@ export class Web3dApi {
         return this._axios.get<CollegeDescription>(`college/description/${uuid}`)
     }
 
-    getUserAchievement(uuid:number){
-        return this._axios.get<AchievementList>(`user/achievement/${uuid}`)
+    getUserAchievement(){
+        return this._axios.get<AchievementList>(`user/achievement`)
     }
 
     getTaskScore(uuid:number){ //任务ID
