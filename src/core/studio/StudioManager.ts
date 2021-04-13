@@ -31,6 +31,7 @@ import usePracticeTableUiState from "../../components/GUI/practiceTable/practice
 import {Light} from "@babylonjs/core/Lights/light";
 import {MINI_MAP_LAYER_MASK} from "./miniMap";
 import useTaskUiState from "../../components/GUI/task/taskUiState";
+import useFloorUiState from "../../components/GUI/floor/floorUiState";
 
 interface StudioSound {
     bookShelf: Sound
@@ -81,6 +82,10 @@ export class StudioManager {
 
         useTaskUiState.currentStudioUUid  = this._studio.uuid
 
+        setTimeout(()=>{
+            useFloorUiState.setVisitStudioUiShowing(false)
+            useFloorUiState.setVisitUiShowing(false)
+        },3000)
     }
 
     async load() {

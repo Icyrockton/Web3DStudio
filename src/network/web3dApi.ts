@@ -22,7 +22,8 @@ export class Web3dApi {
         responseType: "json",
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        withCredentials: true
     })
 
     //登录
@@ -37,7 +38,9 @@ export class Web3dApi {
 
     //获取collegeMap
     getCollegeMap() {
-        return this._axios.get<CollegeMap>("/college/map")
+        return this._axios.get<CollegeMap>("/college/map",{
+            withCredentials:false
+        })
     }
 
     getCollegeFloor(uuid: number) {
@@ -72,6 +75,11 @@ export class Web3dApi {
     getUserAchievement(uuid:number){
         return this._axios.get<AchievementList>(`user/achievement/${uuid}`)
     }
+
+    getTaskScore(uuid:number){ //任务ID
+        return this._axios.get<Task>(`/studio/task/score/${uuid}`)
+    }
+
 }
 
 const useWeb3DApi = new Web3dApi()

@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {makeAutoObservable, runInAction} from "mobx";
 import {Staircase} from "../../../core/staircase/staircase";
 import {ReceptionistManager} from "../../../core/receptionist/receptionistManager";
 import {StudioManager} from "../../../core/studio/StudioManager";
@@ -6,6 +6,7 @@ import {notification} from "antd";
 import usePracticeTableUiState from "../practiceTable/practiceTableUiState";
 import {fakeTask, StudyType, SubTask, SubTaskState, Task, TaskState} from "../task/taskUiState";
 import useNavUiState from "../nav/navUiState";
+import useWeb3DApi from "../../../network/web3dApi";
 
 export interface Player {
 
@@ -295,6 +296,11 @@ export class PlayerState {
 
     private async fetchScoreInfo(uuid: number) {  //获取当前任务的成绩
         //todo
+        const web3DApi = useWeb3DApi;
+        const response = await web3DApi.getTaskScore(uuid);
+        runInAction(()=>{
+            this.taskScoreInfo = response.data
+        })
     }
 }
 
