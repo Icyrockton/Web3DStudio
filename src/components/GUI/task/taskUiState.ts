@@ -369,7 +369,6 @@ export class TaskUiState {
 
     //接受任务 将任务的状态改为 --> OnProgress
     acceptTask(acceptTaskUUid: number) {
-
         this.taskList.forEach(task => {
             if (task.uuid == acceptTaskUUid) {
                 task.status = TaskState.OnProgress

@@ -25,6 +25,7 @@ export class PlayerState {
     staircase: Staircase | null = null
     isShowing: boolean = false
     keyBoardHintShowing:boolean = false
+    notPadShowing :boolean =false
     currentTask: Task | null = null
     currentSubTaskIndex: number = -1
     isShowingDialog: boolean = false //显示对话框？
@@ -48,6 +49,10 @@ export class PlayerState {
         this.isMiniMapShowing = showing
     }
 
+    public setNotePadShowing (showing :boolean){
+        this.notPadShowing = showing
+    }
+
     public setDialogShowing(showing: boolean) {
         this.isShowingDialog = showing
     }
@@ -66,8 +71,10 @@ export class PlayerState {
         this.scoreInfoShowing = showing
         if (!showing)
         {
+            this.finishedCurrentTask = false
             this.studioManager?.afterFireWork()
             useNavUiState.navController?.focusCanvas()
+            this.isShowing =false
         }
     }
 
@@ -213,7 +220,6 @@ export class PlayerState {
             //调整当前子任务索引
             this.currentSubTaskIndex = subTaskIndex
         }
-
     }
 
     finishedCurrentTask : boolean =false //完成当前的任务
@@ -230,7 +236,7 @@ export class PlayerState {
         if (this.currentTask  && this.currentTask.uuid >= 0) {
             const subTask = this.currentTask.subTask[this.currentSubTaskIndex];
             //只有uuid和type一样才更新progress
-            if (subTask.studyUuid == studyUuid && subTask.type == studyType) {
+            if (subTask && subTask.studyUuid == studyUuid && subTask.type == studyType) {
                 this.currentTask.subTask[this.currentSubTaskIndex].progress = progress
                 if (progress == 100) {  //如果完成了 进入下一个子任务
                     this.finishSubTask(this.currentSubTaskIndex)
@@ -295,7 +301,6 @@ export class PlayerState {
     }
 
     private async fetchScoreInfo(uuid: number) {  //获取当前任务的成绩
-        //todo
         const web3DApi = useWeb3DApi;
         const response = await web3DApi.getTaskScore(uuid);
         runInAction(()=>{

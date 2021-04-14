@@ -174,7 +174,7 @@ const NotePad = observer<NotePadProps>((props: NotePadProps) => {
     }
     return (
         <>
-            <div className={`${classes.openButtonArea} ${playerUiState.isShowing ? "" : classes.none} `}>
+            <div className={`${classes.openButtonArea} ${playerUiState.notPadShowing ? "" : classes.none} `}>
                 <Tooltip title={hint()}>
                     <Button icon={<FormOutlined style={{fontSize: "30px"}}/>} shape={"circle"}
                             onClick={() => setShowing(!isShowing)}

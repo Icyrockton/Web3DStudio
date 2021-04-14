@@ -74,14 +74,21 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
                     </div>
                     <div className={classes.divide}/>
                     <span className={classes.totalScore}>
-                        总分: <Rate   value={scoreInfo.rate} disabled/>&nbsp;&nbsp; {scoreInfo.rate}
+                        总分: <Rate value={scoreInfo.rate} disabled/>&nbsp;&nbsp; {scoreInfo.rate}
                     </span>
-                    <button className={classes.confirmButton} onClick={() => uiState.setScoreInfoShowing(false)}>
+                    <button className={classes.confirmButton} onClick={() => {
+                        uiState.setScoreInfoShowing(false);
+                        usePlayerUiState.studioManager?.playButtonHitSound()
+                    }}
+                            onMouseOver={() => usePlayerUiState.studioManager?.playSelectSound()}
+                    >
                         我已查阅
                     </button>
                 </>
             )
-        } else {
+        }
+    else
+        {
             return (<div className={classes.loading}>
                 <LoadingOutlined style={{fontSize: 35}} spin/>
                 <h2>加载中...</h2>
@@ -134,76 +141,77 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
         </>
     )
 }
-const PlayerUi = observer<PlayerUiProps>(PlayerUiComponent)
+const PlayerUi = observer
+<PlayerUiProps>(PlayerUiComponent)
 
-export default PlayerUi
-
-
-type TaskStateUiProps = {
-    task: Task | null
-}
+    export default PlayerUi
 
 
-const TaskStateUi = observer((props: TaskStateUiProps) => {
-    const task = props.task;
-    if (task) {
+    type TaskStateUiProps = {
+        task: Task | null
+    }
+
+
+    const TaskStateUi = observer((props: TaskStateUiProps) => {
+        const task = props.task;
+        if (task) {
         let finishedTask = task.subTask.filter(subTask => subTask.status == SubTaskState.Finished);
         console.log(`${finishedTask.length} - ${task.subTask.length}`)
         let progress = (finishedTask.length / task.subTask.length) * 100
         let score = 0 //完成的任务的评分
         finishedTask.forEach(subTask => {
-            score += subTask.rate!
-        })
+        score += subTask.rate!
+    })
         let totalScore = task.subTask.length * 5 //总的分数
 
         return (
-            <Card className={classes.taskTab} title={"正在进行中"}>
-                <Typography>
-                    <Title level={5}>
-                        任务名称
-                    </Title>
-                    <Paragraph>
-                        {task.name}
-                    </Paragraph>
-                    <Title level={5}>
-                        任务介绍
-                    </Title>
-                    <Paragraph>
-                        {task.description}
-                    </Paragraph>
-                    <Title level={5}>
-                        任务目的
-                    </Title>
-                    <Paragraph>
-                        {task.goal}
-                    </Paragraph>
-                    <Title level={5}>
-                        任务进度
-                    </Title>
-                    <Paragraph>
-                        <Progress
-                            strokeColor={{
-                                "0%": "#f7797d",
-                                "50%": "#FBD786",
-                                "100%": "#C6FFDD"
-                            }}
-                            percent={progress}
-                            status={"active"} format={(percent => `${percent?.toFixed(0)}%`)}
-                        />
-                    </Paragraph>
-                    <Title level={5}>
-                        任务总评分
-                    </Title>
-                    <Paragraph>
-                        当前获得分数: {score} 分 / 总分: {totalScore} 分
-                    </Paragraph>
-                </Typography>
-            </Card>
+        <Card className={classes.taskTab} title={"正在进行中"}>
+        <Typography>
+        <Title level={5}>
+        任务名称
+        </Title>
+        <Paragraph>
+    {task.name}
+        </Paragraph>
+        <Title level={5}>
+        任务介绍
+        </Title>
+        <Paragraph>
+    {task.description}
+        </Paragraph>
+        <Title level={5}>
+        任务目的
+        </Title>
+        <Paragraph>
+    {task.goal}
+        </Paragraph>
+        <Title level={5}>
+        任务进度
+        </Title>
+        <Paragraph>
+        <Progress
+        strokeColor={{
+        "0%": "#f7797d",
+        "50%": "#FBD786",
+        "100%": "#C6FFDD"
+    }}
+        percent={progress}
+        status={"active"} format={(percent => `${percent?.toFixed(0)}%`)}
+        />
+        </Paragraph>
+        <Title level={5}>
+        任务总评分
+        </Title>
+        <Paragraph>
+        当前获得分数: {score} 分 / 总分: {totalScore} 分
+        </Paragraph>
+        </Typography>
+        </Card>
         )
     } else {
         return (
-            <Card className={classes.taskTab} title={"当前未接到任务"}>
-            </Card>
+        <Card className={classes.taskTab} title={"当前未接到任务"}>
+        </Card>
         )
     }
-})
+    })

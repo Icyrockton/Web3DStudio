@@ -356,6 +356,7 @@ export class PracticeTable implements EBookSound {
             playerUiState.currentPracticeSubTask.forEach(subTask => {
 
                 this.addButton(subTask.name, this._practiceColumn!, () => {
+                    console.log(subTask.name,subTask)
                     practiceTableUiState.setCurrentPractice(subTask) //设置当前正在进行的练习...
                     practiceTableUiState.setPracticeShowing(true) //显示
                 })

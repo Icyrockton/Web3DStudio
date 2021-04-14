@@ -60,8 +60,8 @@ export class Web3dApi {
         return this._axios.get<EBookDetail[]>(`/studio/ebook/${uuid}`)
     }
 
-    getStudioTask(taskUuid:number){ //练习题的UUID
-        return this._axios.get<Task[]>(`/studio/task/${taskUuid}`)
+    getStudioTask(studioUuid:number){ //练习题的UUID
+        return this._axios.get<Task[]>(`/studio/task/${studioUuid}`)
     }
 
     getStudioPractice(practiceUuid:number){

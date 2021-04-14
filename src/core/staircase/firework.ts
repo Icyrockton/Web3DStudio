@@ -32,7 +32,7 @@ export class Firework {
         this._flareTexture = flareTexture
 
         //火箭向上发射
-        const rocket = MeshBuilder.CreateSphere("rocket", {segments: 1, diameter: 1});
+        const rocket = MeshBuilder.CreateSphere("rocket", {segments: 1, diameter: 1},this._scene);
         this._emitter = rocket
         rocket.isVisible = false
         //设置火箭的初始位置
@@ -40,6 +40,7 @@ export class Firework {
         this._height = height
         //粒子系统
         let particle = new ParticleSystem(`${startNode.name}-particleSystem`, 30, scene)
+        particle.preWarmCycles = 1
         //设置粒子纹理
         particle.particleTexture = this._flareTexture.clone()
         //设置粒子发射原点 （在火箭的位置
@@ -50,20 +51,20 @@ export class Firework {
         //颜色
         particle.color1 =  new Color4(224 / 255, 191 / 255, 152 / 255, 1.0)
         particle.color2 =  new Color4(187 / 255, 51 / 255, 78 /255, 1.0)
-        particle.colorDead = new Color4(0, 0, 0.2, 0.5);
+        particle.colorDead = new Color4(0, 0, 0, 0.0);
         //大小
-        particle.minSize = .1
-        particle.maxSize = .4
+        particle.minSize = 0.4
+        particle.maxSize =  0.6
         particle.minLifeTime = 0.5;
-        particle.maxLifeTime = .1;
-        particle.addSizeGradient(0, 1)
-        particle.addSizeGradient(1, 0.1)
+        particle.maxLifeTime = 0.5;
+        // particle.addSizeGradient(0, 1)
+        // particle.addSizeGradient(1, 0.1)
         particle.emitRate = 30
         //速率
         particle.minEmitPower = 1
         particle.maxEmitPower = 1
-        particle.updateSpeed = 0.005
-        particle.blendMode = ParticleSystem.BLENDMODE_ONEONE
+        particle.updateSpeed = 0.01
+
         this._particleSys = particle
 
     }

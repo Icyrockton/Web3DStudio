@@ -639,11 +639,11 @@ export class StudioManager {
             miniMapCamera.position.set(this._playerManager.playerPosition.x, 10, this._playerManager.playerPosition.z)
         })
         this._scene.activeCameras?.push(miniMapCamera)
-        window.addEventListener('keydown', ev => {
-            if (ev.keyCode == 81) {
-               //this.startFireWork()
-            }
-        })
+        // window.addEventListener('keydown', ev => {
+        //     if (ev.keyCode == 81) {
+        //       this.startFireWork()
+        //     }
+        // })
     }
 
     setPlayerBusy(busy: boolean) {
@@ -664,11 +664,12 @@ export class StudioManager {
         this._playerManager.busy = true
         this._playerManager.player.blockInput()   //暂停输入
         //阳光变黑
+        this._playerManager.startFireWork()  //开始烟花
         this._scene.beginDirectAnimation(this._hemisphericLight,this.createLightDarkAnim(true),0,StudioManager.frame_rate,false,1,()=>{
+
             this._playerManager.player.cameraRotateOneRound(()=>{
                 usePlayerUiState.setScoreInfoShowing(true)
             }) //围绕一圈
-            this._playerManager.startFireWork()  //开始烟花
         })
     }
 

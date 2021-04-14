@@ -144,6 +144,8 @@ export class Web3DStudio implements IState {
         usePlayerUiState.setDialogShowing(false)
         useReceptionistUiState.setDescriptionShow(false)
         useAiUiState.setDialogShowing(false)
+        usePlayerUiState.setNotePadShowing(false)
+
         const floorUiState = useFloorUiState;
         floorUiState.setFloorUiShowing(false)
         floorUiState.setVisitStudioUiShowing(false)
@@ -184,6 +186,7 @@ export class Web3DStudio implements IState {
         usePlayerUiState.setMiniMapShowing(false)
         usePlayerUiState.setShowing(false)
         usePlayerUiState.setDialogShowing(false)
+        usePlayerUiState.setNotePadShowing(false)
         useReceptionistUiState.setDescriptionShow(false)
         useAiUiState.setDialogShowing(false)
         useAchievementUiState.setUiShowing(false)
@@ -239,7 +242,8 @@ export class Web3DStudio implements IState {
         await manager.load()
 
         const playerUiState = usePlayerUiState;
-        playerUiState.setShowing(true) //任务栏打卡
+        playerUiState.setShowing(false) //任务栏打卡
+        playerUiState.setNotePadShowing(true)
         if (Web3DStudio.NEED_HINT) {
             playerUiState.setKeyBoardHintShow(true) //打开键盘提示
             Web3DStudio.NEED_HINT = false

@@ -120,25 +120,24 @@ export class PlayerManager {
         // const pos_1 = new TransformNode("pos_1", this._scene);
         // pos_1.position.copyFrom(this._collisionBox.position)
 
-        this._fireworkStartPos.forEach(node=>node.dispose())
-        this._fireworkStartPos.splice(0,this._fireworkStartPos.length)
+        this._fireworkStartPos.forEach(node => node.dispose())
+        this._fireworkStartPos.splice(0, this._fireworkStartPos.length)
         const fireworkStartPos: TransformNode[] = []
         //fireworkStartPos.push(pos_1)
 
 
-        console.log(this._fireworkStartPos.length)
         for (let i = 0; i < 3; i++) {
             const R = Math.random() * 4 + 2//半径
             const angle = Math.random() * 2 * Math.PI //角度
             const node = new TransformNode(`fireWord_${i}`, this._scene);
-            node.position.copyFrom(this._collisionBox.position).addInPlace(new Vector3(R * Math.sin(angle), 0, R * Math.cos(angle)))
+            node.position.copyFrom(this._collisionBox.position).addInPlace(new Vector3(R * Math.sin(angle), -2, R * Math.cos(angle)))
             this._fireworkStartPos.push(node)
         }
 
 
         let fireWork: Firework[] = []
         this._fireworkStartPos.forEach(startPos => {
-            fireWork.push(new Firework(this._scene, this._fireWorkSound, this._flareTexture, startPos, 5))
+            fireWork.push(new Firework(this._scene, this._fireWorkSound, this._flareTexture, startPos, 4.5))
         })
 
 
@@ -148,7 +147,6 @@ export class PlayerManager {
             })
 
         })
-
     }
 
 

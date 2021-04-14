@@ -336,6 +336,7 @@ export class PracticeTableUiState {
 
 
     private async getPracticeTaskDetail(uuid: number) {
+        this.currentPracticeDetail = null
         const practice = await this.fetchPracticeTask(uuid);
         runInAction(() => {
             this.currentPracticeDetail = practice  //设置当前练习
@@ -344,12 +345,10 @@ export class PracticeTableUiState {
             for (let i = 0; i < this.currentPracticeDetail.subTasks.length; i++) {
                 this.practiceAnswer.push({answer: ""})
             }
-            console.log('找到练习任务', practice)
         })
     }
 
     setCurrentPractice(practiceTask: SubTask) {
-        console.log('设置当前练习')
         this.currentPractice = practiceTask
         this.getPracticeTaskDetail(practiceTask.studyUuid)
     }
