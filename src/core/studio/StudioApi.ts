@@ -1,5 +1,9 @@
 import {ReceptionistConfig, Studio} from "./Studio";
 import {Vector3} from "@babylonjs/core";
+import {
+    AI_ReceptionistDescription,
+    JAVA_ReceptionistDescription
+} from "../../components/GUI/receptionist/receptionistUiState";
 
 
 export const  fakeStudio_Java:Studio = {
@@ -125,8 +129,8 @@ export const  fakeStudio_Java:Studio = {
                 }
             ]
         },
-
-    ]
+    ],
+    receptionistDescription : JAVA_ReceptionistDescription
 }
 
 export const fakeStudio_AI : Studio = {
@@ -261,5 +265,6 @@ export const fakeStudio_AI : Studio = {
                 }
             ]
         },
-    ]
+    ],
+    receptionistDescription : AI_ReceptionistDescription
 }

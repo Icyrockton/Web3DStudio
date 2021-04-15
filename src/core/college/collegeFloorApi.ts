@@ -15,7 +15,7 @@ export const fakeCollegeFloors: CollegeFloors = {
                 logoTextureURL: "img/studio/java_logo_texture.png",
                 posterTextureURL: "img/studio/java_poster.png",
                 logoURL: "img/studio/java_logo.png",
-                videoURL: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                videoURL: "video/java.mp4"
             },
                 {
                     uuid: 2,

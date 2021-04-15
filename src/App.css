@@ -3,3 +3,12 @@
     height: 100%;
     touch-action: none;
   }
+
+
+#inspector-host{
+    z-index: 1000;
+}
+
+#scene-explorer-host{
+    z-index: 1000;
+}

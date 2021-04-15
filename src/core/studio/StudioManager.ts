@@ -80,6 +80,8 @@ export class StudioManager {
         //更新练习台的内容
         usePracticeTableUiState.updatePracticeTable(this._studio.uuid)
 
+        useReceptionistUiState.setDescription(this._studio.receptionistDescription)
+
         useTaskUiState.currentStudioUUid  = this._studio.uuid
 
         setTimeout(()=>{
@@ -277,17 +279,8 @@ export class StudioManager {
         AdvancedDynamicTexture.CreateFullscreenUI("")
 
 
-        const receptionistUiState = useReceptionistUiState; //UI状态
 
-        let description = {
-            avatarURL: "img/avatar/javaReceptionistAvatar.png",
-            info: "Hi~，欢迎来到北京三维学院Java工作室，我是你的培训师姐，我叫李丹",
-            position: "Java架构高级工程师",
-            title: "高级工程师"
-        } as ReceptionistDescription
-
-        receptionistUiState.setDescription(description)
-
+        const receptionistUiState = useReceptionistUiState;
         //设置  如果玩家在length距离以内,触发问候事件
         this._receptionManager.triggerOnceWhenDistanceLessThan(this._studio.receptionistConfig.distanceTrigger, this._playerManager, () => {
             this._receptionManager.playGreeting() //问候语
@@ -390,7 +383,7 @@ export class StudioManager {
                     playerUiState.setDialogInfo({
                         avatarURL: this._studio.playerAvatarURL,
                         title: "视频图书架",
-                        info: "这里是Java工作室的电子视频图书架,按E键可以打开书架"
+                        info: "这里是工作室的电子视频图书架,按E键可以打开书架"
                     })
                     this._bookShelfAreaHint = false
                 }
@@ -554,7 +547,7 @@ export class StudioManager {
                         playerUiState.setDialogInfo({
                             avatarURL: this._studio.playerAvatarURL,
                             title: "课后练习台",
-                            info: "这里是Java工作室的课后练习台,按E键可以打开练习台"
+                            info: "这里是工作室的课后练习台,按E键可以打开练习台"
                         })
                         this._practiceTableAreaHint = false
                     }

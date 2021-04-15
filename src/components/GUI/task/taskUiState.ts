@@ -2,6 +2,7 @@ import {makeAutoObservable, runInAction} from "mobx";
 import usePlayerUiState from "../player/playerUiState";
 import useNavUiState from "../nav/navUiState";
 import useWeb3DApi from "../../../network/web3dApi";
+import {notification} from "antd";
 
 
 export enum SubTaskState {
@@ -368,9 +369,30 @@ export class TaskUiState {
     }
 
     //接受任务 将任务的状态改为 --> OnProgress
-    acceptTask(acceptTaskUUid: number) {
+    acceptTask({uuid,name}: Task) {
+        if (usePlayerUiState.currentTask){  //当前的任务不为空 不能接受新的任务
+            notification.error(
+                {
+                    message: `无法接受新的任务`,
+                    description: `当前正在执行任务中,请先完成当前的任务`
+                    ,
+                    placement: "topLeft",
+                    top:window.innerHeight * 0.3,
+                }
+            )
+            return
+        }
+        notification.success(
+            {
+                message: `接收到新的任务`,
+                description: `任务名称:${name} `
+                ,
+                placement: "topLeft",
+                top : window.innerHeight * 0.3
+            }
+        )
         this.taskList.forEach(task => {
-            if (task.uuid == acceptTaskUUid) {
+            if (task.uuid == uuid) {
                 task.status = TaskState.OnProgress
                 //虚拟人员
                 const receptionistManager = usePlayerUiState.receptionistManager;

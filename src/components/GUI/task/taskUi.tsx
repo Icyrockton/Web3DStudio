@@ -37,16 +37,8 @@ function SingleTask(props: TaskProps) {
     }
     const handleAcceptTask = () => {
         const taskUiState = useTaskUiState;
-        taskUiState.acceptTask(task.uuid)
-        notification.success(
-            {
-                message: `接收到新的任务`,
-                description: `任务名称:${task.name} `
-                ,
-                placement: "topLeft",
-                top : window.innerHeight * 0.3
-            }
-        )
+        taskUiState.acceptTask(task)
+
         setIsModalVisible(false)
 
     }

@@ -1,4 +1,5 @@
 import {TransformNode, Vector3} from "@babylonjs/core";
+import {ReceptionistDescription} from "../../components/GUI/receptionist/receptionistUiState";
 
 
 
@@ -7,7 +8,7 @@ export interface RotateCamera {
     rotate:number //绕y轴旋转的角度 0~360
 }
 
-export interface    Studio {
+export interface Studio {
     uuid:number
     name:string //工作室名称
     modelURL:string //模型的URL位置
@@ -28,6 +29,7 @@ export interface    Studio {
     rotateCamera:RotateCamera[] //相机的自动旋转
     receptionistConfig:ReceptionistConfig //虚拟人员配置文件
     studioAIs:StudioAI[]
+    receptionistDescription : ReceptionistDescription
 }
 
 export interface ReceptionistConfig {
