@@ -168,6 +168,7 @@ export class VisitPlayerManager {
             closeMat.diffuseTexture = closeTexture
             closeMat.backFaceCulling = false
             closeMat.diffuseTexture.hasAlpha = true
+            closeMat.emissiveColor =Color3.White()
             closeBillBoard.material = closeMat
 
             closeBillBoard.actionManager = new ActionManager(this._scene)
@@ -313,12 +314,15 @@ export class VisitPlayerManager {
         playingMat.diffuseTexture = playTexture
         playingMat.backFaceCulling = false
         playingMat.diffuseTexture.hasAlpha = true
+        playingMat.emissiveColor = Color3.White()
         playingBillBoard.material = playingMat
 
         const infoMat = new StandardMaterial("infoBillBoardMat", this._scene);
         infoMat.diffuseTexture = new Texture("img/sprite/info.png", this._scene)
         infoMat.backFaceCulling = false
         infoMat.diffuseTexture.hasAlpha = true
+        infoMat.emissiveColor = Color3.White()
+
         infoBillBoard.material = infoMat
 
         playingBillBoard.isVisible = false

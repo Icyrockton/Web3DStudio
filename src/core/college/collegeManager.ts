@@ -75,6 +75,7 @@ export class CollegeManager implements Update {
 
     constructor(collegeScene: Scene, web3DStudio: IState, collegeFloors: CollegeFloors) {
         this._scene = collegeScene;
+
         this._scene.clearColor = Color4.FromHexString("#6fabffff").toLinearSpace()
         this._collegeFloors = collegeFloors; //所有数据
         useFloorUiState.collegeManager = this //注入this
@@ -709,7 +710,6 @@ export class CollegeManager implements Update {
 
     private setUpShadow() {
         if (this._light) {
-            console.log('？')
             this._shadowGenerator = new ShadowGenerator(1024, this._light)
             this._shadowGenerator.usePercentageCloserFiltering = true //使用PCF阴影
             this._shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH //高质量

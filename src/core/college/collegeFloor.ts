@@ -32,7 +32,7 @@ export class CollegeFloor {
     private _sound: CollegeManagerSound;
 
     constructor(scene: Scene, web3DStudio: IState, floor: Floor, floorRoot: Mesh, maxYPos: number, sound: CollegeManagerSound) {
-        this._scene = scene
+        this._scene = scene;
         this._sound = sound;
         this._floor = floor;
         this._web3DStudio = web3DStudio; //为了转换状态
@@ -46,16 +46,16 @@ export class CollegeFloor {
         //         mesh.receiveShadows = true
         //     }
         // })
-        this.setUpStudioBox() //设置工作室盒子
-        this.setUpUnnecessary() //隐藏不必要的东西
-        this.setUpLoc() //地标位置
-        //设置高度
+         this.setUpStudioBox() //设置工作室盒子
+         this.setUpUnnecessary() //隐藏不必要的东西
+         this.setUpLoc() //地标位置
+        // //设置高度
         this._originYPos = (this._floor.floorNumber - 1) * CollegeFloor.HEIGHT
         this._maxYPos = maxYPos - (this._floor.floorNumber - 1) * CollegeFloor.HEIGHT
         this._floorTransformNode.position.y = this._originYPos
-        this.enableDepthPrePass()
-        this.translucent() //显示所有mesh 并且visibility = 0.2
-        this.invisibleStudioBox() //不可见工作室盒子
+        //this.enableDepthPrePass()
+         this.translucent() //显示所有mesh 并且visibility = 0.2
+         this.invisibleStudioBox() //不可见工作室盒子
         this.hideUnnecessary()
     }
 

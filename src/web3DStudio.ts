@@ -9,7 +9,7 @@ import {BookShelf} from "./core/bookShelf/bookShelf";
 import useBookShelfUiState from "./components/GUI/bookShelf/bookShelfUiState";
 import {PracticeTable} from "./core/practiceTable/practiceTable";
 import usePracticeTableUiState from "./components/GUI/practiceTable/practiceTableUiState";
-import {fakeCollegeFloors} from "./core/college/collegeFloorApi";
+import {fakeChengDuCollegeFloors, fakeCollegeFloors} from "./core/college/collegeFloorApi";
 import useFloorUiState from "./components/GUI/floor/floorUiState";
 import {fakeCollegeMap} from "./core/collegeMap/collegeMapApi";
 import {StudioManager} from "./core/studio/StudioManager";
@@ -196,12 +196,12 @@ export class Web3DStudio implements IState {
         //this._currentCollegeUUid = collegeUUid
 
 
-        let collegeScene = new Scene(this._engine)
+         let collegeScene = new Scene(this._engine)
         const web3dApi = useWeb3DApi;
         const response = await web3dApi.getCollegeFloor(collegeUUid);
         const collegeFloor = response.data;
         let manager = new CollegeManager(collegeScene, this, collegeFloor)
-        // let manager = new CollegeManager(collegeScene, this, fakeCollegeFloors)
+         //let manager = new CollegeManager(collegeScene, this, fakeChengDuCollegeFloors)
         await manager.load()
         useFloorUiState.setFloorUiShowing(true) //显示UI
         useFloorUiState.setEveryFloorUiShowing(true)

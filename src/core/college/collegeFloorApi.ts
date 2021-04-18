@@ -176,7 +176,7 @@ export const fakeCollegeFloors: CollegeFloors = {
 
 export const fakeChengDuCollegeFloors: CollegeFloors = {
     uuid: 1,
-    totalFloor: 2,
+    totalFloor: 1,
     name: "成都精通学院",
     floors: [
         {
