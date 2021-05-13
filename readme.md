@@ -3,6 +3,7 @@
 
 ![](https://github.com/Icyrockton/Web3DStudio/blob/master/img/web3D.png)
 
+在线体验网站: http://icyrockton.ltd/ 用户名:admin 密码:123
 ## 项目概述
 **使用的技术框架/库**
 - BabylonJS （WebGL框架）
