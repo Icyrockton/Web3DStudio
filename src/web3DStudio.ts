@@ -255,6 +255,8 @@ export class Web3DStudio implements IState {
         useNavUiState.setNavToCollegeShowing(true)
         usePlayerUiState.setMiniMapShowing(true)
         useAchievementUiState.setOpenUiShowing(true)
+        useFloorUiState.setVisitStudioUiShowing(false)
+        useFloorUiState.setVisitUiShowing(false)
         //this._scene.debugLayer.show()
     }
 

@@ -66,7 +66,7 @@ export class Ai {
             radius: 0.2,
             height: 0.2,
             maxAcceleration: 1.0,
-            maxSpeed: 0.5,
+            maxSpeed: 0.4,
             collisionQueryRange: 0.5,
             pathOptimizationRange: 0.0,
             separationWeight: 1.0
