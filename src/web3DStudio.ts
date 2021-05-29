@@ -20,6 +20,7 @@ import useReceptionistUiState from "./components/GUI/receptionist/receptionistUi
 import useAiUiState from "./components/GUI/ai/aiUiState";
 import useWeb3DApi from "./network/web3dApi";
 import useAchievementUiState from "./components/GUI/achievement/achievementUiState";
+import playerUiState from "./components/GUI/player/playerUiState";
 
 //定义不同的状态 初始化,选择学院,选择工作室,进入工作室后
 export enum State { init, chooseCollege, chooseStudio, studio }
@@ -45,6 +46,9 @@ export class Web3DStudio implements IState {
         SceneLoader.ShowLoadingScreen = false //关闭默认的loading UI
         this._canvas = canvas;
         this._engine = new Engine(this._canvas, true, {stencil: true})  //开启抗锯齿
+        setInterval(()=>{
+            playerUiState.setFPS(this._engine.getFps().toFixed())
+        },1000)
         this._scene = new Scene(this._engine);//初始化场景
         this.loadingScene = new LoadingScene(this._scene)
         useNavUiState.navController = this //注入controller

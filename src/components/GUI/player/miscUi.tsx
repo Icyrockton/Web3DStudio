@@ -11,16 +11,17 @@ export const MiscUi = () => {
         }, 1000)
         return () => clearInterval(interval) //防止内存泄漏
     })
-    return (
-        <div className={classes.miscTab}>
-            <h1 className={classes.version}>
-                {__VERSION__}
-            </h1>
-            <h1 className={classes.clock}>
-                系统时间 {date.toLocaleTimeString("chinese", {hour12: false})}
-            </h1>
+    return (<>
+            <div className={classes.miscTab}>
+                <h1 className={classes.version}>
+                    {__VERSION__}
+                </h1>
+                <h1 className={classes.clock}>
+                    系统时间 {date.toLocaleTimeString("chinese", {hour12: false})}
+                </h1>
 
-        </div>
+            </div>
+        </>
     )
 }
 

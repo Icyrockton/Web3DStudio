@@ -1,5 +1,5 @@
 import {
-    AbstractMesh, Animation, Camera,
+    AbstractMesh, Animation, Camera, CascadedShadowGenerator,
     Color3, Color4, DefaultRenderingPipeline,
     DirectionalLight, FreeCamera,
     HemisphericLight, IAnimationKey,
@@ -141,8 +141,8 @@ export class StudioManager {
         const direction = new Vector3(this._studio.directionalLightDirection[0], this._studio.directionalLightDirection[1], this._studio.directionalLightDirection[2]);
         this._directionalLight = new DirectionalLight("directionalLight", direction, this._scene)
         this._directionalLight.position = new Vector3(this._studio.directionalLightPosition[0], this._studio.directionalLightPosition[1], this._studio.directionalLightPosition[2])
-        this._directionalLight.intensity = 0.15
-        this._directionalLight.lightmapMode = Light.LIGHTMAP_SHADOWSONLY
+        this._directionalLight.intensity = 1
+         this._directionalLight.lightmapMode = Light.LIGHTMAP_SHADOWSONLY
     }
 
     private setUpCamera() {
@@ -235,10 +235,12 @@ export class StudioManager {
     }
 
     private async setUpShadow() {
-        const shadowGenerator = new ShadowGenerator(1024, this._directionalLight);
-        shadowGenerator.usePercentageCloserFiltering = true //使用PCF阴影
+        const shadowGenerator = new ShadowGenerator(2048, this._directionalLight);
+         shadowGenerator.usePercentageCloserFiltering = true //使用PCF阴影
         shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH //高质量
+
         this._shadowGenerator = shadowGenerator
+
         let ground = this._scene.getMeshByName(this._studio.groundName); //地面
         if (ground) {
             if ((ground.material instanceof PBRMaterial) || (ground.material instanceof StandardMaterial)) {
@@ -258,6 +260,12 @@ export class StudioManager {
             }
 
         })
+        this._scene.meshes.forEach(mesh =>{
+            if (mesh instanceof Mesh) {
+                mesh.receiveShadows = true;
+            }
+            }
+        )
     }
 
     private setUpRotateCamera() {

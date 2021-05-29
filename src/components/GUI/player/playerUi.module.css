@@ -271,3 +271,14 @@
     color: white;
     cursor: pointer;
 }
+
+
+.fps{
+    position: absolute;
+    top: 0;
+    text-align: center;
+    right: 0;
+    width: 10rem;
+    background-color: black;
+    color: white;
+}

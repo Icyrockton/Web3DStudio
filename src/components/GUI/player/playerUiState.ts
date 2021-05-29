@@ -30,11 +30,15 @@ export class PlayerState {
     currentSubTaskIndex: number = -1
     isShowingDialog: boolean = false //显示对话框？
     isHideSideBar : boolean =false //隐藏右边的楼梯 & 任务栏
+    fps:string = "0"
 
     taskScoreInfo:  Task  | null = null //任务的得分情况
 
     setHideSideBar(hide:boolean){
         this.isHideSideBar = hide
+    }
+    setFPS(fps:string){
+        this.fps = fps
     }
 
     dialog: PlayerDialog = {

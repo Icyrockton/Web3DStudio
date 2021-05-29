@@ -99,6 +99,9 @@ const PlayerUiComponent = (props: PlayerUiProps) => {
     return (
         <>
             <div className={classes.playerUi}>
+
+                {/*FPS显示*/}
+                <h1 className={classes.fps} >FPS:{uiState.fps}</h1>
                 {/*    这里要注意 task 需要被跟踪 传进去uiState.currentTask  否则任务更新的时候 不会重新生成楼梯*/}
                 <div
                     className={`${classes.taskState} ${uiState.isHideSideBar ? classes.taskStateHide : ""} ${uiState.isShowing ? "" : classes.none}`}>
